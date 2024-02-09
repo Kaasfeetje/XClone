@@ -22,6 +22,7 @@ export default {
       "17px": "17px",
       sm: "14px",
       normal: "15px",
+      xl: "1.25rem",
     },
   },
   plugins: [],
