@@ -17,6 +17,9 @@ export default {
         grayText: "rgb(15, 20, 25)",
         lightGrayText: "rgb(83, 100, 113)",
       },
+      spacing: {
+        "18": "4.5rem",
+      },
     },
     fontSize: {
       "17px": "17px",

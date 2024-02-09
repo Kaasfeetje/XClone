@@ -4,6 +4,7 @@ import SearchIcon from "./icons/SearchIcon";
 import BellIcon from "./icons/BellIcon";
 import MailIcon from "./icons/MailIcon";
 import Link from "next/link";
+import CreateTweetIcon from "./icons/CreateTweetIcon";
 
 type Props = {};
 
@@ -49,6 +50,11 @@ const MobileActions = (props: Props) => {
           </div>
         </Link>
       </div>
+      <Link href="#">
+        <div className="bottom-18 fixed right-4 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 fill-white active:bg-blue-600">
+          <CreateTweetIcon className="h-6 w-6" />
+        </div>
+      </Link>
     </div>
   );
 };

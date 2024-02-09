@@ -15,7 +15,7 @@ const Tabs = ({ options }: Props) => {
   }, [options]);
 
   return (
-    <div className="flex w-full justify-evenly">
+    <div className="flex h-[53px] w-full justify-evenly">
       {options.map((option) => (
         <div
           key={option}
@@ -23,11 +23,11 @@ const Tabs = ({ options }: Props) => {
           className="flex w-full cursor-pointer justify-center"
         >
           <div
-            className={`mt-4 ${option == active ? "font-semibold" : "font-medium"}`}
+            className={`relative mt-4 ${option == active ? "font-semibold" : "font-medium"}`}
           >
             {option}
             <div
-              className={`mt-4 h-1 w-full rounded-full ${option == active ? "bg-blue-400" : "bg-white"}`}
+              className={`absolute bottom-1 h-1 w-full rounded-full ${option == active ? "bg-blue-400" : "bg-white"}`}
             ></div>
           </div>
         </div>

@@ -3,7 +3,9 @@ import Head from "next/head";
 import Link from "next/link";
 import Menu from "~/components/Menu/Menu";
 import MobileActions from "~/components/MobileActions";
+import IconButton from "~/components/common/IconButton";
 import MainHeader from "~/components/headers/MainHeader/MainHeader";
+import CreateTweetIcon from "~/components/icons/CreateTweetIcon";
 
 import { api } from "~/utils/api";
 
@@ -38,6 +40,7 @@ export default function Home() {
             </div>
           </div>
           <MobileActions />
+          
         </main>
       </div>
     </>
