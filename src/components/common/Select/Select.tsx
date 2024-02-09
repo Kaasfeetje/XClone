@@ -51,6 +51,7 @@ const Select = ({
                     setSelected(option);
                     setIsOpen(false);
                   }}
+                  checked={option.value == selected?.value}
                 />
               ))}
             </ul>

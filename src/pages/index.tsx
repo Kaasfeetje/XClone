@@ -1,6 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import MobileActions from "~/components/MobileActions";
 import MainHeader from "~/components/headers/MainHeader/MainHeader";
 
 import { api } from "~/utils/api";
@@ -37,7 +38,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="fixed bottom-0  md:hidden">Mobile actions</div>
+          <MobileActions />
         </main>
       </div>
     </>

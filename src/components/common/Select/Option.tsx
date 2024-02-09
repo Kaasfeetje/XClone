@@ -1,13 +1,15 @@
 import React from "react";
 import { OptionType } from "./Select";
+import CheckIcon from "~/components/icons/CheckIcon";
 
 type Props = {
   option?: OptionType;
   selected?: boolean;
+  checked?: boolean;
   onClick: (option: OptionType) => void;
 };
 
-const Option = ({ option, selected, onClick }: Props) => {
+const Option = ({ option, selected, checked, onClick }: Props) => {
   if (!option) {
     return undefined;
   }
@@ -32,6 +34,7 @@ const Option = ({ option, selected, onClick }: Props) => {
         {React.cloneElement(option.icon, { className: "h-5 w-5" })}
       </div>
       <div className="font-bold">{option.title}</div>
+      {checked && <CheckIcon className="ml-auto h-5 w-5 fill-blue-500" />}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AutoHeightTextArea from "~/components/common/AutoHeightTextArea";
 import IconButton from "~/components/common/IconButton";
 import Option from "~/components/common/Select/Option";
@@ -18,11 +18,22 @@ type Props = {};
 
 const TweetForm = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [text, setText] = useState("");
   const [whoCanReply, setWhoCanReply] = useState<OptionType>({
     icon: <GlobalIcon className="h-4 w-4" />,
     title: "Everyone",
     value: "Everyone can reply",
   });
+  const [canPost, setCanPost] = useState(false);
+
+  const handleText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
+    if (e.target.value == "" || e.target.value.length > 244) {
+      setCanPost(false);
+    } else {
+      setCanPost(true);
+    }
+  };
 
   return (
     <form className="hidden pb-2 md:flex">
@@ -31,6 +42,8 @@ const TweetForm = (props: Props) => {
         <AutoHeightTextArea
           className="py-3 text-xl outline-none"
           placeholder="What is happening?!"
+          value={text}
+          onChange={handleText}
           onFocus={() => setIsOpen(true)}
         />
         {isOpen && (
@@ -85,7 +98,7 @@ const TweetForm = (props: Props) => {
             </IconButton>
           </div>
           <button
-            className="mt-3 block h-9 rounded-full bg-blue-400 px-4 font-bold text-white"
+            className={`mt-3 block h-9 rounded-full px-4 font-bold text-white ${canPost ? "bg-blue-500" : "bg-blue-300"}`}
             type="submit"
           >
             Post
