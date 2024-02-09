@@ -11,8 +11,17 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        sans: ["Libre Franklin", ...fontFamily.sans],
       },
+      colors: {
+        grayText: "rgb(15, 20, 25)",
+        lightGrayText: "rgb(83, 100, 113)",
+      },
+    },
+    fontSize: {
+      "17px": "17px",
+      sm: "14px",
+      normal: "15px",
     },
   },
   plugins: [],

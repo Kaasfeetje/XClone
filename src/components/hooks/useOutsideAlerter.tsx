@@ -13,6 +13,7 @@ function useOutsideAlerter(
      */
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
+        console.log(event);
         onOutsideClick();
         // alert("You clicked outside of me!");
       }
@@ -29,10 +30,22 @@ function useOutsideAlerter(
 /**
  * Component that alerts if you click outside of it
  */
-type Props = { children: React.ReactNode; onOutsideClick: () => void };
-export default function OutsideAlerter({ children, onOutsideClick }: Props) {
+type Props = {
+  children: React.ReactNode;
+  className?: string;
+  onOutsideClick: () => void;
+};
+export default function OutsideAlerter({
+  children,
+  className,
+  onOutsideClick,
+}: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   useOutsideAlerter(wrapperRef, onOutsideClick);
 
-  return <div ref={wrapperRef}>{children}</div>;
+  return (
+    <div className={className ? className : ""} ref={wrapperRef}>
+      {children}
+    </div>
+  );
 }
