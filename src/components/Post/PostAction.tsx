@@ -11,7 +11,7 @@ type Props = {
   value?: number;
   active?: boolean;
   color: PostActionColorVariants;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
 const variants: {

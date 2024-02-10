@@ -26,10 +26,26 @@ export const postRouter = createTRPCRouter({
         },
       });
 
+      if (input.commentToId) {
+        await ctx.db.post.update({
+          where: {
+            id: input.commentToId,
+          },
+          data: {
+            commentCount: {
+              increment: 1,
+            },
+          },
+        });
+      }
+
       return post;
     }),
   fetchAll: protectedProcedure.query(async ({ ctx }) => {
     const posts = await ctx.db.post.findMany({
+      where: {
+        commentToId: null,
+      },
       include: {
         user: true,
         likes: {
@@ -46,6 +62,52 @@ export const postRouter = createTRPCRouter({
     });
     return posts;
   }),
+  fetch: protectedProcedure
+    .input(z.object({ postId: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const post = await ctx.db.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+        include: {
+          user: true,
+          likes: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+          reposts: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+      });
+      return post;
+    }),
+  fetchComments: protectedProcedure
+    .input(z.object({ postId: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const comments = await ctx.db.post.findMany({
+        where: {
+          commentToId: input.postId,
+        },
+        include: {
+          user: true,
+          likes: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+          reposts: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+      });
+      return comments;
+    }),
   like: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))
     .mutation(async ({ input, ctx }) => {

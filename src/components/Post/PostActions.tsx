@@ -60,13 +60,14 @@ const PostActions = ({
   const [isReposted, setIsReposted] = useState(reposted);
   const [_repostCount, setRepostCount] = useState(repostCount);
 
-  const onRepost = () => {
+  const onRepost = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
     if (repostMutation.isLoading) return;
-
     repostMutation.mutate({ postId });
   };
 
-  const onLike = () => {
+  const onLike = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
     if (likeMutation.isLoading) return;
     likeMutation.mutate({ postId });
   };
@@ -77,7 +78,10 @@ const PostActions = ({
         icon={<CommentIcon className="h-5 w-5" />}
         value={commentCount}
         color={PostActionColorVariants.blue}
-        onClick={() => alert("Not implemented yet.")}
+        onClick={(e) => {
+          e.preventDefault();
+          alert("Not implemented yet.");
+        }}
       />
       <PostAction
         icon={<RepostIcon className="h-5 w-5" />}
@@ -97,20 +101,29 @@ const PostActions = ({
         icon={<StatsIcon className="h-5 w-5" />}
         value={0}
         color={PostActionColorVariants.blue}
-        onClick={() => alert("Not implemented yet.")}
+        onClick={(e) => {
+          e.preventDefault();
+          alert("Not implemented yet.");
+        }}
       />
       <div className="flex">
         <div className="mr-3 hidden md:block">
           <PostAction
             icon={<BookmarkIcon className="h-5 w-5" />}
             color={PostActionColorVariants.blue}
-            onClick={() => alert("Not implemented yet.")}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Not implemented yet.");
+            }}
           />
         </div>
         <PostAction
           icon={<ShareIcon className="h-5 w-5" />}
           color={PostActionColorVariants.blue}
-          onClick={() => alert("Not implemented yet.")}
+          onClick={(e) => {
+            e.preventDefault();
+            alert("Not implemented yet.");
+          }}
         />
       </div>
     </div>
