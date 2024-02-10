@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { useRouter } from "next/router";
 import Menu from "~/components/Menu/Menu";
 import MobileActions from "~/components/MobileActions";
+import PostContainer from "~/components/PostContainer";
 import MainHeader from "~/components/headers/MainHeader/MainHeader";
 
 export default function Home() {
@@ -32,6 +33,7 @@ export default function Home() {
           <div className="flex w-full md:w-[920px] md:justify-between  lg:w-[1050px]">
             <div className="w-full md:w-[600px]">
               <MainHeader />
+              <PostContainer />
               <div className="h-screen w-full bg-blue-200">main content</div>
               <div className="h-screen w-full">main content</div>
               <div className="h-screen w-full bg-blue-200">main content</div>

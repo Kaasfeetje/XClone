@@ -8,13 +8,6 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
   create: protectedProcedure
     .input(
       z.object({
@@ -34,4 +27,12 @@ export const postRouter = createTRPCRouter({
 
       return post;
     }),
+  fetchAll: protectedProcedure.query(async ({ ctx }) => {
+    const posts = await ctx.db.post.findMany({
+      include: {
+        user: true,
+      },
+    });
+    return posts;
+  }),
 });
