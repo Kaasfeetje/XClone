@@ -1,4 +1,4 @@
-import { Post, User } from "@prisma/client";
+import { Post, PostLike, PostRepost, User } from "@prisma/client";
 import React from "react";
 import Avatar from "../common/Avatar";
 
@@ -8,6 +8,8 @@ import Link from "next/link";
 type Props = {
   post: Post & {
     user: User;
+    likes: PostLike[];
+    reposts: PostRepost[];
   };
 };
 
@@ -34,7 +36,14 @@ const Post = ({ post }: Props) => {
           <span>16m</span>
         </div>
         <div>{post.textContent}</div>
-        <PostActions />
+        <PostActions
+          postId={post.id}
+          liked={post.likes.length > 0}
+          likeCount={post.likeCount}
+          reposted={post.reposts.length > 0}
+          repostCount={post.repostCount}
+          commentCount={post.commentCount}
+        />
       </div>
     </div>
   );

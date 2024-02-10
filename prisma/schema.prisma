@@ -55,9 +55,11 @@ model User {
     username      String?   @unique
     displayName   String?
 
-    accounts Account[]
-    sessions Session[]
-    Post     Post[]
+    accounts   Account[]
+    sessions   Session[]
+    Post       Post[]
+    PostLike   PostLike[]   @relation("Likes")
+    PostRepost PostRepost[] @relation("Reposts")
 }
 
 model VerificationToken {
@@ -75,19 +77,45 @@ model Post {
     textContent       String?
     createdAt         DateTime           @default(now())
     likeCount         Int                @default(0)
+    repostCount       Int                @default(0)
     commentCount      Int                @default(0)
     commentPermission COMMENTPERMISSIONS @default(EVERYONE)
 
     // Author
-    user        User    @relation(fields: [userId], references: [id])
+    user        User         @relation(fields: [userId], references: [id])
     userId      String
     // Comments
     commentToId String?
-    commentTo   Post?   @relation("commentPost", fields: [commentToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-    comments    Post[]  @relation("commentPost")
+    commentTo   Post?        @relation("commentPost", fields: [commentToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    comments    Post[]       @relation("commentPost")
+    //Likes & Reposts
+    likes       PostLike[]   @relation("Likes")
+    reposts     PostRepost[] @relation("Reposts")
 
     @@index([userId])
     @@index([commentToId])
+}
+
+model PostLike {
+    postId    String
+    post      Post     @relation("Likes", fields: [postId], references: [id])
+    userId    String
+    user      User     @relation("Likes", fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+
+    @@unique([postId, userId])
+    @@index([userId, postId])
+}
+
+model PostRepost {
+    postId    String
+    post      Post     @relation("Reposts", fields: [postId], references: [id])
+    userId    String
+    user      User     @relation("Reposts", fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+
+    @@unique([postId, userId])
+    @@index([userId, postId])
 }
 
 enum COMMENTPERMISSIONS {
