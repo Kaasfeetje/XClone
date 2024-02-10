@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Option from "./Option";
 import OutsideAlerter from "~/components/hooks/useOutsideAlerter";
+import { COMMENTPERMISSIONS } from "@prisma/client";
 
 export type OptionType = {
   icon: React.ReactElement;
   title: string;
-  value: string;
+  description: string;
+  value: COMMENTPERMISSIONS;
 };
+
 type Props = {
   dropdownTitle?: string;
   dropdownDescription?: string;

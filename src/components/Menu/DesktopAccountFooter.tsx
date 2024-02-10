@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DotsIcon from "../icons/DotsIcon";
 import Link from "next/link";
 import OutsideAlerter from "../hooks/useOutsideAlerter";
+import { signOut } from "next-auth/react";
 
 type Props = {};
 
@@ -36,7 +37,7 @@ const DesktopAccountFooter = (props: Props) => {
               Add an existing account
             </Link>
             <Link
-              href="#"
+              href={"/auth/logout"}
               className="text-grayText block cursor-pointer px-4 py-3 font-bold"
             >
               Log out of @username

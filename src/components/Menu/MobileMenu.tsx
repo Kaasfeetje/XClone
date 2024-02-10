@@ -11,6 +11,7 @@ import MoneyIcon from "../icons/MoneyIcon";
 import ExternalLinkIcon from "../icons/ExternalLinkIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import LogOutIcon from "../icons/LogOutIcon";
+import { signOut } from "next-auth/react";
 
 type Props = {
   isOpen?: boolean;
@@ -77,7 +78,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<SettingsIcon className="h-6 w-6" />}
               />
               <MenuItem
-                href="#"
+                href="/auth/logout"
                 title="Log out"
                 icon={<LogOutIcon className="h-6 w-6" />}
               />

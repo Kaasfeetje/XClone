@@ -21,7 +21,9 @@ const Option = ({ option, selected, checked, onClick }: Props) => {
         onClick={() => onClick(option)}
       >
         <div className="mr-2 fill-blue-500">{option.icon}</div>
-        <div className="text-sm font-bold text-blue-500">{option.value}</div>
+        <div className="text-sm font-bold text-blue-500">
+          {option.description}
+        </div>
       </div>
     );
   }

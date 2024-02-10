@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { COMMENTPERMISSIONS } from "@prisma/client";
+import React, { useState } from "react";
 import AutoHeightTextArea from "~/components/common/AutoHeightTextArea";
 import IconButton from "~/components/common/IconButton";
-import Option from "~/components/common/Select/Option";
 import Select, { OptionType } from "~/components/common/Select/Select";
 import CalendarIcon from "~/components/icons/CalendarIcon";
 import EmojiIcon from "~/components/icons/EmojiIcon";
@@ -13,16 +13,20 @@ import ListIcon from "~/components/icons/ListIcon";
 import LocationIcon from "~/components/icons/LocationIcon";
 import MentionIcon from "~/components/icons/MentionIcon";
 import VerifiedIcon from "~/components/icons/VerifiedIcon";
+import { api } from "~/utils/api";
 
 type Props = {};
 
 const TweetForm = (props: Props) => {
+  const useCreatePostMutation = api.post.create.useMutation();
+
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState("");
-  const [whoCanReply, setWhoCanReply] = useState<OptionType>({
+  const [commentPermission, setCommentPermission] = useState<OptionType>({
     icon: <GlobalIcon className="h-4 w-4" />,
     title: "Everyone",
-    value: "Everyone can reply",
+    description: "Everyone can reply",
+    value: COMMENTPERMISSIONS.EVERYONE,
   });
   const [canPost, setCanPost] = useState(false);
 
@@ -35,8 +39,29 @@ const TweetForm = (props: Props) => {
     }
   };
 
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (text == "") {
+      return;
+    }
+
+    useCreatePostMutation.mutate({
+      textContent: text,
+      commentPermission: commentPermission.value,
+    });
+
+    setText("");
+    setCanPost(false);
+    setCommentPermission({
+      icon: <GlobalIcon className="h-4 w-4" />,
+      title: "Everyone",
+      description: "Everyone can reply",
+      value: COMMENTPERMISSIONS.EVERYONE,
+    });
+  };
+
   return (
-    <form className="hidden pb-2 md:flex">
+    <form className="hidden pb-2 md:flex" onSubmit={onSubmit}>
       <div className="mr-3 mt-3 h-10 w-10 min-w-10 rounded-full bg-black"></div>
       <div className="w-full">
         <AutoHeightTextArea
@@ -54,26 +79,30 @@ const TweetForm = (props: Props) => {
               {
                 icon: <GlobalIcon className="h-4 w-4" />,
                 title: "Everyone",
-                value: "Everyone can reply",
+                description: "Everyone can reply",
+                value: COMMENTPERMISSIONS.EVERYONE,
               },
               {
                 icon: <FollowedIcon className="h-4 w-4" />,
                 title: "Accounts you follow",
-                value: "Accounts you follow can reply",
+                description: "Accounts you follow can reply",
+                value: COMMENTPERMISSIONS.FOLLOW,
               },
               {
                 icon: <VerifiedIcon className="h-4 w-4" />,
                 title: "Verified accounts",
-                value: "Only Verified accounts can reply",
+                description: "Only Verified accounts can reply",
+                value: COMMENTPERMISSIONS.VERIFIED,
               },
               {
                 icon: <MentionIcon className="h-4 w-4" />,
                 title: "Only accounts you mention",
-                value: "Only accounts you mention can reply",
+                description: "Only accounts you mention can reply",
+                value: COMMENTPERMISSIONS.MENTIONED,
               },
             ]}
-            selected={whoCanReply}
-            setSelected={setWhoCanReply}
+            selected={commentPermission}
+            setSelected={setCommentPermission}
           ></Select>
         )}
         <div className="flex items-end justify-between">
@@ -99,6 +128,7 @@ const TweetForm = (props: Props) => {
           </div>
           <button
             className={`mt-3 block h-9 rounded-full px-4 font-bold text-white ${canPost ? "bg-blue-500" : "bg-blue-300"}`}
+            disabled={!canPost}
             type="submit"
           >
             Post

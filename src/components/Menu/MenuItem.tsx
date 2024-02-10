@@ -2,10 +2,10 @@ import Link from "next/link";
 import React from "react";
 
 type Props = {
-  href: string;
   title: string;
   icon: React.ReactNode;
   active?: boolean;
+  href: string;
 };
 
 const MenuItem = ({ href, title, icon, active }: Props) => {
