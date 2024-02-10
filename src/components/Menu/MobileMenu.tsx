@@ -11,7 +11,7 @@ import MoneyIcon from "../icons/MoneyIcon";
 import ExternalLinkIcon from "../icons/ExternalLinkIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import LogOutIcon from "../icons/LogOutIcon";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 type Props = {
   isOpen?: boolean;
@@ -19,6 +19,7 @@ type Props = {
 };
 
 const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
+  const { data: session } = useSession();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
           <nav>
             <ul>
               <MenuItem
-                href="#"
+                href={`/${session?.user.username}`}
                 title="Profile"
                 icon={<ProfileIcon className="h-6 w-6" />}
               />
@@ -87,7 +88,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
         </div>
       </OutsideAlerter>
       <div
-        className={`absolute  top-0 h-full w-full bg-black opacity-40 ${isOpen ? "left-0" : "-left-full"}`}
+        className={`pointer-events-auto absolute top-0 z-10 h-full w-full bg-black opacity-40 ${isOpen ? "left-0" : "-left-full"}`}
       ></div>
     </div>
   );

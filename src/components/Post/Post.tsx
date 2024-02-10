@@ -14,13 +14,22 @@ type Props = {
 const Post = ({ post }: Props) => {
   return (
     <div className="flex px-4 py-3">
-      <Link href={`/${post.user.username}`} className="mr-3 block">
+      <Link
+        href={`/${post.user.username}`}
+        className="mr-3 block h-10 w-10 min-w-10"
+      >
         <Avatar profileImage={post.user.profileImage} image={post.user.image} />
       </Link>
       <div className="w-full">
         <div>
-          <span>DisplayName</span>
-          <span>@username</span>
+          <Link href={`/${post.user.username}`}>
+            <span className="text-grayText font-semibold hover:underline">
+              {post.user.displayName}
+            </span>
+            <span className="text-lightGrayText hover:underline">
+              @{post.user.username}
+            </span>
+          </Link>
           <span>*</span>
           <span>16m</span>
         </div>

@@ -4,10 +4,14 @@ import LogoIcon from "../../icons/LogoIcon";
 import Tabs from "~/components/common/Tabs";
 import TweetForm from "./TweetForm";
 import { MainContext } from "~/components/context/MainContext";
+import Avatar from "~/components/common/Avatar";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 const MainHeader = (props: Props) => {
+  const { data: session } = useSession();
+
   const { mobileMenuIsOpen, setMobileMenuIsOpen } = useContext(MainContext);
 
   return (
@@ -16,7 +20,12 @@ const MainHeader = (props: Props) => {
         <div
           className="h-8 w-8 rounded-full bg-black"
           onClick={() => setMobileMenuIsOpen(!mobileMenuIsOpen)}
-        ></div>
+        >
+          <Avatar
+            profileImage={session?.user.profileImage}
+            image={session?.user.image}
+          />
+        </div>
         <LogoIcon className="h-7" />
         <SettingsButton size="h-5 w-5" />
       </div>

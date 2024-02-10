@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import DotsIcon from "../icons/DotsIcon";
 import Link from "next/link";
 import OutsideAlerter from "../hooks/useOutsideAlerter";
-import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import Avatar from "../common/Avatar";
 
 type Props = {};
 
 const DesktopAccountFooter = (props: Props) => {
+  const { data: session } = useSession();
+
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -15,10 +18,19 @@ const DesktopAccountFooter = (props: Props) => {
       className="absolute bottom-4 flex cursor-pointer items-center justify-between rounded-full py-3 active:bg-gray-300 lg:w-[260px]"
     >
       <div className="flex items-center">
-        <div className="h-10 w-10 min-w-10 rounded-full bg-black lg:ml-3"></div>
+        <div className="h-10 w-10 min-w-10 rounded-full bg-black lg:ml-3">
+          <Avatar
+            profileImage={session?.user.profileImage}
+            image={session?.user.image}
+          />
+        </div>
         <div className="mx-3 hidden lg:block">
-          <span className="text-grayText block font-semibold">User</span>
-          <span className="text-lightGrayText -mt-1 block">@username</span>
+          <span className="text-grayText block font-semibold">
+            {session?.user.displayName}
+          </span>
+          <span className="text-lightGrayText -mt-1 block">
+            @{session?.user.username}
+          </span>
         </div>
       </div>
       <div className="ml-auto mr-6 hidden lg:block">
@@ -40,7 +52,7 @@ const DesktopAccountFooter = (props: Props) => {
               href={"/auth/logout"}
               className="text-grayText block cursor-pointer px-4 py-3 font-bold"
             >
-              Log out of @username
+              Log out of @{session?.user.username}
             </Link>
           </div>
         </OutsideAlerter>

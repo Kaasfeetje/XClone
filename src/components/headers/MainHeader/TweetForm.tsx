@@ -1,6 +1,8 @@
 import { COMMENTPERMISSIONS } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import AutoHeightTextArea from "~/components/common/AutoHeightTextArea";
+import Avatar from "~/components/common/Avatar";
 import IconButton from "~/components/common/IconButton";
 import Select, { OptionType } from "~/components/common/Select/Select";
 import CalendarIcon from "~/components/icons/CalendarIcon";
@@ -19,6 +21,8 @@ type Props = {};
 
 const TweetForm = (props: Props) => {
   const useCreatePostMutation = api.post.create.useMutation();
+
+  const { data: session } = useSession();
 
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState("");
@@ -62,7 +66,12 @@ const TweetForm = (props: Props) => {
 
   return (
     <form className="hidden pb-2 md:flex" onSubmit={onSubmit}>
-      <div className="mr-3 mt-3 h-10 w-10 min-w-10 rounded-full bg-black"></div>
+      <div className="mr-3 mt-3 h-10 w-10 min-w-10 rounded-full bg-black">
+        <Avatar
+          profileImage={session?.user.profileImage}
+          image={session?.user.image}
+        />
+      </div>
       <div className="w-full">
         <AutoHeightTextArea
           className="py-3 text-xl outline-none"
