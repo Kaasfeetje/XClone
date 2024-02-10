@@ -52,7 +52,8 @@ model User {
     emailVerified DateTime?
     // Added by me
     profileImage  String?
-    username      String?
+    username      String?   @unique
+    displayName   String?
 
     accounts Account[]
     sessions Session[]

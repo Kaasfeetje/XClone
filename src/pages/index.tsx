@@ -1,6 +1,5 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/router";
 import Menu from "~/components/Menu/Menu";
 import MobileActions from "~/components/MobileActions";
@@ -16,6 +15,11 @@ export default function Home() {
 
   if (status === "unauthenticated") {
     router.push("/auth/login");
+  }
+
+  if (!session?.user.username) {
+    //Complete signup
+    router.push("/auth/complete-signup");
   }
 
   return (
