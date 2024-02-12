@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import Menu from "~/components/Menu/Menu";
+import ProfileLikesContainer from "~/components/PostContainers/ProfileLikesContainer";
 import ProfilePostsContainer from "~/components/PostContainers/ProfilePostsContainer";
 import ProfileRepliesContainer from "~/components/PostContainers/ProfileRepliesContainer";
 import Profile from "~/components/Profile/Profile";
@@ -59,7 +60,7 @@ const ProfilePage = (props: Props) => {
                 <div>Media</div>
               )}
               {profilePageSelectedTab == ProfilePageTabs.Likes && (
-                <div>Likes</div>
+                <ProfileLikesContainer username={username as string} />
               )}
             </div>
           ) : (

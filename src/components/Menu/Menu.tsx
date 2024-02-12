@@ -15,10 +15,13 @@ import ProfileIcon from "../icons/ProfileIcon";
 import MoreIcon from "../icons/MoreIcon";
 import DesktopAccountFooter from "./DesktopAccountFooter";
 import CreateTweetIcon from "../icons/CreateTweetIcon";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 const Menu = (props: Props) => {
+  const { data: session } = useSession();
+
   const { mobileMenuIsOpen, setMobileMenuIsOpen } = useContext(MainContext);
 
   return (
@@ -38,7 +41,7 @@ const Menu = (props: Props) => {
           <nav>
             <ul>
               <MenuItem
-                href="#"
+                href="/"
                 title="Home"
                 icon={<HomeIcon className="h-7 w-7" />}
                 active={true}
@@ -79,7 +82,7 @@ const Menu = (props: Props) => {
                 icon={<LogoIcon className="h-7 w-7" />}
               />
               <MenuItem
-                href="#"
+                href={`/${session?.user.username}`}
                 title="Profile"
                 icon={<ProfileIcon className="h-7 w-7" />}
               />
@@ -90,7 +93,7 @@ const Menu = (props: Props) => {
               />
             </ul>
           </nav>
-          <button className="text-17px mt-4 hidden h-[50px] w-full rounded-full bg-blue-500 text-center font-bold text-white lg:block">
+          <button className="mt-4 hidden h-[50px] w-full rounded-full bg-blue-500 text-center text-17px font-bold text-white lg:block">
             Post
           </button>
           <Link href="#" className="block lg:hidden">

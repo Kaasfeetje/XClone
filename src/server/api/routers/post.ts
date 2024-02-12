@@ -124,6 +124,35 @@ export const postRouter = createTRPCRouter({
       });
       return replies;
     }),
+  fetchProfileLikes: protectedProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const likedPosts = await ctx.db.post.findMany({
+        where: {
+          likes: {
+            some: {
+              user: {
+                username: input.username,
+              },
+            },
+          },
+        },
+        include: {
+          user: true,
+          likes: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+          reposts: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+      });
+      return likedPosts;
+    }),
   fetch: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))
     .query(async ({ input, ctx }) => {

@@ -28,7 +28,7 @@ const Select = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative z-10">
       <div>
         {
           <Option
