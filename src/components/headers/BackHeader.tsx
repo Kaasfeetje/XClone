@@ -10,7 +10,7 @@ const BackHeader = ({ children }: Props) => {
   const router = useRouter();
 
   return (
-    <div className="sticky top-0 flex h-[53px] items-center bg-white fill-grayText px-4 text-grayText">
+    <div className="sticky top-0 z-10 flex h-[53px] items-center bg-white fill-grayText px-4 text-grayText">
       <div className=" min-w-14" onClick={() => router.back()}>
         <div className="h-5 w-5 min-w-5">
           <LeftArrowIcon />

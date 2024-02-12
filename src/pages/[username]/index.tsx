@@ -1,9 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useContext } from "react";
 import Menu from "~/components/Menu/Menu";
+import ProfilePostsContainer from "~/components/PostContainers/ProfilePostsContainer";
+import ProfileRepliesContainer from "~/components/PostContainers/ProfileRepliesContainer";
 import Profile from "~/components/Profile/Profile";
 import Layout from "~/components/common/Layout";
+import { MainContext, ProfilePageTabs } from "~/components/context/MainContext";
 import BackHeader from "~/components/headers/BackHeader";
 import { api } from "~/utils/api";
 
@@ -16,6 +19,9 @@ const ProfilePage = (props: Props) => {
     { username: username as string },
     { enabled: username != undefined },
   );
+
+  const { profilePageSelectedTab, setProfilePageSelectedTab } =
+    useContext(MainContext);
 
   return (
     <>
@@ -40,6 +46,21 @@ const ProfilePage = (props: Props) => {
                 </div>
               </BackHeader>
               <Profile profile={profile.data} />
+              {profilePageSelectedTab == ProfilePageTabs.Posts && (
+                <ProfilePostsContainer username={username as string} />
+              )}
+              {profilePageSelectedTab == ProfilePageTabs.Replies && (
+                <ProfileRepliesContainer username={username as string} />
+              )}
+              {profilePageSelectedTab == ProfilePageTabs.Highlights && (
+                <div>Highlights</div>
+              )}
+              {profilePageSelectedTab == ProfilePageTabs.Media && (
+                <div>Media</div>
+              )}
+              {profilePageSelectedTab == ProfilePageTabs.Likes && (
+                <div>Likes</div>
+              )}
             </div>
           ) : (
             <div>Loading...</div>

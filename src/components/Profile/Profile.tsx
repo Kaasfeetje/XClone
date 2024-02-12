@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import Avatar from "../common/Avatar";
 import { User } from "@prisma/client";
 import Tabs from "../common/Tabs";
+import { MainContext, ProfilePageTabs } from "../context/MainContext";
 
 type Props = {
   profile: User;
 };
 
 const Profile = ({ profile }: Props) => {
+  const { profilePageSelectedTab, setProfilePageSelectedTab } =
+    useContext(MainContext);
+
   return (
     <div>
       <div className="aspect-[3/1] w-full bg-gray-300"></div>
@@ -42,7 +46,17 @@ const Profile = ({ profile }: Props) => {
           </div>
         </div>
         <Tabs
-          options={["Posts", "Replies", "Highlights", "Media", "Likes"]}
+          options={[
+            ProfilePageTabs.Posts,
+            ProfilePageTabs.Replies,
+            ProfilePageTabs.Highlights,
+            ProfilePageTabs.Media,
+            ProfilePageTabs.Likes,
+          ]}
+          value={profilePageSelectedTab}
+          onChange={(option: string) =>
+            setProfilePageSelectedTab(option as ProfilePageTabs)
+          }
         ></Tabs>
       </div>
     </div>

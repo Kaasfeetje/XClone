@@ -62,6 +62,68 @@ export const postRouter = createTRPCRouter({
     });
     return posts;
   }),
+  fetchProfilePosts: protectedProcedure
+    .input(z.object({ username: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const posts = await ctx.db.post.findMany({
+        where: {
+          AND: [
+            {
+              user: {
+                username: input.username,
+              },
+              commentToId: null,
+            },
+          ],
+        },
+        include: {
+          user: true,
+          likes: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+          reposts: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+      });
+      return posts;
+    }),
+  fetchProfileReplies: protectedProcedure
+    .input(z.object({ username: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const replies = await ctx.db.post.findMany({
+        where: {
+          AND: [
+            {
+              user: {
+                username: input.username,
+              },
+              NOT: {
+                commentToId: null,
+              },
+            },
+          ],
+        },
+        include: {
+          user: true,
+          likes: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+          reposts: {
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+      });
+      return replies;
+    }),
   fetch: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))
     .query(async ({ input, ctx }) => {
