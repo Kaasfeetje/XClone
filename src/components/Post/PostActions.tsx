@@ -15,6 +15,7 @@ type Props = {
   reposted: boolean;
   repostCount: number;
   commentCount: number;
+  detailed?: boolean;
 };
 
 const PostActions = ({
@@ -24,6 +25,7 @@ const PostActions = ({
   reposted,
   repostCount,
   commentCount,
+  detailed,
 }: Props) => {
   const utils = api.useUtils();
   const repostMutation = api.post.repost.useMutation({
@@ -97,19 +99,51 @@ const PostActions = ({
         onClick={onLike}
         active={isLiked}
       />
-      <PostAction
-        icon={<StatsIcon className="h-5 w-5" />}
-        value={0}
-        color={PostActionColorVariants.blue}
-        onClick={(e) => {
-          e.preventDefault();
-          alert("Not implemented yet.");
-        }}
-      />
-      <div className="flex">
-        <div className="mr-3 hidden md:block">
+      {!detailed && (
+        <PostAction
+          icon={<StatsIcon className="h-5 w-5" />}
+          value={0}
+          color={PostActionColorVariants.blue}
+          onClick={(e) => {
+            e.preventDefault();
+            alert("Not implemented yet.");
+          }}
+        />
+      )}
+      {detailed ? (
+        <>
           <PostAction
             icon={<BookmarkIcon className="h-5 w-5" />}
+            color={PostActionColorVariants.blue}
+            value={0}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Not implemented yet.");
+            }}
+          />
+          <PostAction
+            icon={<ShareIcon className="h-5 w-5" />}
+            color={PostActionColorVariants.blue}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Not implemented yet.");
+            }}
+          />
+        </>
+      ) : (
+        <div className={`flex`}>
+          <div className={`mr-3 hidden md:block`}>
+            <PostAction
+              icon={<BookmarkIcon className="h-5 w-5" />}
+              color={PostActionColorVariants.blue}
+              onClick={(e) => {
+                e.preventDefault();
+                alert("Not implemented yet.");
+              }}
+            />
+          </div>
+          <PostAction
+            icon={<ShareIcon className="h-5 w-5" />}
             color={PostActionColorVariants.blue}
             onClick={(e) => {
               e.preventDefault();
@@ -117,15 +151,7 @@ const PostActions = ({
             }}
           />
         </div>
-        <PostAction
-          icon={<ShareIcon className="h-5 w-5" />}
-          color={PostActionColorVariants.blue}
-          onClick={(e) => {
-            e.preventDefault();
-            alert("Not implemented yet.");
-          }}
-        />
-      </div>
+      )}
     </div>
   );
 };

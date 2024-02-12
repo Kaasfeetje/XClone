@@ -2,9 +2,11 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import Menu from "~/components/Menu/Menu";
+import DetailedPost from "~/components/Post/DetailedPost";
 import Post from "~/components/Post/Post";
 import CommentForm from "~/components/common/CommentForm";
 import Layout from "~/components/common/Layout";
+import DetailedPostHeader from "~/components/headers/DetailedPostHeader";
 import TweetForm from "~/components/headers/MainHeader/TweetForm";
 import { api } from "~/utils/api";
 
@@ -33,9 +35,9 @@ const PostPage = (props: Props) => {
         menu={<Menu />}
         main={
           post.data ? (
-            <div>
-              {/* Temporary until we make a detailed tweet component */}
-              <Post post={post.data} />
+            <div className="h-full">
+              <DetailedPostHeader />
+              <DetailedPost post={post.data} />
               <div className="hidden px-4 md:block">
                 <CommentForm comment={post.data} />
               </div>
