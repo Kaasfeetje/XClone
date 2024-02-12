@@ -2,9 +2,11 @@ import React from "react";
 import LeftArrowIcon from "../icons/LeftArrow";
 import { useRouter } from "next/router";
 
-type Props = {};
+type Props = {
+  children: React.ReactNode;
+};
 
-const DetailedPostHeader = (props: Props) => {
+const BackHeader = ({ children }: Props) => {
   const router = useRouter();
 
   return (
@@ -14,9 +16,9 @@ const DetailedPostHeader = (props: Props) => {
           <LeftArrowIcon />
         </div>
       </div>
-      <div className="text-xl font-semibold">Post</div>
+      <div>{children}</div>
     </div>
   );
 };
 
-export default DetailedPostHeader;
+export default BackHeader;

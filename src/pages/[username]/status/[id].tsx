@@ -6,8 +6,7 @@ import DetailedPost from "~/components/Post/DetailedPost";
 import Post from "~/components/Post/Post";
 import CommentForm from "~/components/common/CommentForm";
 import Layout from "~/components/common/Layout";
-import DetailedPostHeader from "~/components/headers/DetailedPostHeader";
-import TweetForm from "~/components/headers/MainHeader/TweetForm";
+import BackHeader from "~/components/headers/BackHeader";
 import { api } from "~/utils/api";
 
 type Props = {};
@@ -36,7 +35,9 @@ const PostPage = (props: Props) => {
         main={
           post.data ? (
             <div className="h-full">
-              <DetailedPostHeader />
+              <BackHeader>
+                <div className="text-xl font-semibold">Post</div>
+              </BackHeader>
               <DetailedPost post={post.data} />
               <div className="hidden px-4 md:block">
                 <CommentForm comment={post.data} />

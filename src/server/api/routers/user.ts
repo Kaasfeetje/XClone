@@ -24,4 +24,15 @@ export const userRouter = createTRPCRouter({
       });
       return updatedUser;
     }),
+  fetchProfile: protectedProcedure
+    .input(z.object({ username: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      //TODO: Update this to include other profile data
+      const profile = await ctx.db.user.findUnique({
+        where: {
+          username: input.username,
+        },
+      });
+      return profile;
+    }),
 });
