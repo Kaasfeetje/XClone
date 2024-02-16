@@ -8,15 +8,15 @@ type Props = {
 
 const Tabs = ({ options, value, onChange }: Props) => {
   return (
-    <div className="flex h-[53px] w-full justify-evenly">
-      {options.map((option) => (
+    <div className="flex h-[53px] w-full justify-evenly overflow-x-auto">
+      {options.map((option, index) => (
         <div
           key={option}
           onClick={() => onChange(option)}
-          className="flex w-full cursor-pointer justify-center"
+          className={`flex w-max  cursor-pointer justify-center px-4 ${index == 0 ? "ml-4 md:ml-0" : ""}`}
         >
           <div
-            className={`relative mt-4 ${option == value ? "font-semibold" : "font-medium"}`}
+            className={`relative mt-4 flex w-max justify-center  ${option == value ? "font-semibold" : "font-medium"}`}
           >
             {option}
             <div

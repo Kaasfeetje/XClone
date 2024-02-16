@@ -10,13 +10,15 @@ type Props = {
 const Layout = ({ menu, main, sidebar }: Props) => {
   return (
     <div className="w-full text-normal lg:flex lg:justify-center">
-      <div className="pointer-events-none fixed top-0 z-10 w-full max-w-[1310px]">
+      <div className="pointer-events-none fixed top-0 z-auto w-full max-w-[1310px]">
         {menu}
       </div>
-      <main className="relative z-0 flex w-full justify-end  lg:ml-[80px] lg:max-w-[1310px]">
+      <main className="pointer-events-none relative z-0 flex w-full  justify-end lg:ml-[80px] lg:max-w-[1310px]">
         <div className="flex w-full md:w-[920px] md:justify-between  lg:w-[1050px]">
-          <div className="h-full w-full md:w-[600px]">{main}</div>
-          <div className="hidden md:block md:w-[290px] lg:ml-[25px] lg:mr-[75px] lg:w-[350px]">
+          <div className="pointer-events-auto h-full w-full md:w-[600px]">
+            {main}
+          </div>
+          <div className="pointer-events-auto hidden md:block md:w-[290px] lg:ml-[25px] lg:mr-[75px] lg:w-[350px]">
             {sidebar}
           </div>
         </div>

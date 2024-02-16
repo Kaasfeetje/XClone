@@ -54,6 +54,12 @@ model User {
     profileImage  String?
     username      String?   @unique
     displayName   String?
+    createdAt     DateTime  @default(now())
+
+    bio         String?
+    bannerImage String?
+    location    String? //String for now
+    website     String?
 
     accounts   Account[]
     sessions   Session[]

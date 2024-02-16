@@ -35,4 +35,32 @@ export const userRouter = createTRPCRouter({
       });
       return profile;
     }),
+  editProfile: protectedProcedure
+    .input(
+      z.object({
+        displayName: z.string().min(1).nullish(),
+        profileImage: z.string().min(1).nullish(),
+        bannerImage: z.string().min(1).nullish(),
+        bio: z.string().min(1).nullish(),
+        location: z.string().min(1).nullish(),
+        website: z.string().url().nullish(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const updatedUser = await ctx.db.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          displayName: input.displayName,
+          profileImage: input.profileImage,
+          bannerImage: input.bannerImage,
+          bio: input.bio,
+          location: input.location,
+          website: input.website,
+        },
+      });
+
+      return updatedUser;
+    }),
 });

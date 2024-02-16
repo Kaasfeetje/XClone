@@ -5,7 +5,7 @@ import AutoHeightTextArea from "~/components/common/AutoHeightTextArea";
 import Avatar from "~/components/common/Avatar";
 import IconButton from "~/components/common/IconButton";
 import Select, { OptionType } from "~/components/common/Select/Select";
-import CalendarIcon from "~/components/icons/CalendarIcon";
+import ScheduleIcon from "~/components/icons/ScheduleIcon";
 import EmojiIcon from "~/components/icons/EmojiIcon";
 import FollowedIcon from "~/components/icons/FollowedIcon";
 import GifIcon from "~/components/icons/GifIcon";
@@ -19,7 +19,7 @@ import { api } from "~/utils/api";
 
 type Props = {};
 
-const TweetForm = (props: Props) => {
+const PostForm = (props: Props) => {
   const useCreatePostMutation = api.post.create.useMutation();
 
   const { data: session } = useSession();
@@ -129,7 +129,7 @@ const TweetForm = (props: Props) => {
               <EmojiIcon className="h-5 w-5" />
             </IconButton>
             <IconButton>
-              <CalendarIcon className="h-5 w-5" />
+              <ScheduleIcon className="h-5 w-5" />
             </IconButton>
             <IconButton disabled={true}>
               <LocationIcon className="h-5 w-5" />
@@ -148,4 +148,4 @@ const TweetForm = (props: Props) => {
   );
 };
 
-export default TweetForm;
+export default PostForm;

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import SettingsButton from "./SettingsButton";
 import LogoIcon from "../../icons/LogoIcon";
 import Tabs from "~/components/common/Tabs";
-import TweetForm from "./TweetForm";
+import PostForm from "./PostForm";
 import { MainContext, MainPageTabs } from "~/components/context/MainContext";
 import Avatar from "~/components/common/Avatar";
 import { useSession } from "next-auth/react";
@@ -48,7 +48,7 @@ const MainHeader = (props: Props) => {
           />
         </div>
       </div>
-      <TweetForm />
+      <PostForm />
     </>
   );
 };
