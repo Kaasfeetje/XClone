@@ -63,4 +63,16 @@ export const userRouter = createTRPCRouter({
 
       return updatedUser;
     }),
+  fetchAutoCompleteUsers: protectedProcedure
+    .input(z.object({ keyword: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const users = await ctx.db.user.findMany({
+        where: {
+          username: {
+            startsWith: input.keyword,
+          },
+        },
+      });
+      return users;
+    }),
 });

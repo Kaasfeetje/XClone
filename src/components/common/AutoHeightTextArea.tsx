@@ -6,6 +6,8 @@ type Props = {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus?: () => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => void;
 };
 
 const AutoHeightTextArea = ({
@@ -14,6 +16,8 @@ const AutoHeightTextArea = ({
   value,
   onChange,
   onFocus,
+  onKeyDown,
+  onClick,
 }: Props) => {
   const autoHeight = (e: React.FormEvent<HTMLTextAreaElement>) => {
     e.currentTarget.style.height = "1px";
@@ -29,6 +33,8 @@ const AutoHeightTextArea = ({
       onFocus={onFocus}
       onChange={onChange}
       value={value}
+      onKeyDownCapture={onKeyDown}
+      onClick={onClick}
     ></textarea>
   );
 };

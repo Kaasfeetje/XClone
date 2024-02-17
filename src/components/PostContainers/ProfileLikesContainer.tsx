@@ -8,7 +8,6 @@ type Props = {
 
 const ProfileLikesContainer = ({ username }: Props) => {
   const posts = api.post.fetchProfileLikes.useQuery({ username });
-  console.log(posts);
   if (!posts.data) {
     return <div></div>;
   }

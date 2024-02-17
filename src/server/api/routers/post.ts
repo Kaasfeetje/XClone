@@ -8,7 +8,31 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
+const postInclude = (userId: string) => ({
+  user: true,
+  likes: {
+    where: {
+      userId: userId,
+    },
+  },
+  reposts: {
+    where: {
+      userId: userId,
+    },
+  },
+  mentions: true,
+});
+
 export const postRouter = createTRPCRouter({
+  //THIS IS FOR DEV ONLY OBVIOUSLY HAS TO BE REMOVED LATER
+  deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
+    await ctx.db.post.updateMany({
+      data: {
+        commentToId: null,
+      },
+    });
+    await ctx.db.post.deleteMany({});
+  }),
   create: protectedProcedure
     .input(
       z.object({
@@ -18,14 +42,36 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      //Add mentions
+      const regex = /@\w{1,50}/g;
+      let usernamesMentioned = [];
+      var match;
+      while ((match = regex.exec(input.textContent!)) != null) {
+        usernamesMentioned.push(match[0].replace("@", ""));
+      }
+      const mentions = await ctx.db.user.findMany({
+        where: {
+          username: {
+            in: usernamesMentioned,
+          },
+        },
+      });
+
+      console.log(mentions, usernamesMentioned);
+
+      //create post
       const post = await ctx.db.post.create({
         data: {
           textContent: input.textContent,
           userId: ctx.session.user.id,
           commentToId: input.commentToId,
+          mentions: {
+            connect: mentions.map((m) => ({ id: m.id })),
+          },
         },
       });
 
+      //Update commentcount
       if (input.commentToId) {
         await ctx.db.post.update({
           where: {
@@ -46,19 +92,7 @@ export const postRouter = createTRPCRouter({
       where: {
         commentToId: null,
       },
-      include: {
-        user: true,
-        likes: {
-          where: {
-            userId: ctx.session.user.id,
-          },
-        },
-        reposts: {
-          where: {
-            userId: ctx.session.user.id,
-          },
-        },
-      },
+      include: postInclude(ctx.session.user.id),
     });
     return posts;
   }),
@@ -76,19 +110,7 @@ export const postRouter = createTRPCRouter({
             },
           ],
         },
-        include: {
-          user: true,
-          likes: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-          reposts: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-        },
+        include: postInclude(ctx.session.user.id),
       });
       return posts;
     }),
@@ -108,19 +130,7 @@ export const postRouter = createTRPCRouter({
             },
           ],
         },
-        include: {
-          user: true,
-          likes: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-          reposts: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-        },
+        include: postInclude(ctx.session.user.id),
       });
       return replies;
     }),
@@ -137,19 +147,7 @@ export const postRouter = createTRPCRouter({
             },
           },
         },
-        include: {
-          user: true,
-          likes: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-          reposts: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-        },
+        include: postInclude(ctx.session.user.id),
       });
       return likedPosts;
     }),
@@ -160,19 +158,7 @@ export const postRouter = createTRPCRouter({
         where: {
           id: input.postId,
         },
-        include: {
-          user: true,
-          likes: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-          reposts: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-        },
+        include: postInclude(ctx.session.user.id),
       });
       return post;
     }),
@@ -183,19 +169,7 @@ export const postRouter = createTRPCRouter({
         where: {
           commentToId: input.postId,
         },
-        include: {
-          user: true,
-          likes: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-          reposts: {
-            where: {
-              userId: ctx.session.user.id,
-            },
-          },
-        },
+        include: postInclude(ctx.session.user.id),
       });
       return comments;
     }),

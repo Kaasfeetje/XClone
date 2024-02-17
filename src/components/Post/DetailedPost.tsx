@@ -1,5 +1,5 @@
 import { Post, PostLike, PostRepost, User } from "@prisma/client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "../common/Avatar";
 
 import PostActions from "./PostActions";
@@ -11,10 +11,24 @@ type Props = {
     user: User;
     likes: PostLike[];
     reposts: PostRepost[];
+    mentions: User[];
   };
 };
 
 const DetailedPost = ({ post }: Props) => {
+  const [parts, setParts] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (post && post.mentions.length != 0) {
+      const newRegex = new RegExp(
+        `${post.mentions.map((user) => `@${user.username}`).join("|")}`,
+        "g",
+      );
+
+      setParts(post.textContent!.split(newRegex));
+    }
+  }, []);
+
   return (
     <div className="flex px-4 py-3">
       <div className="w-full">
@@ -37,7 +51,21 @@ const DetailedPost = ({ post }: Props) => {
             </span>
           </Link>
         </div>
-        <div className="text-17px">{post.textContent}</div>
+        <div className="text-17px">
+          {parts.map((part, index) => (
+            <>
+              <span>{part}</span>
+              {post.mentions[index] && (
+                <Link
+                  className="text-blue-500 hover:underline"
+                  href={`/${post.mentions[index]?.username}`}
+                >
+                  @{post.mentions[index]?.username}
+                </Link>
+              )}
+            </>
+          ))}
+        </div>
         <div className="my-4 flex text-lightGrayText">
           <time dateTime={post.createdAt.toUTCString()}>
             {post.createdAt.getUTCHours()}:{post.createdAt.getUTCMinutes()} ·{" "}

@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import SettingsButton from "./SettingsButton";
 import LogoIcon from "../../icons/LogoIcon";
 import Tabs from "~/components/common/Tabs";
-import PostForm from "./PostForm";
+import PostForm from "../../Post/PostForm/PostForm";
 import { MainContext, MainPageTabs } from "~/components/context/MainContext";
 import Avatar from "~/components/common/Avatar";
 import { useSession } from "next-auth/react";

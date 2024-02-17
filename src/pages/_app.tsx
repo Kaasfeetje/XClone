@@ -12,11 +12,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  useEffect(() => {
-    document.body.addEventListener("click", (e) => console.log(e));
-    return () =>
-      document.body.removeEventListener("click", (e) => console.log(e));
-  }, []);
+  // useEffect(() => {
+  //   document.body.addEventListener("click", (e) => console.log(e));
+  //   return () =>
+  //     document.body.removeEventListener("click", (e) => console.log(e));
+  // }, []);
 
   return (
     <MainContextProvider>

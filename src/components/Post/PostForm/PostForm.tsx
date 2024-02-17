@@ -1,6 +1,6 @@
 import { COMMENTPERMISSIONS } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AutoHeightTextArea from "~/components/common/AutoHeightTextArea";
 import Avatar from "~/components/common/Avatar";
 import IconButton from "~/components/common/IconButton";
@@ -16,6 +16,7 @@ import LocationIcon from "~/components/icons/LocationIcon";
 import MentionIcon from "~/components/icons/MentionIcon";
 import VerifiedIcon from "~/components/icons/VerifiedIcon";
 import { api } from "~/utils/api";
+import PostFormInput from "./PostFormInput";
 
 type Props = {};
 
@@ -72,14 +73,14 @@ const PostForm = (props: Props) => {
           image={session?.user.image}
         />
       </div>
-      <div className="w-full">
-        <AutoHeightTextArea
-          className="py-3 text-xl outline-none"
-          placeholder="What is happening?!"
+      <div className="relative w-full">
+        <PostFormInput
           value={text}
           onChange={handleText}
+          setText={setText}
           onFocus={() => setIsOpen(true)}
         />
+
         {isOpen && (
           <Select
             dropdownTitle="Who can reply?"
