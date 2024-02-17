@@ -21,6 +21,7 @@ const postInclude = (userId: string) => ({
     },
   },
   mentions: true,
+  hashtags: true,
 });
 
 export const postRouter = createTRPCRouter({
@@ -43,10 +44,10 @@ export const postRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       //Add mentions
-      const regex = /@\w{1,50}/g;
+      const mentionRegex = /@\w{1,50}/g;
       let usernamesMentioned = [];
       var match;
-      while ((match = regex.exec(input.textContent!)) != null) {
+      while ((match = mentionRegex.exec(input.textContent!)) != null) {
         usernamesMentioned.push(match[0].replace("@", ""));
       }
       const mentions = await ctx.db.user.findMany({
@@ -57,7 +58,12 @@ export const postRouter = createTRPCRouter({
         },
       });
 
-      console.log(mentions, usernamesMentioned);
+      //Add hashtags
+      const hashtagRegex = /#\w{1,50}/g;
+      const hashtags = [];
+      while ((match = hashtagRegex.exec(input.textContent!)) != null) {
+        hashtags.push(match[0].replace("#", ""));
+      }
 
       //create post
       const post = await ctx.db.post.create({
@@ -67,6 +73,14 @@ export const postRouter = createTRPCRouter({
           commentToId: input.commentToId,
           mentions: {
             connect: mentions.map((m) => ({ id: m.id })),
+          },
+          hashtags: {
+            connectOrCreate: hashtags.map((hashtag) => ({
+              where: {
+                hashtag,
+              },
+              create: { hashtag },
+            })),
           },
         },
       });

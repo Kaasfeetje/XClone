@@ -1,4 +1,4 @@
-import { Post, PostLike, PostRepost, User } from "@prisma/client";
+import { HashTag, Post, PostLike, PostRepost, User } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import Avatar from "../common/Avatar";
 
@@ -11,20 +11,47 @@ type Props = {
     likes: PostLike[];
     reposts: PostRepost[];
     mentions: User[];
+    hashtags: HashTag[];
   };
 };
 
 const Post = ({ post }: Props) => {
   const [parts, setParts] = useState<string[]>([]);
+  const [between, setBetween] = useState<{ text: string; href: string }[]>([]);
 
   useEffect(() => {
-    if (post && post.mentions.length != 0) {
-      const newRegex = new RegExp(
-        `${post.mentions.map((user) => `@${user.username}`).join("|")}`,
-        "g",
-      );
+    if (post && (post.mentions.length != 0 || post.hashtags.length != 0)) {
+      const mentions = post.mentions
+        .map((user) => `@${user.username}`)
+        .join("|");
 
+      const hashtags = post.hashtags
+        .map((hashtag) => `#${hashtag.hashtag}`)
+        .join("|");
+
+      // Creates combined regex for mentions and hashtags
+      const combined =
+        hashtags != "" && mentions != ""
+          ? `${mentions}|${hashtags}`
+          : hashtags == ""
+            ? mentions
+            : hashtags;
+
+      const newRegex = new RegExp(`${combined}`, "g");
+
+      let results = [];
+      var match;
+      while ((match = newRegex.exec(post.textContent!)) != null) {
+        const word = match[0].replace(/@|#/g, "");
+        results.push({
+          text: match[0],
+          href: match[0].startsWith("#") ? `/hashtag/${word}` : `/${word}`,
+        });
+      }
+      setBetween(results);
       setParts(post.textContent!.split(newRegex));
+    } else if (post) {
+      setParts([post.textContent!]);
     }
   }, [post]);
 
@@ -57,12 +84,12 @@ const Post = ({ post }: Props) => {
             {parts.map((part, index) => (
               <>
                 <span>{part}</span>
-                {post.mentions[index] && (
+                {between[index] && (
                   <Link
                     className="text-blue-500 hover:underline"
-                    href={`/${post.mentions[index]?.username}`}
+                    href={between[index]!.href}
                   >
-                    @{post.mentions[index]?.username}
+                    {between[index]!.text}
                   </Link>
                 )}
               </>

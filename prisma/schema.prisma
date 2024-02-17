@@ -88,8 +88,9 @@ model Post {
     commentCount      Int                @default(0)
     commentPermission COMMENTPERMISSIONS @default(EVERYONE)
 
-    //Mentions/Tags
+    //Mentions/Tags & Hashtags
     mentions    User[]       @relation("Mentions")
+    hashtags    HashTag[]    @relation("Hashtags")
     // Author
     user        User         @relation(fields: [userId], references: [id])
     userId      String
@@ -125,6 +126,13 @@ model PostRepost {
 
     @@unique([postId, userId])
     @@index([userId, postId])
+}
+
+model HashTag {
+    hashtag   String   @id @unique
+    count     Int      @default(0)
+    createdAt DateTime @default(now())
+    posts     Post[]   @relation("Hashtags")
 }
 
 enum COMMENTPERMISSIONS {
