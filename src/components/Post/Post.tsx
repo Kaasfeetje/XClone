@@ -12,6 +12,13 @@ type Props = {
     reposts: PostRepost[];
     mentions: User[];
     hashtags: HashTag[];
+    _count: {
+      comments: number;
+      hashtags: number;
+      likes: number;
+      mentions: number;
+      reposts: number;
+    };
   };
 };
 
@@ -98,10 +105,10 @@ const Post = ({ post }: Props) => {
           <PostActions
             postId={post.id}
             liked={post.likes.length > 0}
-            likeCount={post.likeCount}
+            likeCount={post._count.likes}
             reposted={post.reposts.length > 0}
-            repostCount={post.repostCount}
-            commentCount={post.commentCount}
+            repostCount={post._count.reposts}
+            commentCount={post._count.comments}
           />
         </div>
       </div>

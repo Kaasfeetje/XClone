@@ -22,6 +22,7 @@ const postInclude = (userId: string) => ({
   },
   mentions: true,
   hashtags: true,
+  _count: true,
 });
 
 export const postRouter = createTRPCRouter({
@@ -84,20 +85,6 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
-
-      //Update commentcount
-      if (input.commentToId) {
-        await ctx.db.post.update({
-          where: {
-            id: input.commentToId,
-          },
-          data: {
-            commentCount: {
-              increment: 1,
-            },
-          },
-        });
-      }
 
       return post;
     }),
@@ -212,50 +199,21 @@ export const postRouter = createTRPCRouter({
       });
 
       if (postLike) {
-        const [_, deletedItem] = await ctx.db.$transaction(
-          [
-            ctx.db.post.update({
-              where: {
-                id: input.postId,
-              },
-              data: {
-                likeCount: post.likeCount - 1,
-              },
-            }),
-            ctx.db.postLike.delete({
-              where: {
-                postId_userId: {
-                  postId: input.postId,
-                  userId: ctx.session.user.id,
-                },
-              },
-            }),
-          ],
-          { isolationLevel: "Serializable" },
-        );
-        return deletedItem;
-      }
-      const [_, createdItem] = await ctx.db.$transaction(
-        [
-          ctx.db.post.update({
-            where: {
-              id: input.postId,
-            },
-            data: {
-              likeCount: post.likeCount + 1,
-            },
-          }),
-          ctx.db.postLike.create({
-            data: {
+        return await ctx.db.postLike.delete({
+          where: {
+            postId_userId: {
               postId: input.postId,
               userId: ctx.session.user.id,
             },
-          }),
-        ],
-        { isolationLevel: "Serializable" },
-      );
-
-      return createdItem;
+          },
+        });
+      }
+      return await ctx.db.postLike.create({
+        data: {
+          postId: input.postId,
+          userId: ctx.session.user.id,
+        },
+      });
     }),
   repost: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))
@@ -282,50 +240,20 @@ export const postRouter = createTRPCRouter({
       });
 
       if (postRepost) {
-        const [_, deletedItem] = await ctx.db.$transaction(
-          [
-            ctx.db.post.update({
-              where: {
-                id: input.postId,
-              },
-              data: {
-                repostCount: post.repostCount - 1,
-              },
-            }),
-            ctx.db.postRepost.delete({
-              where: {
-                postId_userId: {
-                  postId: input.postId,
-                  userId: ctx.session.user.id,
-                },
-              },
-            }),
-          ],
-          { isolationLevel: "Serializable" },
-        );
-
-        return deletedItem;
-      }
-      const [_, createdItem] = await ctx.db.$transaction(
-        [
-          ctx.db.post.update({
-            where: {
-              id: input.postId,
-            },
-            data: {
-              repostCount: post.repostCount + 1,
-            },
-          }),
-          ctx.db.postRepost.create({
-            data: {
+        return await ctx.db.postRepost.delete({
+          where: {
+            postId_userId: {
               postId: input.postId,
               userId: ctx.session.user.id,
             },
-          }),
-        ],
-        { isolationLevel: "Serializable" },
-      );
-
-      return createdItem;
+          },
+        });
+      }
+      return await ctx.db.postRepost.create({
+        data: {
+          postId: input.postId,
+          userId: ctx.session.user.id,
+        },
+      });
     }),
 });

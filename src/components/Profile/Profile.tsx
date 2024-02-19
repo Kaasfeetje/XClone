@@ -1,13 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Avatar from "../common/Avatar";
 import { User } from "@prisma/client";
 import Tabs from "../common/Tabs";
 import { MainContext, ProfilePageTabs } from "../context/MainContext";
-import Modal from "../common/Modal";
-import CloseIcon from "../icons/CloseIcon";
-import CameraIcon from "../icons/CameraIcon";
-import TextInput from "../common/FormComponents/TextInput";
-import TextAreaInput from "../common/FormComponents/TextAreaInput";
 import EditProfileForm from "./EditProfileForm";
 import LocationIcon from "../icons/LocationIcon";
 import LinkIcon from "../icons/LinkIcon";
@@ -15,15 +10,44 @@ import CalendarIcon from "../icons/ScheduleIcon";
 import ProfileDataPoint from "./ProfileDataPoint";
 import { months } from "../common/data/months";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import DotsIcon from "../icons/DotsIcon";
+import { api } from "~/utils/api";
 
 type Props = {
-  profile: User;
+  profile: User & {
+    followers: User[];
+    _count: {
+      followers: number;
+      following: number;
+      posts: number;
+    };
+  };
 };
 
 const Profile = ({ profile }: Props) => {
+  const utils = api.useUtils();
+  const followMutation = api.user.follow.useMutation({
+    onMutate() {
+      setFollowed((val) => !val);
+    },
+    onSuccess() {
+      utils.user.fetchProfile.invalidate();
+    },
+  });
+
+  const { data: session } = useSession();
   const { profilePageSelectedTab, setProfilePageSelectedTab } =
     useContext(MainContext);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [followed, setFollowed] = useState(false);
+  const [followButtonText, setFollowButtonText] = useState("Following");
+
+  useEffect(() => {
+    if (profile.followers.length != 0) {
+      setFollowed(true);
+    }
+  }, [profile]);
 
   return (
     <>
@@ -44,12 +68,38 @@ const Profile = ({ profile }: Props) => {
                 />
               </div>
             </div>
-            <button
-              onClick={() => setEditModalIsOpen(true)}
-              className="h-9 rounded-full border border-gray-300 bg-white px-4 font-semibold text-grayText"
-            >
-              Edit profile
-            </button>
+            {session?.user.username == profile.username ? (
+              <button
+                onClick={() => setEditModalIsOpen(true)}
+                className="h-9 rounded-full border border-gray-300 bg-white px-4 font-semibold text-grayText"
+              >
+                Edit profile
+              </button>
+            ) : (
+              <div className="flex">
+                <div className="mr-2 flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-gray-300 duration-200 hover:bg-gray-200 ">
+                  <DotsIcon className="h-5 w-5" />
+                </div>
+                {!followed && (
+                  <button
+                    onClick={() => followMutation.mutate({ id: profile.id })}
+                    className="h-9 cursor-pointer rounded-full bg-black px-4 font-bold text-white duration-200 hover:opacity-80"
+                  >
+                    Follow
+                  </button>
+                )}
+                {followed && (
+                  <button
+                    onClick={() => followMutation.mutate({ id: profile.id })}
+                    className="block h-[36px] w-[104px] rounded-full border border-gray-300 px-4 font-semibold duration-200 hover:border-red-500 hover:bg-red-100 hover:text-red-500"
+                    onMouseEnter={() => setFollowButtonText("Unfollow")}
+                    onMouseLeave={() => setFollowButtonText("Following")}
+                  >
+                    {followButtonText}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
           <div className="mb-3 flex flex-col">
             <span className="text-xl font-bold text-grayText">
@@ -87,10 +137,16 @@ const Profile = ({ profile }: Props) => {
           </div>
           <div className="mb-3 flex text-sm text-grayText">
             <div className="mr-5">
-              <span className="font-semibold text-grayText">{0}</span> Following
+              <span className="font-semibold text-grayText">
+                {profile._count.following}
+              </span>{" "}
+              Following
             </div>
             <div>
-              <span className="font-semibold text-grayText">{0}</span> Followers
+              <span className="font-semibold text-grayText">
+                {profile._count.followers}
+              </span>{" "}
+              Followers
             </div>
           </div>
         </div>

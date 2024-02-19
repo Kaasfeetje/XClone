@@ -61,12 +61,17 @@ model User {
     location    String? //String for now
     website     String?
 
-    accounts Account[]
-    sessions Session[]
-    posts    Post[]
-    likes    PostLike[]   @relation("Likes")
-    reposts  PostRepost[] @relation("Reposts")
-    mentions Post[]       @relation("Mentions")
+    accounts  Account[]
+    sessions  Session[]
+    // Posts
+    posts     Post[]
+    //Likes&Reposts&Mentions
+    likes     PostLike[]   @relation("Likes")
+    reposts   PostRepost[] @relation("Reposts")
+    mentions  Post[]       @relation("Mentions")
+    // Following
+    following Follow[]     @relation("Follower")
+    followers Follow[]     @relation("Followed")
 }
 
 model VerificationToken {
@@ -77,15 +82,12 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-// DIVIDED \\
+// DIVIDER \\
 
 model Post {
     id                String             @id @default(cuid())
     textContent       String?
     createdAt         DateTime           @default(now())
-    likeCount         Int                @default(0)
-    repostCount       Int                @default(0)
-    commentCount      Int                @default(0)
     commentPermission COMMENTPERMISSIONS @default(EVERYONE)
 
     //Mentions/Tags & Hashtags
@@ -114,7 +116,8 @@ model PostLike {
     createdAt DateTime @default(now())
 
     @@unique([postId, userId])
-    @@index([userId, postId])
+    @@index([userId])
+    @@index([postId])
 }
 
 model PostRepost {
@@ -125,14 +128,27 @@ model PostRepost {
     createdAt DateTime @default(now())
 
     @@unique([postId, userId])
-    @@index([userId, postId])
+    @@index([userId])
+    @@index([postId])
 }
 
 model HashTag {
     hashtag   String   @id @unique
-    count     Int      @default(0)
     createdAt DateTime @default(now())
     posts     Post[]   @relation("Hashtags")
+}
+
+model Follow {
+    followerId String
+    follower   User   @relation("Follower", fields: [followerId], references: [id])
+    followedId String
+    followed   User   @relation("Followed", fields: [followedId], references: [id])
+
+    createdAt DateTime @default(now())
+
+    @@id([followerId, followedId])
+    @@index([followerId])
+    @@index([followedId])
 }
 
 enum COMMENTPERMISSIONS {

@@ -32,6 +32,17 @@ export const userRouter = createTRPCRouter({
         where: {
           username: input.username,
         },
+        include: {
+          followers: {
+            where: {
+              followed: {
+                username: input.username,
+              },
+              followerId: ctx.session.user.id,
+            },
+          },
+          _count: true,
+        },
       });
       return profile;
     }),
@@ -74,5 +85,35 @@ export const userRouter = createTRPCRouter({
         },
       });
       return users;
+    }),
+  follow: protectedProcedure
+    .input(z.object({ id: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const followExists = await ctx.db.follow.findUnique({
+        where: {
+          followerId_followedId: {
+            followedId: input.id,
+            followerId: ctx.session.user.id,
+          },
+        },
+      });
+
+      if (followExists) {
+        return await ctx.db.follow.delete({
+          where: {
+            followerId_followedId: {
+              followedId: input.id,
+              followerId: ctx.session.user.id,
+            },
+          },
+        });
+      }
+
+      return await ctx.db.follow.create({
+        data: {
+          followedId: input.id,
+          followerId: ctx.session.user.id,
+        },
+      });
     }),
 });

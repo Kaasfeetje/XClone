@@ -6,7 +6,6 @@ type Props = {};
 
 const PostContainer = (props: Props) => {
   const posts = api.post.fetchAll.useQuery();
-  
   return (
     <div>{posts.data?.map((post) => <Post key={post.id} post={post} />)}</div>
   );
