@@ -8,6 +8,7 @@ import BookmarkIcon from "../icons/BookmarkIcon";
 import ShareIcon from "../icons/ShareIcon";
 import { api } from "~/utils/api";
 import BookmarkAction from "./BookmarkAction";
+import LikeIconFilled from "../icons/LikeIconFilled";
 
 type Props = {
   postId: string;
@@ -125,6 +126,7 @@ const PostActions = ({
       />
       <PostAction
         icon={<LikeIcon className="h-5 w-5" />}
+        activeIcon={<LikeIconFilled className="h-5 w-5" />}
         value={_likeCount}
         color={PostActionColorVariants.red}
         onClick={onLike}

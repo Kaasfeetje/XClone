@@ -5,6 +5,7 @@ import OutsideAlerter from "../hooks/useOutsideAlerter";
 import { api } from "~/utils/api";
 import PlusIcon from "../icons/PlusIcon";
 import { BookmarkList } from "@prisma/client";
+import BookmarkIconFilled from "../icons/BookmarkIconFilled";
 
 type Props = {
   className?: string;
@@ -74,6 +75,7 @@ const BookmarkAction = ({
             className={`h-5 w-5 ${isOpen ? "fill-blue-500" : ""}`}
           />
         }
+        activeIcon={<BookmarkIconFilled className="h-5 w-5" />}
         color={PostActionColorVariants.blue}
         onClick={(e) => {
           if (active) {

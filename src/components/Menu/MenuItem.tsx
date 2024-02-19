@@ -4,15 +4,18 @@ import React from "react";
 type Props = {
   title: string;
   icon: React.ReactNode;
+  activeIcon: React.ReactNode;
   active?: boolean;
   href: string;
 };
 
-const MenuItem = ({ href, title, icon, active }: Props) => {
+const MenuItem = ({ href, title, icon, activeIcon, active }: Props) => {
   return (
     <Link href={href}>
       <li className="flex items-center justify-start p-4">
-        <div className="mr-6 md:mx-auto lg:ml-0 lg:mr-6">{icon}</div>
+        <div className="mr-6 md:mx-auto lg:ml-0 lg:mr-6">
+          {active ? activeIcon : icon}
+        </div>
         <span
           className={`h-6 text-xl font-semibold md:hidden lg:block ${active ? "lg:font-semibold" : "lg:font-medium"}`}
         >

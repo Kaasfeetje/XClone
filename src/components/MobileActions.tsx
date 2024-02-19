@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import HomeIcon from "./icons/HomeIcon";
+import HomeIcon from "./icons/HomeIconFilled";
 import SearchIcon from "./icons/SearchIcon";
 import BellIcon from "./icons/BellIcon";
 import MailIcon from "./icons/MailIcon";
@@ -51,7 +51,7 @@ const MobileActions = (props: Props) => {
         </Link>
       </div>
       <Link href="#">
-        <div className="bottom-18 fixed right-4 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 fill-white active:bg-blue-600">
+        <div className="fixed bottom-18 right-4 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 fill-white active:bg-blue-600">
           <CreateTweetIcon className="h-6 w-6" />
         </div>
       </Link>

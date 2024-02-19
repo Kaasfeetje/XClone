@@ -4,7 +4,7 @@ import MobileMenu from "./MobileMenu";
 import LogoIcon from "../icons/LogoIcon";
 import Link from "next/link";
 import MenuItem from "./MenuItem";
-import HomeIcon from "../icons/HomeIcon";
+import HomeIconFilled from "../icons/HomeIconFilled";
 import SearchIcon from "../icons/SearchIcon";
 import BellIcon from "../icons/BellIcon";
 import MailIcon from "../icons/MailIcon";
@@ -16,11 +16,21 @@ import MoreIcon from "../icons/MoreIcon";
 import DesktopAccountFooter from "./DesktopAccountFooter";
 import CreateTweetIcon from "../icons/CreateTweetIcon";
 import { useSession } from "next-auth/react";
+import HomeIcon from "../icons/HomeIcon";
+import SearchIconFilled from "../icons/SearchIconFilled";
+import BellIconFilled from "../icons/BellIconFilled";
+import MailIconFilled from "../icons/MailIconFilled";
+import ListsIconFilled from "../icons/ListsIconFilled";
+import BookmarkIconFilled from "../icons/BookmarkIconFilled";
+import CommunityIconFilled from "../icons/CommunityIconFilled";
+import ProfileIconFilled from "../icons/ProfileIconFilled";
+import { useRouter } from "next/router";
 
 type Props = {};
 
 const Menu = (props: Props) => {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const { mobileMenuIsOpen, setMobileMenuIsOpen } = useContext(MainContext);
 
@@ -44,52 +54,71 @@ const Menu = (props: Props) => {
                 href="/"
                 title="Home"
                 icon={<HomeIcon className="h-7 w-7" />}
-                active={true}
+                activeIcon={<HomeIconFilled className="h-7 w-7" />}
+                active={router.pathname == "/"}
               />
               <MenuItem
                 href="#"
                 title="Explore"
                 icon={<SearchIcon className="h-7 w-7" />}
+                activeIcon={<SearchIconFilled className="h-7 w-7" />}
+                active={router.pathname == "/explore"}
               />
               <MenuItem
                 href="#"
                 title="Notifications"
                 icon={<BellIcon className="h-7 w-7" />}
+                activeIcon={<BellIconFilled className="h-7 w-7" />}
+                active={router.pathname == "/notifications"}
               />
               <MenuItem
                 href="#"
                 title="Messages"
                 icon={<MailIcon className="h-7 w-7" />}
+                activeIcon={<MailIconFilled className="h-7 w-7" />}
+                active={router.pathname == "/messages"}
               />
               <MenuItem
                 href="#"
                 title="Lists"
                 icon={<ListsIcon className="h-7 w-7" />}
+                activeIcon={<ListsIconFilled className="h-7 w-7" />}
+                active={router.pathname == "/lists"}
               />
               <MenuItem
                 href="/bookmarks"
                 title="Bookmarks"
                 icon={<BookmarkIcon className="h-7 w-7" />}
+                activeIcon={<BookmarkIconFilled className="h-7 w-7" />}
+                active={router.pathname == "/bookmarks"}
               />
               <MenuItem
                 href="#"
                 title="Communities"
                 icon={<CommunityIcon className="h-7 w-7" />}
+                activeIcon={<CommunityIconFilled className="h-7 w-7" />}
+                active={router.pathname == "/communities"}
               />
               <MenuItem
                 href="#"
                 title="Premium"
                 icon={<LogoIcon className="h-7 w-7" />}
+                activeIcon={<LogoIcon className="h-7 w-7" />}
+                active={router.pathname == "/premium"}
               />
               <MenuItem
                 href={`/${session?.user.username}`}
                 title="Profile"
                 icon={<ProfileIcon className="h-7 w-7" />}
+                activeIcon={<ProfileIconFilled className="h-7 w-7" />}
+                active={router.pathname == `/[username]`}
               />
               <MenuItem
                 href="#"
                 title="More"
                 icon={<MoreIcon className="h-7 w-7" />}
+                activeIcon={<MoreIcon className="h-7 w-7" />}
+                active={router.pathname == "/more"}
               />
             </ul>
           </nav>

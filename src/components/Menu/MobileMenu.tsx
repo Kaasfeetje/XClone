@@ -12,6 +12,11 @@ import ExternalLinkIcon from "../icons/ExternalLinkIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import LogOutIcon from "../icons/LogOutIcon";
 import { signOut, useSession } from "next-auth/react";
+import ProfileIconFilled from "../icons/ProfileIconFilled";
+import ListsIconFilled from "../icons/ListsIconFilled";
+import BookmarkIconFilled from "../icons/BookmarkIconFilled";
+import CommunityIconFilled from "../icons/CommunityIconFilled";
+import { useRouter } from "next/router";
 
 type Props = {
   isOpen?: boolean;
@@ -20,6 +25,7 @@ type Props = {
 
 const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
   const { data: session } = useSession();
+  const router = useRouter();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -42,46 +48,64 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 href={`/${session?.user.username}`}
                 title="Profile"
                 icon={<ProfileIcon className="h-6 w-6" />}
+                activeIcon={<ProfileIconFilled />}
+                active={router.pathname == "/"}
               />
               <MenuItem
                 href="#"
                 title="Premium"
                 icon={<LogoIcon className="h-6 w-6" />}
+                activeIcon={<LogoIcon />}
+                active={router.pathname == "/premium"}
               />
               <MenuItem
                 href="#"
                 title="Lists"
                 icon={<ListsIcon className="h-6 w-6" />}
+                activeIcon={<ListsIconFilled />}
+                active={router.pathname == "/lists"}
               />
               <MenuItem
                 href="/bookmarks"
                 title="Bookmarks"
                 icon={<BookmarkIcon className="h-6 w-6" />}
+                activeIcon={<BookmarkIconFilled />}
+                active={router.pathname == "/bookmarks"}
               />
               <MenuItem
                 href="#"
                 title="Communities"
                 icon={<CommunityIcon className="h-6 w-6" />}
+                activeIcon={<CommunityIconFilled />}
+                active={router.pathname == "/communities"}
               />
               <MenuItem
                 href="#"
                 title="Monetisation"
                 icon={<MoneyIcon className="h-6 w-6" />}
+                activeIcon={<MoneyIcon />}
+                active={router.pathname == "/money"}
               />
               <MenuItem
                 href="#"
                 title="Ads"
                 icon={<ExternalLinkIcon className="h-6 w-6" />}
+                activeIcon={<ExternalLinkIcon />}
+                active={router.pathname == "/ads"}
               />
               <MenuItem
                 href="#"
                 title="Settings and privacy"
                 icon={<SettingsIcon className="h-6 w-6" />}
+                activeIcon={<SettingsIcon />}
+                active={router.pathname == "/settings"}
               />
               <MenuItem
                 href="/auth/logout"
                 title="Log out"
                 icon={<LogOutIcon className="h-6 w-6" />}
+                activeIcon={<LogOutIcon />}
+                active={router.pathname == "/auth/logout"}
               />
             </ul>
           </nav>

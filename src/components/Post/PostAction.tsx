@@ -8,6 +8,7 @@ export enum PostActionColorVariants {
 
 type Props = {
   icon: React.ReactNode;
+  activeIcon?: React.ReactNode;
   value?: number;
   active?: boolean;
   color: PostActionColorVariants;
@@ -38,8 +39,14 @@ const variants: {
   },
 };
 
-const PostAction = ({ icon, value, active, color, onClick }: Props) => {
-  //TODO: Add active icons
+const PostAction = ({
+  icon,
+  activeIcon,
+  value,
+  active,
+  color,
+  onClick,
+}: Props) => {
   return (
     <button
       onClick={onClick}
@@ -49,7 +56,7 @@ const PostAction = ({ icon, value, active, color, onClick }: Props) => {
         <div
           className={`absolute -left-1/2 -top-1/2 -z-10 ml-px mt-px h-9 w-9 rounded-full  duration-200 ${variants[color].popup}`}
         ></div>
-        {icon}
+        {active && activeIcon ? activeIcon : icon}
       </div>
       {value != undefined && (
         <span className="block px-1 text-13px">{value}</span>
