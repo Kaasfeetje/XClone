@@ -1,4 +1,11 @@
-import { HashTag, Post, PostLike, PostRepost, User } from "@prisma/client";
+import {
+  Bookmark,
+  HashTag,
+  Post,
+  PostLike,
+  PostRepost,
+  User,
+} from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import Avatar from "../common/Avatar";
 
@@ -12,6 +19,7 @@ type Props = {
     reposts: PostRepost[];
     mentions: User[];
     hashtags: HashTag[];
+    bookmarks: Bookmark[];
     _count: {
       comments: number;
       hashtags: number;
@@ -108,6 +116,7 @@ const Post = ({ post }: Props) => {
             likeCount={post._count.likes}
             reposted={post.reposts.length > 0}
             repostCount={post._count.reposts}
+            bookmarked={post.bookmarks.length > 0}
             commentCount={post._count.comments}
           />
         </div>

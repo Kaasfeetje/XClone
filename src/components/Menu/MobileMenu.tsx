@@ -54,7 +54,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<ListsIcon className="h-6 w-6" />}
               />
               <MenuItem
-                href="#"
+                href="/bookmarks"
                 title="Bookmarks"
                 icon={<BookmarkIcon className="h-6 w-6" />}
               />

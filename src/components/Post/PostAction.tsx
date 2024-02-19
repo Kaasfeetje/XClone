@@ -47,12 +47,12 @@ const PostAction = ({ icon, value, active, color, onClick }: Props) => {
     >
       <div className="relative">
         <div
-          className={`absolute -left-1/2 -top-1/2 -z-10 ml-px mt-px h-9 w-9 rounded-full bg-white duration-200 ${variants[color].popup}`}
+          className={`absolute -left-1/2 -top-1/2 -z-10 ml-px mt-px h-9 w-9 rounded-full  duration-200 ${variants[color].popup}`}
         ></div>
         {icon}
       </div>
       {value != undefined && (
-        <span className="text-13px block px-1">{value}</span>
+        <span className="block px-1 text-13px">{value}</span>
       )}
     </button>
   );

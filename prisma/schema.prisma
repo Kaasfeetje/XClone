@@ -61,17 +61,18 @@ model User {
     location    String? //String for now
     website     String?
 
-    accounts  Account[]
-    sessions  Session[]
+    accounts     Account[]
+    sessions     Session[]
     // Posts
-    posts     Post[]
-    //Likes&Reposts&Mentions
-    likes     PostLike[]   @relation("Likes")
-    reposts   PostRepost[] @relation("Reposts")
-    mentions  Post[]       @relation("Mentions")
+    posts        Post[]
+    likes        PostLike[]     @relation("Likes")
+    reposts      PostRepost[]   @relation("Reposts")
+    mentions     Post[]         @relation("Mentions")
     // Following
-    following Follow[]     @relation("Follower")
-    followers Follow[]     @relation("Followed")
+    following    Follow[]       @relation("Follower")
+    followers    Follow[]       @relation("Followed")
+    Bookmark     Bookmark[]
+    BookmarkList BookmarkList[]
 }
 
 model VerificationToken {
@@ -103,6 +104,7 @@ model Post {
     //Likes & Reposts
     likes       PostLike[]   @relation("Likes")
     reposts     PostRepost[] @relation("Reposts")
+    bookmarks   Bookmark[]
 
     @@index([userId])
     @@index([commentToId])
@@ -132,6 +134,34 @@ model PostRepost {
     @@index([postId])
 }
 
+model Bookmark {
+    userId    String
+    user      User          @relation(fields: [userId], references: [id])
+    postId    String
+    post      Post          @relation(fields: [postId], references: [id])
+    createdAt DateTime      @default(now())
+    // List
+    listId    String?
+    list      BookmarkList? @relation(fields: [listId], references: [id])
+
+    @@id([userId, postId])
+    @@index([userId])
+    @@index([postId])
+    @@index([listId])
+}
+
+model BookmarkList {
+    id        String     @id @default(uuid())
+    name      String
+    userId    String
+    user      User       @relation(fields: [userId], references: [id])
+    createdAt DateTime   @default(now())
+    bookmarks Bookmark[]
+
+    @@unique([name, userId])
+    @@index([userId])
+}
+
 model HashTag {
     hashtag   String   @id @unique
     createdAt DateTime @default(now())
@@ -139,9 +169,9 @@ model HashTag {
 }
 
 model Follow {
-    followerId String
+    followerId String //The person who initiates the follow
     follower   User   @relation("Follower", fields: [followerId], references: [id])
-    followedId String
+    followedId String //The person who is being followed
     followed   User   @relation("Followed", fields: [followedId], references: [id])
 
     createdAt DateTime @default(now())

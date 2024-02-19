@@ -67,7 +67,7 @@ const Menu = (props: Props) => {
                 icon={<ListsIcon className="h-7 w-7" />}
               />
               <MenuItem
-                href="#"
+                href="/bookmarks"
                 title="Bookmarks"
                 icon={<BookmarkIcon className="h-7 w-7" />}
               />

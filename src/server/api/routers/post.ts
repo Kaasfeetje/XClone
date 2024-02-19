@@ -8,7 +8,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-const postInclude = (userId: string) => ({
+export const postInclude = (userId: string) => ({
   user: true,
   likes: {
     where: {
@@ -16,6 +16,11 @@ const postInclude = (userId: string) => ({
     },
   },
   reposts: {
+    where: {
+      userId: userId,
+    },
+  },
+  bookmarks: {
     where: {
       userId: userId,
     },

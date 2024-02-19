@@ -7,6 +7,7 @@ import StatsIcon from "../icons/StatsIcon";
 import BookmarkIcon from "../icons/BookmarkIcon";
 import ShareIcon from "../icons/ShareIcon";
 import { api } from "~/utils/api";
+import BookmarkAction from "./BookmarkAction";
 
 type Props = {
   postId: string;
@@ -14,6 +15,7 @@ type Props = {
   likeCount: number;
   reposted: boolean;
   repostCount: number;
+  bookmarked: boolean;
   commentCount: number;
   detailed?: boolean;
 };
@@ -24,9 +26,11 @@ const PostActions = ({
   likeCount,
   reposted,
   repostCount,
+  bookmarked,
   commentCount,
   detailed,
 }: Props) => {
+  // TODO: do bookmark creating here pls thank you <3
   const utils = api.useUtils();
   const repostMutation = api.post.repost.useMutation({
     onMutate() {
@@ -56,11 +60,27 @@ const PostActions = ({
       utils.post.fetchAll.invalidate();
     },
   });
-
+  const bookmarkMutation = api.bookmark.createBookmark.useMutation({
+    onMutate() {
+      setIsBookmarked(true);
+    },
+    onSuccess() {
+      utils.post.fetchAll.invalidate();
+    },
+  });
+  const deleteBookmarkMutation = api.bookmark.deleteBookmark.useMutation({
+    onMutate() {
+      setIsBookmarked(false);
+    },
+    onSuccess() {
+      utils.post.fetchAll.invalidate();
+    },
+  });
   const [isLiked, setIsLiked] = useState(liked);
   const [_likeCount, setLikeCount] = useState(likeCount);
   const [isReposted, setIsReposted] = useState(reposted);
   const [_repostCount, setRepostCount] = useState(repostCount);
+  const [isBookmarked, setIsBookmarked] = useState(bookmarked);
 
   const onRepost = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -72,6 +92,17 @@ const PostActions = ({
     e.preventDefault();
     if (likeMutation.isLoading) return;
     likeMutation.mutate({ postId });
+  };
+
+  const onBookmark = (bookmark: {
+    listId: string | undefined;
+    postId: string;
+  }) => {
+    bookmarkMutation.mutate(bookmark);
+  };
+
+  const onDeleteBookmark = (postId: string) => {
+    deleteBookmarkMutation.mutate({ postId });
   };
 
   return (
@@ -112,14 +143,12 @@ const PostActions = ({
       )}
       {detailed ? (
         <>
-          <PostAction
-            icon={<BookmarkIcon className="h-5 w-5" />}
-            color={PostActionColorVariants.blue}
-            value={0}
-            onClick={(e) => {
-              e.preventDefault();
-              alert("Not implemented yet.");
-            }}
+          <BookmarkAction
+            className="relative"
+            postId={postId}
+            onBookmark={onBookmark}
+            onDeleteBookmark={onDeleteBookmark}
+            active={isBookmarked}
           />
           <PostAction
             icon={<ShareIcon className="h-5 w-5" />}
@@ -132,16 +161,13 @@ const PostActions = ({
         </>
       ) : (
         <div className={`flex`}>
-          <div className={`mr-3 hidden md:block`}>
-            <PostAction
-              icon={<BookmarkIcon className="h-5 w-5" />}
-              color={PostActionColorVariants.blue}
-              onClick={(e) => {
-                e.preventDefault();
-                alert("Not implemented yet.");
-              }}
-            />
-          </div>
+          <BookmarkAction
+            className={`relative mr-3 hidden md:block`}
+            postId={postId}
+            onBookmark={onBookmark}
+            onDeleteBookmark={onDeleteBookmark}
+            active={isBookmarked}
+          />
           <PostAction
             icon={<ShareIcon className="h-5 w-5" />}
             color={PostActionColorVariants.blue}
