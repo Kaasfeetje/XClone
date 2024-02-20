@@ -61,18 +61,20 @@ model User {
     location    String? //String for now
     website     String?
 
-    accounts     Account[]
-    sessions     Session[]
+    accounts      Account[]
+    sessions      Session[]
     // Posts
-    posts        Post[]
-    likes        PostLike[]     @relation("Likes")
-    reposts      PostRepost[]   @relation("Reposts")
-    mentions     Post[]         @relation("Mentions")
+    posts         Post[]
+    likes         PostLike[]     @relation("Likes")
+    reposts       PostRepost[]   @relation("Reposts")
+    mentions      Post[]         @relation("Mentions")
     // Following
-    following    Follow[]       @relation("Follower")
-    followers    Follow[]       @relation("Followed")
-    Bookmark     Bookmark[]
-    BookmarkList BookmarkList[]
+    following     Follow[]       @relation("Follower")
+    followers     Follow[]       @relation("Followed")
+    bookmarks     Bookmark[]
+    bookmarkLists BookmarkList[]
+    searches      Search[]       @relation("Searcher")
+    searched      Search[]       @relation("Searched")
 }
 
 model VerificationToken {
@@ -166,6 +168,8 @@ model HashTag {
     hashtag   String   @id @unique
     createdAt DateTime @default(now())
     posts     Post[]   @relation("Hashtags")
+
+    searches Search[]
 }
 
 model Follow {
@@ -179,6 +183,21 @@ model Follow {
     @@id([followerId, followedId])
     @@index([followerId])
     @@index([followedId])
+}
+
+model Search {
+    id             String   @id @default(uuid())
+    userId         String
+    user           User     @relation("Searcher", fields: [userId], references: [id])
+    text           String?
+    hashtagId      String?
+    hashtag        HashTag? @relation(fields: [hashtagId], references: [hashtag])
+    searchedUserId String?
+    searchedUser   User?    @relation("Searched", fields: [searchedUserId], references: [id])
+
+    @@index([userId])
+    @@index([hashtagId])
+    @@index([searchedUserId])
 }
 
 enum COMMENTPERMISSIONS {

@@ -59,7 +59,7 @@ const Menu = (props: Props) => {
                 active={router.pathname == "/"}
               />
               <MenuItem
-                href="#"
+                href="/explore"
                 title="Explore"
                 icon={<SearchIcon className="h-7 w-7" />}
                 activeIcon={<SearchIconFilled className="h-7 w-7" />}
