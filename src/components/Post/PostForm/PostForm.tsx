@@ -17,6 +17,7 @@ import MentionIcon from "~/components/icons/MentionIcon";
 import VerifiedIcon from "~/components/icons/VerifiedIcon";
 import { api } from "~/utils/api";
 import PostFormInput from "./PostFormInput";
+import PrimaryButton from "~/components/common/Buttons/PrimaryButton";
 
 type Props = {};
 
@@ -136,13 +137,9 @@ const PostForm = (props: Props) => {
               <LocationIcon className="h-5 w-5" />
             </IconButton>
           </div>
-          <button
-            className={`mt-3 block h-9 rounded-full px-4 font-bold text-white ${canPost ? "bg-blue-500" : "bg-blue-300"}`}
-            disabled={!canPost}
-            type="submit"
-          >
+          <PrimaryButton disabled={!canPost} type="submit">
             Post
-          </button>
+          </PrimaryButton>
         </div>
       </div>
     </form>

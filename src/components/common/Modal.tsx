@@ -15,7 +15,7 @@ const Modal = ({ children, centered, isOpen, onClose }: Props) => {
     >
       <div
         onClick={onClose}
-        className="fixed h-full w-full bg-black opacity-50"
+        className="fixed left-0 h-full w-full bg-black opacity-50"
       ></div>
       {children}
     </div>,

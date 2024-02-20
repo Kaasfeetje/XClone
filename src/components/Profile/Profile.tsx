@@ -13,6 +13,8 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import DotsIcon from "../icons/DotsIcon";
 import { api } from "~/utils/api";
+import MinimalistButton from "../common/Buttons/MinimalistButton";
+import BlackButton from "../common/Buttons/BlackButton";
 
 type Props = {
   profile: User & {
@@ -69,24 +71,20 @@ const Profile = ({ profile }: Props) => {
               </div>
             </div>
             {session?.user.username == profile.username ? (
-              <button
-                onClick={() => setEditModalIsOpen(true)}
-                className="h-9 rounded-full border border-gray-300 bg-white px-4 font-semibold text-grayText"
-              >
-                Edit profile
-              </button>
+              <MinimalistButton onClick={() => setEditModalIsOpen(true)}>
+                Edit Profile
+              </MinimalistButton>
             ) : (
               <div className="flex">
                 <div className="mr-2 flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-gray-300 duration-200 hover:bg-gray-200 ">
                   <DotsIcon className="h-5 w-5" />
                 </div>
                 {!followed && (
-                  <button
+                  <BlackButton
                     onClick={() => followMutation.mutate({ id: profile.id })}
-                    className="h-9 cursor-pointer rounded-full bg-black px-4 font-bold text-white duration-200 hover:opacity-80"
                   >
                     Follow
-                  </button>
+                  </BlackButton>
                 )}
                 {followed && (
                   <button

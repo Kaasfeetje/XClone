@@ -7,6 +7,7 @@ import TextAreaInput from "../common/FormComponents/TextAreaInput";
 import { api } from "~/utils/api";
 import { User } from "@prisma/client";
 import Modal from "../common/Modal";
+import BlackButton from "../common/Buttons/BlackButton";
 
 type Props = {
   isOpen: boolean;
@@ -53,7 +54,7 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
         onSubmit={(e) => onSave(e)}
         className="z-10 flex h-[650px] w-[600px] flex-col rounded-2xl bg-white text-black"
       >
-        <div className="sticky flex h-[53px] items-center justify-between rounded-2xl bg-white px-4">
+        <div className="sticky top-0 flex h-[53px] min-h-[53px] items-center justify-between rounded-2xl bg-white px-4">
           <div className="flex h-full min-w-14 items-center">
             <div
               className="-ml-1 flex  h-[34px] w-[34px] items-center justify-center rounded-full hover:bg-gray-300 "
@@ -63,9 +64,7 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
             </div>
           </div>
           <div className="w-full text-xl font-semibold">Edit profile</div>
-          <button className="h-8 rounded-full bg-black px-4 text-sm font-semibold text-white">
-            Save
-          </button>
+          <BlackButton className="h-8">Save</BlackButton>
         </div>
         <div className="relative aspect-[3/1] w-full bg-gray-400">
           <div className="absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black opacity-50">

@@ -25,6 +25,7 @@ import BookmarkIconFilled from "../icons/BookmarkIconFilled";
 import CommunityIconFilled from "../icons/CommunityIconFilled";
 import ProfileIconFilled from "../icons/ProfileIconFilled";
 import { useRouter } from "next/router";
+import PrimaryButton from "../common/Buttons/PrimaryButton";
 
 type Props = {};
 
@@ -122,9 +123,9 @@ const Menu = (props: Props) => {
               />
             </ul>
           </nav>
-          <button className="mt-4 hidden h-[50px] w-full rounded-full bg-blue-500 text-center text-17px font-bold text-white lg:block">
+          <PrimaryButton className="h-[50px] w-full text-17px">
             Post
-          </button>
+          </PrimaryButton>
           <Link href="#" className="block lg:hidden">
             <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-blue-500 fill-white active:bg-blue-600">
               <CreateTweetIcon className="h-6 w-6" />

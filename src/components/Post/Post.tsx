@@ -88,7 +88,7 @@ const Post = ({ post }: Props) => {
               <span className="font-semibold text-grayText hover:underline">
                 {post.user.displayName}
               </span>
-              <span className="text-lightGrayText hover:underline">
+              <span className="mx-1 text-lightGrayText hover:underline">
                 @{post.user.username}
               </span>
             </Link>

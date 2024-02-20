@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import PlusIcon from "../icons/PlusIcon";
 import { BookmarkList } from "@prisma/client";
 import BookmarkIconFilled from "../icons/BookmarkIconFilled";
+import PrimaryButton from "../common/Buttons/PrimaryButton";
 
 type Props = {
   className?: string;
@@ -118,7 +119,8 @@ const BookmarkAction = ({
                   </option>
                 ))}
               </select>
-              <button
+              <PrimaryButton
+                className="w-full"
                 type="submit"
                 onClick={() => {
                   setIsOpen(false);
@@ -126,7 +128,7 @@ const BookmarkAction = ({
                 }}
               >
                 Bookmark
-              </button>
+              </PrimaryButton>
             </form>
           </div>
         </OutsideAlerter>

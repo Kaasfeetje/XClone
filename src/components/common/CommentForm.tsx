@@ -10,6 +10,7 @@ import GifIcon from "~/components/icons/GifIcon";
 import ImageIcon from "~/components/icons/ImageIcon";
 import LocationIcon from "~/components/icons/LocationIcon";
 import { api } from "~/utils/api";
+import PrimaryButton from "./Buttons/PrimaryButton";
 type Props = {
   comment: Post & {
     user: User;
@@ -78,13 +79,13 @@ const CommentForm = ({ comment }: Props) => {
               onChange={handleText}
               onFocus={() => setIsOpen(true)}
             />
-            <button
-              className={`mt-3 h-9 rounded-full px-4 font-bold text-white ${canPost ? "bg-blue-500" : "bg-blue-300"} ${isOpen ? "hidden" : "block"}`}
+            <PrimaryButton
+              className={`${isOpen ? "hidden" : "block"}`}
               disabled={!canPost}
               type="submit"
             >
               Reply
-            </button>
+            </PrimaryButton>
           </div>
           <div
             className={`flex items-end justify-between ${isOpen ? "visible h-12" : "invisible h-0"} duration-200`}
@@ -103,13 +104,9 @@ const CommentForm = ({ comment }: Props) => {
                 <LocationIcon className="h-5 w-5" />
               </IconButton>
             </div>
-            <button
-              className={`mt-3 block h-9 rounded-full px-4 font-bold text-white ${canPost ? "bg-blue-500" : "bg-blue-300"}`}
-              disabled={!canPost}
-              type="submit"
-            >
+            <PrimaryButton disabled={!canPost} type="submit">
               Reply
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       </form>

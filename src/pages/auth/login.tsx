@@ -1,6 +1,8 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
+import BlackButton from "~/components/common/Buttons/BlackButton";
+import MinimalistButton from "~/components/common/Buttons/MinimalistButton";
 import GoogleIcon from "~/components/icons/GoogleIcon";
 import LogoIcon from "~/components/icons/LogoIcon";
 
@@ -29,20 +31,16 @@ const Login = (props: Props) => {
               type="text"
               placeholder="Phone, email, or username"
             />
-            <button
-              onClick={() => alert("Not implemented")}
-              className="my-3 block h-9 w-full rounded-full bg-black font-semibold text-white"
-            >
+            <BlackButton onClick={() => alert("Not implemented")}>
               Next
-            </button>
+            </BlackButton>
           </form>
-          <button
+          <MinimalistButton
             type="button"
             onClick={() => alert("Not implemented")}
-            className="my-3 h-9 w-full rounded-full  border border-gray-300 font-semibold active:bg-gray-300"
           >
             Forgot password?
-          </button>
+          </MinimalistButton>
           {/* <span>
             By signing in you agree to the Terms of Service and Privacy Policy,
             including Cookie Use.

@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import BlackButton from "~/components/common/Buttons/BlackButton";
+import PrimaryButton from "~/components/common/Buttons/PrimaryButton";
 import { api } from "~/utils/api";
 
 type Props = {};
@@ -38,7 +40,7 @@ const CompleteSignup = (props: Props) => {
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
           />
-          <button type="submit">Next</button>
+          <BlackButton type="submit">Next</BlackButton>
         </form>
       </div>
     );
@@ -57,7 +59,7 @@ const CompleteSignup = (props: Props) => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <button type="submit">Next</button>
+          <BlackButton type="submit">Next</BlackButton>
         </form>
       </div>
     );
@@ -66,7 +68,7 @@ const CompleteSignup = (props: Props) => {
       <div>
         <form onSubmit={onSubmit}>
           <input type="file" />
-          <button type="submit">Complete</button>
+          <PrimaryButton type="submit">Complete</PrimaryButton>
         </form>
       </div>
     );
