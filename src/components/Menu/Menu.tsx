@@ -33,10 +33,18 @@ const Menu = (props: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const { mobileMenuIsOpen, setMobileMenuIsOpen } = useContext(MainContext);
+  const {
+    mobileMenuIsOpen,
+    setMobileMenuIsOpen,
+    createPostModalIsOpen,
+    setCreatePostModalIsOpen,
+  } = useContext(MainContext);
 
   return (
     <div>
+      <div className=" block md:hidden">
+        <MobileMenu isOpen={mobileMenuIsOpen} setIsOpen={setMobileMenuIsOpen} />
+      </div>
       <div className="hidden md:block">
         <div
           className={`pointer-events-auto relative -left-3/4 flex h-screen w-3/4 flex-col items-center bg-white p-2 md:left-[20px] md:w-[60px] lg:left-[25px] lg:block lg:w-[275px]`}
@@ -123,7 +131,10 @@ const Menu = (props: Props) => {
               />
             </ul>
           </nav>
-          <PrimaryButton className="h-[50px] w-full text-17px">
+          <PrimaryButton
+            onClick={() => setCreatePostModalIsOpen(true)}
+            className="h-[50px] w-full text-17px"
+          >
             Post
           </PrimaryButton>
           <Link href="#" className="block lg:hidden">
@@ -134,9 +145,6 @@ const Menu = (props: Props) => {
 
           <DesktopAccountFooter />
         </div>
-      </div>
-      <div className="block md:hidden">
-        <MobileMenu isOpen={mobileMenuIsOpen} setIsOpen={setMobileMenuIsOpen} />
       </div>
     </div>
   );

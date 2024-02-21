@@ -28,9 +28,10 @@ type Props = {
       reposts: number;
     };
   };
+  replying?: boolean;
 };
 
-const Post = ({ post }: Props) => {
+const Post = ({ post, replying }: Props) => {
   const [parts, setParts] = useState<string[]>([]);
   const [between, setBetween] = useState<{ text: string; href: string }[]>([]);
 
@@ -73,15 +74,20 @@ const Post = ({ post }: Props) => {
   return (
     <Link href={`/${post.user.username}/status/${post.id}`}>
       <div className="flex px-4 py-3">
-        <Link
-          href={`/${post.user.username}`}
-          className="mr-3 block h-10 w-10 min-w-10"
-        >
-          <Avatar
-            profileImage={post.user.profileImage}
-            image={post.user.image}
-          />
-        </Link>
+        <div className="flex flex-col items-center">
+          <Link
+            href={`/${post.user.username}`}
+            className="mr-3 block h-10 w-10 min-w-10"
+          >
+            <Avatar
+              profileImage={post.user.profileImage}
+              image={post.user.image}
+            />
+          </Link>
+          {replying && (
+            <div className="mr-3 mt-1 h-full w-[2px] bg-[#CFD9DE]"></div>
+          )}
+        </div>
         <div className="w-full">
           <div>
             <Link href={`/${post.user.username}`}>
@@ -110,15 +116,27 @@ const Post = ({ post }: Props) => {
               </>
             ))}
           </div>
-          <PostActions
-            postId={post.id}
-            liked={post.likes.length > 0}
-            likeCount={post._count.likes}
-            reposted={post.reposts.length > 0}
-            repostCount={post._count.reposts}
-            bookmarked={post.bookmarks.length > 0}
-            commentCount={post._count.comments}
-          />
+          {replying ? (
+            <div className="mt-4 text-lightGrayText">
+              Replying to{" "}
+              <Link
+                className="text-blue-500 hover:underline"
+                href={`/${post.user.username}`}
+              >
+                @{post.user.username}
+              </Link>
+            </div>
+          ) : (
+            <PostActions
+              postId={post.id}
+              liked={post.likes.length > 0}
+              likeCount={post._count.likes}
+              reposted={post.reposts.length > 0}
+              repostCount={post._count.reposts}
+              bookmarked={post.bookmarks.length > 0}
+              commentCount={post._count.comments}
+            />
+          )}
         </div>
       </div>
     </Link>

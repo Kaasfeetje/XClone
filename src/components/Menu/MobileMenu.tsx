@@ -48,64 +48,73 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 href={`/${session?.user.username}`}
                 title="Profile"
                 icon={<ProfileIcon className="h-6 w-6" />}
-                activeIcon={<ProfileIconFilled />}
-                active={router.pathname == "/"}
+                activeIcon={<ProfileIconFilled className="h-6 w-6" />}
+                active={router.pathname == "/[username]"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="#"
                 title="Premium"
                 icon={<LogoIcon className="h-6 w-6" />}
-                activeIcon={<LogoIcon />}
+                activeIcon={<LogoIcon className="h-6 w-6" />}
                 active={router.pathname == "/premium"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="#"
                 title="Lists"
                 icon={<ListsIcon className="h-6 w-6" />}
-                activeIcon={<ListsIconFilled />}
+                activeIcon={<ListsIconFilled className="h-6 w-6" />}
                 active={router.pathname == "/lists"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="/bookmarks"
                 title="Bookmarks"
                 icon={<BookmarkIcon className="h-6 w-6" />}
-                activeIcon={<BookmarkIconFilled />}
+                activeIcon={<BookmarkIconFilled className="h-6 w-6" />}
                 active={router.pathname == "/bookmarks"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="#"
                 title="Communities"
                 icon={<CommunityIcon className="h-6 w-6" />}
-                activeIcon={<CommunityIconFilled />}
+                activeIcon={<CommunityIconFilled className="h-6 w-6" />}
                 active={router.pathname == "/communities"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="#"
                 title="Monetisation"
                 icon={<MoneyIcon className="h-6 w-6" />}
-                activeIcon={<MoneyIcon />}
+                activeIcon={<MoneyIcon className="h-6 w-6" />}
                 active={router.pathname == "/money"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="#"
                 title="Ads"
                 icon={<ExternalLinkIcon className="h-6 w-6" />}
-                activeIcon={<ExternalLinkIcon />}
+                activeIcon={<ExternalLinkIcon className="h-6 w-6" />}
                 active={router.pathname == "/ads"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="#"
                 title="Settings and privacy"
                 icon={<SettingsIcon className="h-6 w-6" />}
-                activeIcon={<SettingsIcon />}
+                activeIcon={<SettingsIcon className="h-6 w-6" />}
                 active={router.pathname == "/settings"}
+                onClick={()=>setIsOpen(false)}
               />
               <MenuItem
                 href="/auth/logout"
                 title="Log out"
                 icon={<LogOutIcon className="h-6 w-6" />}
-                activeIcon={<LogOutIcon />}
+                activeIcon={<LogOutIcon className="h-6 w-6" />}
                 active={router.pathname == "/auth/logout"}
+                onClick={()=>setIsOpen(false)}
               />
             </ul>
           </nav>

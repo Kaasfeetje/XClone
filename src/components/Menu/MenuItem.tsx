@@ -7,11 +7,19 @@ type Props = {
   activeIcon: React.ReactNode;
   active?: boolean;
   href: string;
+  onClick?: () => void;
 };
 
-const MenuItem = ({ href, title, icon, activeIcon, active }: Props) => {
+const MenuItem = ({
+  href,
+  title,
+  icon,
+  activeIcon,
+  active,
+  onClick,
+}: Props) => {
   return (
-    <Link href={href}>
+    <Link href={href} onClick={onClick}>
       <li className="flex items-center justify-start p-4">
         <div className="mr-6 md:mx-auto lg:ml-0 lg:mr-6">
           {active ? activeIcon : icon}

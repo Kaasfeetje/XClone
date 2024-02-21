@@ -1,7 +1,6 @@
 import { COMMENTPERMISSIONS } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
-import AutoHeightTextArea from "~/components/common/AutoHeightTextArea";
+import React, { useState } from "react";
 import Avatar from "~/components/common/Avatar";
 import IconButton from "~/components/common/IconButton";
 import Select, { OptionType } from "~/components/common/Select/Select";
@@ -18,6 +17,8 @@ import VerifiedIcon from "~/components/icons/VerifiedIcon";
 import { api } from "~/utils/api";
 import PostFormInput from "./PostFormInput";
 import PrimaryButton from "~/components/common/Buttons/PrimaryButton";
+import { commentPermissionOptions } from "~/components/common/data/commentPermissionOptions";
+import PostFormActions from "./PostFormActions";
 
 type Props = {};
 
@@ -67,7 +68,7 @@ const PostForm = (props: Props) => {
   };
 
   return (
-    <form className="hidden pb-2 md:flex" onSubmit={onSubmit}>
+    <form className={`hidden pb-2 md:flex`} onSubmit={onSubmit}>
       <div className="mr-3 mt-3 h-10 w-10 min-w-10 rounded-full bg-black">
         <Avatar
           profileImage={session?.user.profileImage}
@@ -86,57 +87,13 @@ const PostForm = (props: Props) => {
           <Select
             dropdownTitle="Who can reply?"
             dropdownDescription="Choose who can reply to this post.\n Anyone mentioned can always reply."
-            options={[
-              {
-                icon: <GlobalIcon className="h-4 w-4" />,
-                title: "Everyone",
-                description: "Everyone can reply",
-                value: COMMENTPERMISSIONS.EVERYONE,
-              },
-              {
-                icon: <FollowedIcon className="h-4 w-4" />,
-                title: "Accounts you follow",
-                description: "Accounts you follow can reply",
-                value: COMMENTPERMISSIONS.FOLLOW,
-              },
-              {
-                icon: <VerifiedIcon className="h-4 w-4" />,
-                title: "Verified accounts",
-                description: "Only Verified accounts can reply",
-                value: COMMENTPERMISSIONS.VERIFIED,
-              },
-              {
-                icon: <MentionIcon className="h-4 w-4" />,
-                title: "Only accounts you mention",
-                description: "Only accounts you mention can reply",
-                value: COMMENTPERMISSIONS.MENTIONED,
-              },
-            ]}
+            options={commentPermissionOptions}
             selected={commentPermission}
             setSelected={setCommentPermission}
           ></Select>
         )}
         <div className="flex items-end justify-between">
-          <div className="flex">
-            <IconButton>
-              <ImageIcon className="h-5 w-5" />
-            </IconButton>
-            <IconButton>
-              <GifIcon className="h-5 w-5" />
-            </IconButton>
-            <IconButton>
-              <ListIcon className="h-5 w-5" />
-            </IconButton>
-            <IconButton>
-              <EmojiIcon className="h-5 w-5" />
-            </IconButton>
-            <IconButton>
-              <ScheduleIcon className="h-5 w-5" />
-            </IconButton>
-            <IconButton disabled={true}>
-              <LocationIcon className="h-5 w-5" />
-            </IconButton>
-          </div>
+          <PostFormActions />
           <PrimaryButton disabled={!canPost} type="submit">
             Post
           </PrimaryButton>

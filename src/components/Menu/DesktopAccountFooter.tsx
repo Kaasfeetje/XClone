@@ -15,7 +15,7 @@ const DesktopAccountFooter = (props: Props) => {
   return (
     <div
       onClick={() => setIsOpen(!isOpen)}
-      className="absolute bottom-4 flex cursor-pointer items-center justify-between rounded-full py-3 active:bg-gray-300 lg:w-[260px]"
+      className="absolute bottom-4 flex cursor-pointer items-center justify-between rounded-full py-3 duration-200 hover:bg-gray-200 lg:w-[260px]"
     >
       <div className="flex items-center">
         <div className="h-10 w-10 min-w-10 rounded-full bg-black lg:ml-3">
@@ -25,10 +25,10 @@ const DesktopAccountFooter = (props: Props) => {
           />
         </div>
         <div className="mx-3 hidden lg:block">
-          <span className="text-grayText block font-semibold">
+          <span className="block font-semibold text-grayText">
             {session?.user.displayName}
           </span>
-          <span className="text-lightGrayText -mt-1 block">
+          <span className="-mt-1 block text-lightGrayText">
             @{session?.user.username}
           </span>
         </div>
@@ -44,13 +44,13 @@ const DesktopAccountFooter = (props: Props) => {
           <div>
             <Link
               href="#"
-              className="text-grayText block cursor-pointer px-4 py-3 font-bold"
+              className="block cursor-pointer px-4 py-3 font-bold text-grayText"
             >
               Add an existing account
             </Link>
             <Link
               href={"/auth/logout"}
-              className="text-grayText block cursor-pointer px-4 py-3 font-bold"
+              className="block cursor-pointer px-4 py-3 font-bold text-grayText"
             >
               Log out of @{session?.user.username}
             </Link>
