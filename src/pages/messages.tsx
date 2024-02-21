@@ -1,12 +1,25 @@
+import { useSession } from "next-auth/react";
 import Head from "next/head";
-import React from "react";
+import { useRouter } from "next/router";
 import Menu from "~/components/Menu/Menu";
 import Layout from "~/components/common/Layout";
-import ExploreHeader from "~/components/headers/ExploreHeader/ExploreHeader";
 
-type Props = {};
+export default function MessagesPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
-const ExplorePage = (props: Props) => {
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (status === "unauthenticated") {
+    router.push("/auth/login");
+  }
+
+  if (!session?.user.username) {
+    router.push("/auth/complete-signup");
+  }
+
   return (
     <>
       <Head>
@@ -16,12 +29,7 @@ const ExplorePage = (props: Props) => {
       </Head>
       <Layout
         menu={<Menu />}
-        main={
-          <div className="h-full">
-            <ExploreHeader />
-            <div>Trends</div>
-          </div>
-        }
+        main={<div>Messages Page</div>}
         sidebar={
           <div>
             <div className="h-screen w-full">Recommended</div>
@@ -33,6 +41,4 @@ const ExplorePage = (props: Props) => {
       />
     </>
   );
-};
-
-export default ExplorePage;
+}

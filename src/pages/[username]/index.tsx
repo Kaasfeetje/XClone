@@ -24,6 +24,10 @@ const ProfilePage = (props: Props) => {
   const { profilePageSelectedTab, setProfilePageSelectedTab } =
     useContext(MainContext);
 
+  if (!profile.data) {
+    return <>Loading</>;
+  }
+
   return (
     <>
       <Head>
@@ -46,7 +50,7 @@ const ProfilePage = (props: Props) => {
                   </span>
                 </div>
               </BackHeader>
-              <Profile profile={profile.data} />
+              <Profile profile={profile.data!} />
               {profilePageSelectedTab == ProfilePageTabs.Posts && (
                 <ProfilePostsContainer username={username as string} />
               )}

@@ -41,7 +41,13 @@ export const userRouter = createTRPCRouter({
               followerId: ctx.session.user.id,
             },
           },
-          _count: true,
+          _count: {
+            select: {
+              followers: true,
+              following: true,
+              posts: true,
+            },
+          },
         },
       });
       return profile;
