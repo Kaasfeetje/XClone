@@ -1,6 +1,7 @@
 import {
   Bookmark,
   HashTag,
+  Image,
   Post,
   PostLike,
   PostRepost,
@@ -12,10 +13,12 @@ import Avatar from "../common/Avatar";
 import PostActions from "./PostActions";
 import Link from "next/link";
 import { monthsAbbreviations } from "../common/data/months";
+import PostImageContainer from "./PostImageContainer";
 
 type Props = {
   post: Post & {
     user: User;
+    images: Image[];
     likes: PostLike[];
     reposts: PostRepost[];
     bookmarks: Bookmark[];
@@ -80,7 +83,7 @@ const DetailedPost = ({ post }: Props) => {
             className="mr-3 h-10 w-10 min-w-10"
           >
             <Avatar
-              profileImage={post.user.profileImage}
+              profileImage={post.user.profileImageId}
               image={post.user.image}
             />
           </Link>
@@ -88,7 +91,7 @@ const DetailedPost = ({ post }: Props) => {
             <span className="font-semibold text-grayText hover:underline">
               {post.user.displayName}
             </span>
-            <span className="mx-1 text-lightGrayText hover:underline">
+            <span className=" text-lightGrayText hover:underline">
               @{post.user.username}
             </span>
           </Link>
@@ -107,6 +110,7 @@ const DetailedPost = ({ post }: Props) => {
               )}
             </>
           ))}
+          <PostImageContainer images={post.images} />
         </div>
         <div className="my-4 flex text-lightGrayText">
           <time dateTime={post.createdAt.toUTCString()}>

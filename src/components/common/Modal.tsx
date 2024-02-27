@@ -16,7 +16,7 @@ const Modal = ({ children, centered, isOpen, onClose }: Props) => {
   if (mounted) {
     return ReactDOM.createPortal(
       <div
-        className={`${isOpen ? "pointer-events-auto visible opacity-100" : "pointer-events-none invisible opacity-0"} fixed z-10 h-screen w-screen  ${centered ? "flex items-center justify-center" : ""}`}
+        className={`${isOpen ? "pointer-events-auto visible opacity-100" : "pointer-events-none invisible opacity-0"} fixed z-[51] h-screen w-screen  ${centered ? "flex items-center justify-center" : ""}`}
       >
         <div
           onClick={onClose}

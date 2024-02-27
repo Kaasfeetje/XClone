@@ -4,6 +4,7 @@ import { userRouter } from "./routers/user";
 import { hashtagRouter } from "./routers/hashtag";
 import { bookmarkRouter } from "./routers/bookmark";
 import { searchRouter } from "./routers/search";
+import { uploadRouter } from "./routers/upload";
 
 /**
  * This is the primary router for your server.
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   hashtag: hashtagRouter,
   bookmark: bookmarkRouter,
   search: searchRouter,
+  upload: uploadRouter,
 });
 
 // export type definition of API

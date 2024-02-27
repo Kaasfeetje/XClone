@@ -51,15 +51,17 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     // Added by me
-    profileImage  String?
     username      String?   @unique
     displayName   String?
     createdAt     DateTime  @default(now())
 
-    bio         String?
-    bannerImage String?
-    location    String? //String for now
-    website     String?
+    bio            String?
+    profileImageId String? @unique
+    profileImage   Image?  @relation("Profile Image", fields: [profileImageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    bannerImageId  String? @unique
+    bannerImage    Image?  @relation("Banner Image", fields: [bannerImageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    location       String? //String for now
+    website        String?
 
     accounts      Account[]
     sessions      Session[]
@@ -68,13 +70,17 @@ model User {
     likes         PostLike[]     @relation("Likes")
     reposts       PostRepost[]   @relation("Reposts")
     mentions      Post[]         @relation("Mentions")
+    // Bookmark
+    bookmarks     Bookmark[]
+    bookmarkLists BookmarkList[]
     // Following
     following     Follow[]       @relation("Follower")
     followers     Follow[]       @relation("Followed")
-    bookmarks     Bookmark[]
-    bookmarkLists BookmarkList[]
+    // Search
     searches      Search[]       @relation("Searcher")
     searched      Search[]       @relation("Searched")
+    // Images
+    images        Image[]
 }
 
 model VerificationToken {
@@ -89,9 +95,12 @@ model VerificationToken {
 
 model Post {
     id                String             @id @default(cuid())
-    textContent       String?
     createdAt         DateTime           @default(now())
     commentPermission COMMENTPERMISSIONS @default(EVERYONE)
+
+    // Content
+    textContent String?
+    images      Image[]
 
     //Mentions/Tags & Hashtags
     mentions    User[]       @relation("Mentions")
@@ -198,6 +207,22 @@ model Search {
     @@index([userId])
     @@index([hashtagId])
     @@index([searchedUserId])
+}
+
+model Image {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    type      String
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    postId    String?
+    post      Post?    @relation(fields: [postId], references: [id])
+
+    profileImageUsers User[] @relation("Profile Image")
+    bannerImageUsers  User[] @relation("Banner Image")
+
+    @@index([userId])
+    @@index([postId])
 }
 
 enum COMMENTPERMISSIONS {

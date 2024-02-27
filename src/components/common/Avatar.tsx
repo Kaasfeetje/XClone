@@ -1,4 +1,5 @@
 import React from "react";
+import { env } from "~/env";
 
 type Props = {
   profileImage?: string | null;
@@ -11,7 +12,7 @@ const Avatar = ({ profileImage, image, className }: Props) => {
     return (
       <img
         className={`h-full w-full rounded-full ${className ? className : ""}`}
-        src={profileImage}
+        src={`${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${profileImage}`}
       />
     );
   } else if (image) {

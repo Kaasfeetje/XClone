@@ -10,6 +10,7 @@ import {
 
 export const postInclude = (userId: string) => ({
   user: true,
+  images: true,
   likes: {
     where: {
       userId: userId,
@@ -46,6 +47,7 @@ export const postRouter = createTRPCRouter({
         textContent: z.string().nullish(),
         commentPermission: z.nativeEnum(COMMENTPERMISSIONS),
         commentToId: z.string().nullish(),
+        images: z.string().array().max(4).nullish(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -87,6 +89,9 @@ export const postRouter = createTRPCRouter({
               },
               create: { hashtag },
             })),
+          },
+          images: {
+            connect: input.images?.map((image) => ({ id: image })),
           },
         },
       });

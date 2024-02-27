@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import IconButton from "~/components/common/IconButton";
 import EmojiIcon from "~/components/icons/EmojiIcon";
 import GifIcon from "~/components/icons/GifIcon";
@@ -7,14 +7,28 @@ import ListIcon from "~/components/icons/ListIcon";
 import LocationIcon from "~/components/icons/LocationIcon";
 import ScheduleIcon from "~/components/icons/ScheduleIcon";
 
-type Props = {};
+type Props = {
+  files?: File[];
+  setFiles: (value: File[]) => void;
+};
 
-const PostFormActions = (props: Props) => {
+const PostFormActions = ({ files, setFiles }: Props) => {
   return (
     <div className="flex">
-      <IconButton>
+      <label
+        htmlFor="fileupload"
+        className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full fill-blue-500 hover:bg-blue-100 `}
+      >
+        <input
+          type="file"
+          id="fileupload"
+          className="invisible h-0 w-0"
+          multiple
+          accept="image/*"
+          onChange={(e) => setFiles(Array.from(e.target.files!))}
+        />
         <ImageIcon className="h-5 w-5" />
-      </IconButton>
+      </label>
       <IconButton>
         <GifIcon className="h-5 w-5" />
       </IconButton>

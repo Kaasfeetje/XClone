@@ -1,6 +1,7 @@
 import {
   Bookmark,
   HashTag,
+  Image,
   Post,
   PostLike,
   PostRepost,
@@ -11,10 +12,12 @@ import Avatar from "../common/Avatar";
 
 import PostActions from "./PostActions";
 import Link from "next/link";
+import PostImageContainer from "./PostImageContainer";
 
 type Props = {
   post: Post & {
     user: User;
+    images: Image[];
     likes: PostLike[];
     reposts: PostRepost[];
     mentions: User[];
@@ -80,7 +83,7 @@ const Post = ({ post, replying }: Props) => {
             className="mr-3 block h-10 w-10 min-w-10"
           >
             <Avatar
-              profileImage={post.user.profileImage}
+              profileImage={post.user.profileImageId}
               image={post.user.image}
             />
           </Link>
@@ -115,6 +118,7 @@ const Post = ({ post, replying }: Props) => {
                 )}
               </>
             ))}
+            <PostImageContainer images={post.images} />
           </div>
           {replying ? (
             <div className="mt-4 text-lightGrayText">
