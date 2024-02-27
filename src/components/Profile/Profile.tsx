@@ -15,6 +15,7 @@ import DotsIcon from "../icons/DotsIcon";
 import { api } from "~/utils/api";
 import MinimalistButton from "../common/Buttons/MinimalistButton";
 import BlackButton from "../common/Buttons/BlackButton";
+import { env } from "~/env";
 
 type Props = {
   profile: User & {
@@ -59,13 +60,20 @@ const Profile = ({ profile }: Props) => {
         profile={profile}
       />
       <div>
-        <div className="aspect-[3/1] w-full bg-gray-300"></div>
+        <div className="aspect-[3/1] w-full bg-gray-300">
+          {profile.bannerImageId && (
+            <img
+              src={`${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${profile.bannerImageId}`}
+              className=" h-full w-full bg-gray-400 "
+            ></img>
+          )}
+        </div>
         <div className="px-4 pt-3">
           <div className=" flex justify-between">
             <div className="relative -mt-[15%] mb-3 aspect-square h-auto w-1/4 min-w-12 rounded-full bg-white">
               <div className="absolute h-full w-full p-1">
                 <Avatar
-                  profileImage={profile.profileImage}
+                  profileImage={profile.profileImageId}
                   image={profile.image}
                 />
               </div>

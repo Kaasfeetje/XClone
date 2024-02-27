@@ -10,6 +10,7 @@ import PrimaryButton from "~/components/common/Buttons/PrimaryButton";
 import { commentPermissionOptions } from "~/components/common/data/commentPermissionOptions";
 import PostFormActions from "./PostFormActions";
 import ImagePreviewContainer from "./ImagePreviewContainer";
+import axios from "axios";
 
 type Props = {
   onPost: () => void;
@@ -83,18 +84,23 @@ const DetailedPostForm = ({ onPost, replyTo }: Props) => {
     if (text == "") {
       return;
     }
-    if (replyTo) {
-      useCreatePostMutation.mutate({
-        textContent: text,
-        commentPermission: commentPermission.value,
-        commentToId: replyTo.id,
-      });
-    } else {
-      useCreatePostMutation.mutate({
-        textContent: text,
-        commentPermission: commentPermission.value,
-      });
+    if (files && files[0] && getUploadPresignedUrlMutation.data) {
+      // Upload each pic to s3
+      getUploadPresignedUrlMutation.data.forEach((image, idx) =>
+        axios.put(image.presignedUrl, files[idx]?.slice(), {
+          headers: { "Content-Type": files[idx]?.type },
+        }),
+      );
     }
+
+    useCreatePostMutation.mutate({
+      textContent: text,
+      commentPermission: commentPermission.value,
+      commentToId: replyTo ? replyTo.id : undefined,
+      images: getUploadPresignedUrlMutation.data
+        ? getUploadPresignedUrlMutation.data.map((image) => image.image.id)
+        : undefined,
+    });
 
     setText("");
     setCanPost(false);
@@ -104,6 +110,7 @@ const DetailedPostForm = ({ onPost, replyTo }: Props) => {
       description: "Everyone can reply",
       value: COMMENTPERMISSIONS.EVERYONE,
     });
+    setFiles(undefined);
     onPost();
   };
 
@@ -112,7 +119,7 @@ const DetailedPostForm = ({ onPost, replyTo }: Props) => {
       <div className="flex min-h-[120px] w-full">
         <div className="mr-3 mt-3 h-10 w-10 min-w-10 rounded-full bg-black">
           <Avatar
-            profileImage={session?.user.profileImage}
+            profileImage={session?.user.profileImageId}
             image={session?.user.image}
           />
         </div>

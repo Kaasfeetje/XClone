@@ -26,7 +26,7 @@ const MainHeader = (props: Props) => {
               onClick={() => setMobileMenuIsOpen(!mobileMenuIsOpen)}
             >
               <Avatar
-                profileImage={session?.user.profileImage}
+                profileImage={session?.user.profileImageId}
                 image={session?.user.image}
               />
             </div>

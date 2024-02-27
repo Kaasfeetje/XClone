@@ -115,7 +115,7 @@ const PostForm = (props: Props) => {
     <form className={`hidden px-4 pb-2 md:flex`} onSubmit={onSubmit}>
       <div className="mr-3 mt-3 h-10 w-10 min-w-10 rounded-full bg-black">
         <Avatar
-          profileImage={session?.user.profileImage}
+          profileImage={session?.user.profileImageId}
           image={session?.user.image}
         />
       </div>

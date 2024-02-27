@@ -2,12 +2,21 @@ import React from "react";
 import { env } from "~/env";
 
 type Props = {
+  preview?: string;
   profileImage?: string | null;
   image?: string | null;
   className?: string;
 };
 
-const Avatar = ({ profileImage, image, className }: Props) => {
+const Avatar = ({ preview, profileImage, image, className }: Props) => {
+  if (preview) {
+    return (
+      <img
+        className={`h-full w-full rounded-full ${className ? className : ""}`}
+        src={preview}
+      />
+    );
+  }
   if (profileImage) {
     return (
       <img

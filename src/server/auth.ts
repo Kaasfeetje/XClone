@@ -24,7 +24,7 @@ declare module "next-auth" {
       // role: UserRole;
       username?: string;
       displayName?: string;
-      profileImage?: string;
+      profileImageId?: string;
     };
   }
 
@@ -33,7 +33,7 @@ declare module "next-auth" {
     // role: UserRole;
     username?: string;
     displayName?: string;
-    profileImage?: string;
+    profileImageId?: string;
   }
 }
 
@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
         username: user.username,
         displayName: user.displayName,
-        profileImage: user.profileImage,
+        profileImageId: user.profileImageId,
       },
     }),
   },

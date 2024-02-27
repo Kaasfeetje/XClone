@@ -13,7 +13,7 @@ const UserResult = ({ user, onClick }: Props) => {
     <Link href={`/${user.username}`} onClick={onClick}>
       <div className="flex cursor-pointer items-center p-4">
         <div className="mr-2 h-10 w-10 rounded-full">
-          <Avatar profileImage={user.profileImage} image={user.image} />
+          <Avatar profileImage={user.profileImageId} image={user.image} />
         </div>
         <div>
           <span className="block font-semibold ">{user.displayName}</span>

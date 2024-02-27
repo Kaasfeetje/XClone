@@ -8,7 +8,7 @@ export const userRouter = createTRPCRouter({
         displayName: z.string().min(3).max(32),
         username: z.string().min(3).max(16),
         //Not required until we implement images
-        profileImage: z.string().nullish(),
+        profileImageId: z.string().nullish(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -19,7 +19,7 @@ export const userRouter = createTRPCRouter({
         data: {
           displayName: input.displayName,
           username: input.username.toLowerCase(),
-          profileImage: input.profileImage,
+          profileImageId: input.profileImageId,
         },
       });
       return updatedUser;
@@ -56,8 +56,8 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         displayName: z.string().min(1).nullish(),
-        profileImage: z.string().min(1).nullish(),
-        bannerImage: z.string().min(1).nullish(),
+        profileImageId: z.string().min(1).nullish(),
+        bannerImageId: z.string().min(1).nullish(),
         bio: z.string().min(1).nullish(),
         location: z.string().min(1).nullish(),
         website: z.string().url().nullish(),
@@ -70,8 +70,8 @@ export const userRouter = createTRPCRouter({
         },
         data: {
           displayName: input.displayName,
-          profileImage: input.profileImage,
-          bannerImage: input.bannerImage,
+          profileImageId: input.profileImageId,
+          bannerImageId: input.bannerImageId,
           bio: input.bio,
           location: input.location,
           website: input.website,

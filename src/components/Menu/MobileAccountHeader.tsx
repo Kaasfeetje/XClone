@@ -25,7 +25,7 @@ const MobileAccountHeader = (props: Props) => {
         >
           <div className="h-10 w-10 rounded-full bg-black">
             <Avatar
-              profileImage={session?.user.profileImage}
+              profileImage={session?.user.profileImageId}
               image={session?.user.image}
             />
           </div>

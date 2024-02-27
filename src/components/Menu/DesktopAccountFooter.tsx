@@ -20,7 +20,7 @@ const DesktopAccountFooter = (props: Props) => {
       <div className="flex items-center">
         <div className="h-10 w-10 min-w-10 rounded-full bg-black lg:ml-3">
           <Avatar
-            profileImage={session?.user.profileImage}
+            profileImage={session?.user.profileImageId}
             image={session?.user.image}
           />
         </div>
