@@ -15,23 +15,24 @@ import Link from "next/link";
 import PostImageContainer from "./PostImageContainer";
 import PostOptions from "./PostOptions";
 
-type Props = {
-  post: Post & {
-    user: User;
-    images: Image[];
-    likes: PostLike[];
-    reposts: PostRepost[];
-    mentions: User[];
-    hashtags: HashTag[];
-    bookmarks: Bookmark[];
-    _count: {
-      comments: number;
-      hashtags: number;
-      likes: number;
-      mentions: number;
-      reposts: number;
-    };
+export type PostIncludeType = {
+  user: User;
+  images: Image[];
+  likes: PostLike[];
+  reposts: PostRepost[];
+  mentions: User[];
+  hashtags: HashTag[];
+  bookmarks: Bookmark[];
+  _count: {
+    comments: number;
+    hashtags: number;
+    likes: number;
+    mentions: number;
+    reposts: number;
   };
+};
+type Props = {
+  post: Post & PostIncludeType;
   replying?: boolean;
 };
 

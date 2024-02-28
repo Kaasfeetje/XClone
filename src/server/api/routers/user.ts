@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import { postInclude } from "./post";
 
 export const userRouter = createTRPCRouter({
   completeSignup: protectedProcedure
@@ -40,6 +42,9 @@ export const userRouter = createTRPCRouter({
               },
               followerId: ctx.session.user.id,
             },
+          },
+          pinnedPost: {
+            include: postInclude(ctx.session.user.id),
           },
           _count: {
             select: {
@@ -119,6 +124,67 @@ export const userRouter = createTRPCRouter({
         data: {
           followedId: input.id,
           followerId: ctx.session.user.id,
+        },
+      });
+    }),
+  pinPost: protectedProcedure
+    .input(z.object({ postId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const post = await ctx.db.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+      });
+
+      // You can only pin your own tweets
+      if (post?.userId != ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to perform this action.",
+        });
+      }
+
+      await ctx.db.post.update({
+        where: {
+          id: post.id,
+        },
+        data: {
+          pinnedUserId: ctx.session.user.id,
+        },
+      });
+    }),
+  unPinPost: protectedProcedure
+    .input(z.object({ postId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const post = await ctx.db.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+      });
+
+      // You can only unpin your own tweets
+      if (post?.userId != ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to perform this action.",
+        });
+      }
+      // You can only unpin posts that are pinned
+      if (post.pinnedUserId != ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to perform this action.",
+        });
+      }
+
+      await ctx.db.post.update({
+        where: {
+          id: input.postId,
+        },
+        data: {
+          pinnedUser: {
+            disconnect: true,
+          },
         },
       });
     }),

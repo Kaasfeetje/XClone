@@ -25,6 +25,7 @@ declare module "next-auth" {
       username?: string;
       displayName?: string;
       profileImageId?: string;
+      pinnedPostId?: string;
     };
   }
 
@@ -34,6 +35,7 @@ declare module "next-auth" {
     username?: string;
     displayName?: string;
     profileImageId?: string;
+    pinnedPostId?: string;
   }
 }
 
@@ -52,6 +54,7 @@ export const authOptions: NextAuthOptions = {
         username: user.username,
         displayName: user.displayName,
         profileImageId: user.profileImageId,
+        pinnedPostId: user.pinnedPostId,
       },
     }),
   },

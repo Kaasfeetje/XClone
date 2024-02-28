@@ -62,11 +62,13 @@ model User {
     bannerImage    Image?  @relation("Banner Image", fields: [bannerImageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     location       String? //String for now
     website        String?
+    // Pinned
+    pinnedPost     Post?
 
     accounts      Account[]
     sessions      Session[]
     // Posts
-    posts         Post[]
+    posts         Post[]         @relation("Post Author")
     likes         PostLike[]     @relation("Likes")
     reposts       PostRepost[]   @relation("Reposts")
     mentions      Post[]         @relation("Mentions")
@@ -103,19 +105,22 @@ model Post {
     images      Image[]
 
     //Mentions/Tags & Hashtags
-    mentions    User[]       @relation("Mentions")
-    hashtags    HashTag[]    @relation("Hashtags")
+    mentions     User[]       @relation("Mentions")
+    hashtags     HashTag[]    @relation("Hashtags")
     // Author
-    user        User         @relation(fields: [userId], references: [id])
-    userId      String
+    user         User         @relation("Post Author", fields: [userId], references: [id])
+    userId       String
     // Comments
-    commentToId String?
-    commentTo   Post?        @relation("commentPost", fields: [commentToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-    comments    Post[]       @relation("commentPost")
+    commentToId  String?
+    commentTo    Post?        @relation("commentPost", fields: [commentToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    comments     Post[]       @relation("commentPost")
     //Likes & Reposts
-    likes       PostLike[]   @relation("Likes")
-    reposts     PostRepost[] @relation("Reposts")
-    bookmarks   Bookmark[]
+    likes        PostLike[]   @relation("Likes")
+    reposts      PostRepost[] @relation("Reposts")
+    bookmarks    Bookmark[]
+    // Pinned post
+    pinnedUserId String?       @unique
+    pinnedUser   User?         @relation(fields: [pinnedUserId], references: [id])
 
     @@index([userId])
     @@index([commentToId])

@@ -18,6 +18,7 @@ import EditIcon from "../icons/EditIcon";
 import PinIcon from "../icons/PinIcon";
 import HighlightIcon from "../icons/HighlightIcon";
 import { api } from "~/utils/api";
+import PinIconFilled from "../icons/PinIconFilled";
 
 type Props = {
   post: Post & {
@@ -63,8 +64,11 @@ type DropdownType = {
 
 const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
   const deletePostMutation = api.post.delete.useMutation();
+  const pinPostMutation = api.user.pinPost.useMutation();
+  const unPinPostMutation = api.user.unPinPost.useMutation();
 
   const { data: session } = useSession();
+  console.log(session?.user.pinnedPostId);
   if (post.userId == session?.user.id) {
     return (
       <>
@@ -82,11 +86,25 @@ const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
           text="Edit"
           onClick={() => alert("Not implemented yet.")}
         />
-        <PostOption
-          icon={<PinIcon className="h-5 w-5" />}
-          text="Pin to your profile"
-          onClick={() => alert("Not implemented yet.")}
-        />
+        {post.pinnedUserId == session.user.id ? (
+          <PostOption
+            icon={<PinIconFilled className="h-5 w-5" />}
+            text="Unpin from your profile"
+            onClick={() => {
+              unPinPostMutation.mutate({ postId: post.id });
+              onClose();
+            }}
+          />
+        ) : (
+          <PostOption
+            icon={<PinIcon className="h-5 w-5" />}
+            text="Pin to your profile"
+            onClick={() => {
+              pinPostMutation.mutate({ postId: post.id });
+              onClose();
+            }}
+          />
+        )}
         <PostOption
           icon={<HighlightIcon className="h-5 w-5" />}
           text="Highlight on your profile"

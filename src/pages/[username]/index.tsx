@@ -52,7 +52,14 @@ const ProfilePage = (props: Props) => {
               </BackHeader>
               <Profile profile={profile.data!} />
               {profilePageSelectedTab == ProfilePageTabs.Posts && (
-                <ProfilePostsContainer username={username as string} />
+                <ProfilePostsContainer
+                  pinnedPost={
+                    profile.data.pinnedPost
+                      ? profile.data.pinnedPost
+                      : undefined
+                  }
+                  username={username as string}
+                />
               )}
               {profilePageSelectedTab == ProfilePageTabs.Replies && (
                 <ProfileRepliesContainer username={username as string} />
