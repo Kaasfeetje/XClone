@@ -130,7 +130,7 @@ const PostFormInput = ({ value, onChange, onFocus, setText }: Props) => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <AutoHeightTextArea
         className="py-3 text-xl outline-none"
         placeholder="What is happening?!"
@@ -155,7 +155,10 @@ const PostFormInput = ({ value, onChange, onFocus, setText }: Props) => {
                 className={`flex px-4 py-3 ${autoCompleteIndex == idx ? "bg-gray-200" : ""}`}
               >
                 <div className="mr-2 h-10 w-10">
-                  <Avatar profileImage={user.profileImageId} image={user.image} />
+                  <Avatar
+                    profileImage={user.profileImageId}
+                    image={user.image}
+                  />
                 </div>
                 <div>
                   <div className="font-semibold text-grayText">

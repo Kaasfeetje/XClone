@@ -2,6 +2,8 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { postInclude } from "./post";
+import { deleteImages } from "../helpers/deleteImage";
+import { Image } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
   completeSignup: protectedProcedure
@@ -69,6 +71,30 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      // TODO: delete old profile/banner image
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.session.user.id,
+        },
+        include: {
+          bannerImage: true,
+          profileImage: true,
+        },
+      });
+      if (!user)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something has seriously gone wrong.",
+        });
+      const imagesToDelete: Image[] = [];
+      if (input.profileImageId && user.profileImage) {
+        imagesToDelete.push(user.profileImage);
+      }
+      if (input.bannerImageId && user.bannerImage) {
+        imagesToDelete.push(user.bannerImage);
+      }
+      deleteImages(imagesToDelete);
+
       const updatedUser = await ctx.db.user.update({
         where: {
           id: ctx.session.user.id,

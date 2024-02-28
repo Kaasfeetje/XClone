@@ -125,7 +125,7 @@ const CommentForm = ({ comment }: Props) => {
           />
         </div>
         <div className="w-full">
-          <div className="flex">
+          <div className="flex w-full">
             <PostFormInput
               value={text}
               onChange={handleText}
