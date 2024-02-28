@@ -13,6 +13,7 @@ import Avatar from "../common/Avatar";
 import PostActions from "./PostActions";
 import Link from "next/link";
 import PostImageContainer from "./PostImageContainer";
+import PostOptions from "./PostOptions";
 
 type Props = {
   post: Post & {
@@ -92,7 +93,7 @@ const Post = ({ post, replying }: Props) => {
           )}
         </div>
         <div className="w-full">
-          <div>
+          <div className="flex items-start">
             <Link href={`/${post.user.username}`}>
               <span className="font-semibold text-grayText hover:underline">
                 {post.user.displayName}
@@ -103,6 +104,7 @@ const Post = ({ post, replying }: Props) => {
             </Link>
             <span>*</span>
             <span>16m</span>
+            <PostOptions post={post} />
           </div>
           <div>
             {parts.map((part, index) => (
