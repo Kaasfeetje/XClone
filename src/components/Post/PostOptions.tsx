@@ -17,6 +17,7 @@ import TrashIcon from "../icons/TrashIcon";
 import EditIcon from "../icons/EditIcon";
 import PinIcon from "../icons/PinIcon";
 import HighlightIcon from "../icons/HighlightIcon";
+import { api } from "~/utils/api";
 
 type Props = {
   post: Post & {
@@ -46,14 +47,23 @@ const PostOptions = ({ post }: Props) => {
           onOutsideClick={() => setIsOpen(false)}
           className="absolute right-0 top-0 z-10 w-[350px] rounded-lg border border-gray-300 bg-white fill-black"
         >
-          <PostOptionsDropdown post={post} />
+          <PostOptionsDropdown post={post} onClose={() => setIsOpen(false)} />
         </OutsideAlerter>
       )}
     </div>
   );
 };
 
-const PostOptionsDropdown = ({ post }: Props) => {
+type DropdownType = {
+  post: Post & {
+    user: User;
+  };
+  onClose: () => void;
+};
+
+const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
+  const deletePostMutation = api.post.delete.useMutation();
+
   const { data: session } = useSession();
   if (post.userId == session?.user.id) {
     return (
@@ -61,7 +71,10 @@ const PostOptionsDropdown = ({ post }: Props) => {
         <PostOption
           icon={<TrashIcon className="h-5 w-5" />}
           text="Delete"
-          onClick={() => alert("Not implemented yet.")}
+          onClick={() => {
+            deletePostMutation.mutate({ postId: post.id });
+            onClose();
+          }}
           danger
         />
         <PostOption

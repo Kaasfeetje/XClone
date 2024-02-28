@@ -7,6 +7,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { deletePost } from "../helpers/deletePost";
 
 export const postInclude = (userId: string) => ({
   user: true,
@@ -97,6 +98,29 @@ export const postRouter = createTRPCRouter({
       });
 
       return post;
+    }),
+  delete: protectedProcedure
+    .input(z.object({ postId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.postId },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Post not found.",
+        });
+      }
+
+      if (post.userId != ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to perform this action.",
+        });
+      }
+
+      await deletePost(post.id);
     }),
   fetchAll: protectedProcedure.query(async ({ ctx }) => {
     const posts = await ctx.db.post.findMany({
