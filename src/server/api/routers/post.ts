@@ -29,6 +29,7 @@ export const postInclude = (userId: string) => ({
   },
   mentions: true,
   hashtags: true,
+  highlight: true,
   _count: true,
 });
 
@@ -169,6 +170,21 @@ export const postRouter = createTRPCRouter({
       });
       return replies;
     }),
+  fetchProfileHighlights: protectedProcedure
+    .input(z.object({ username: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const highlightedPosts = await ctx.db.post.findMany({
+        where: {
+          highlight: {
+            user: {
+              username: input.username,
+            },
+          },
+        },
+        include: postInclude(ctx.session.user.id),
+      });
+      return highlightedPosts;
+    }),
   fetchProfileLikes: protectedProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -284,6 +300,54 @@ export const postRouter = createTRPCRouter({
         });
       }
       return await ctx.db.postRepost.create({
+        data: {
+          postId: input.postId,
+          userId: ctx.session.user.id,
+        },
+      });
+    }),
+  highlight: protectedProcedure
+    .input(z.object({ postId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const post = await ctx.db.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+      });
+
+      if (!post)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Post does not exist.",
+        });
+
+      if (post.userId != ctx.session.user.id)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to perform this action.",
+        });
+
+      const highlightExists = await ctx.db.postHighlight.findUnique({
+        where: {
+          postId_userId: {
+            postId: input.postId,
+            userId: ctx.session.user.id,
+          },
+        },
+      });
+
+      if (highlightExists) {
+        return await ctx.db.postHighlight.delete({
+          where: {
+            postId_userId: {
+              postId: input.postId,
+              userId: ctx.session.user.id,
+            },
+          },
+        });
+      }
+
+      return await ctx.db.postHighlight.create({
         data: {
           postId: input.postId,
           userId: ctx.session.user.id,

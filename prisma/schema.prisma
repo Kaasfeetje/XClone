@@ -50,10 +50,13 @@ model User {
     image         String?
     email         String?   @unique
     emailVerified DateTime?
+
+    accounts    Account[]
+    sessions    Session[]
     // Added by me
-    username      String?   @unique
-    displayName   String?
-    createdAt     DateTime  @default(now())
+    username    String?   @unique
+    displayName String?
+    createdAt   DateTime  @default(now())
 
     bio            String?
     profileImageId String? @unique
@@ -62,25 +65,24 @@ model User {
     bannerImage    Image?  @relation("Banner Image", fields: [bannerImageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     location       String? //String for now
     website        String?
-    // Pinned
     pinnedPost     Post?
 
-    accounts      Account[]
-    sessions      Session[]
     // Posts
-    posts         Post[]         @relation("Post Author")
-    likes         PostLike[]     @relation("Likes")
-    reposts       PostRepost[]   @relation("Reposts")
-    mentions      Post[]         @relation("Mentions")
+    posts         Post[]          @relation("Post Author")
+    likes         PostLike[]      @relation("Likes")
+    reposts       PostRepost[]    @relation("Reposts")
+    mentions      Post[]          @relation("Mentions")
+    // Highlights
+    highlights    PostHighlight[] @relation("Highlights")
     // Bookmark
     bookmarks     Bookmark[]
     bookmarkLists BookmarkList[]
     // Following
-    following     Follow[]       @relation("Follower")
-    followers     Follow[]       @relation("Followed")
+    following     Follow[]        @relation("Follower")
+    followers     Follow[]        @relation("Followed")
     // Search
-    searches      Search[]       @relation("Searcher")
-    searched      Search[]       @relation("Searched")
+    searches      Search[]        @relation("Searcher")
+    searched      Search[]        @relation("Searched")
     // Images
     images        Image[]
 }
@@ -105,22 +107,24 @@ model Post {
     images      Image[]
 
     //Mentions/Tags & Hashtags
-    mentions     User[]       @relation("Mentions")
-    hashtags     HashTag[]    @relation("Hashtags")
+    mentions     User[]         @relation("Mentions")
+    hashtags     HashTag[]      @relation("Hashtags")
     // Author
-    user         User         @relation("Post Author", fields: [userId], references: [id])
+    user         User           @relation("Post Author", fields: [userId], references: [id])
     userId       String
     // Comments
     commentToId  String?
-    commentTo    Post?        @relation("commentPost", fields: [commentToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-    comments     Post[]       @relation("commentPost")
+    commentTo    Post?          @relation("commentPost", fields: [commentToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    comments     Post[]         @relation("commentPost")
     //Likes & Reposts
-    likes        PostLike[]   @relation("Likes")
-    reposts      PostRepost[] @relation("Reposts")
+    likes        PostLike[]     @relation("Likes")
+    reposts      PostRepost[]   @relation("Reposts")
     bookmarks    Bookmark[]
     // Pinned post
-    pinnedUserId String?       @unique
-    pinnedUser   User?         @relation(fields: [pinnedUserId], references: [id])
+    pinnedUserId String?        @unique
+    pinnedUser   User?          @relation(fields: [pinnedUserId], references: [id])
+    // Highlights
+    highlight    PostHighlight? @relation("Highlights")
 
     @@index([userId])
     @@index([commentToId])
@@ -143,6 +147,18 @@ model PostRepost {
     post      Post     @relation("Reposts", fields: [postId], references: [id], onDelete: Cascade)
     userId    String
     user      User     @relation("Reposts", fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+
+    @@unique([postId, userId])
+    @@index([userId])
+    @@index([postId])
+}
+
+model PostHighlight {
+    postId    String   @unique
+    post      Post     @relation("Highlights", fields: [postId], references: [id])
+    userId    String
+    user      User     @relation("Highlights", fields: [userId], references: [id])
     createdAt DateTime @default(now())
 
     @@unique([postId, userId])

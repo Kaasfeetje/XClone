@@ -19,11 +19,10 @@ import PinIcon from "../icons/PinIcon";
 import HighlightIcon from "../icons/HighlightIcon";
 import { api } from "~/utils/api";
 import PinIconFilled from "../icons/PinIconFilled";
+import { PostIncludeType } from "./Post";
 
 type Props = {
-  post: Post & {
-    user: User;
-  };
+  post: Post & PostIncludeType;
 };
 
 const PostOptions = ({ post }: Props) => {
@@ -56,9 +55,7 @@ const PostOptions = ({ post }: Props) => {
 };
 
 type DropdownType = {
-  post: Post & {
-    user: User;
-  };
+  post: Post & PostIncludeType;
   onClose: () => void;
 };
 
@@ -66,9 +63,9 @@ const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
   const deletePostMutation = api.post.delete.useMutation();
   const pinPostMutation = api.user.pinPost.useMutation();
   const unPinPostMutation = api.user.unPinPost.useMutation();
+  const highlightMutation = api.post.highlight.useMutation();
 
   const { data: session } = useSession();
-  console.log(session?.user.pinnedPostId);
   if (post.userId == session?.user.id) {
     return (
       <>
@@ -86,6 +83,7 @@ const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
           text="Edit"
           onClick={() => alert("Not implemented yet.")}
         />
+        {/* Pin */}
         {post.pinnedUserId == session.user.id ? (
           <PostOption
             icon={<PinIconFilled className="h-5 w-5" />}
@@ -105,11 +103,27 @@ const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
             }}
           />
         )}
-        <PostOption
-          icon={<HighlightIcon className="h-5 w-5" />}
-          text="Highlight on your profile"
-          onClick={() => alert("Not implemented yet.")}
-        />
+        {/* Highlight */}
+        {post.highlight?.postId == post.id ? (
+          <PostOption
+            icon={<HighlightIcon className="h-5 w-5" />}
+            text="Remove highlight from your profile"
+            onClick={() => {
+              highlightMutation.mutate({ postId: post.id });
+              onClose();
+            }}
+          />
+        ) : (
+          <PostOption
+            icon={<HighlightIcon className="h-5 w-5" />}
+            text="Highlight on your profile"
+            onClick={() => {
+              highlightMutation.mutate({ postId: post.id });
+              onClose();
+            }}
+          />
+        )}
+
         <PostOption
           icon={<AddListIcon className="h-5 w-5" />}
           text={`Add/remove @${post.user.username}`}

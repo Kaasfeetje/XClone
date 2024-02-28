@@ -3,6 +3,7 @@ import {
   HashTag,
   Image,
   Post,
+  PostHighlight,
   PostLike,
   PostRepost,
   User,
@@ -23,6 +24,7 @@ export type PostIncludeType = {
   mentions: User[];
   hashtags: HashTag[];
   bookmarks: Bookmark[];
+  highlight?: PostHighlight;
   _count: {
     comments: number;
     hashtags: number;
