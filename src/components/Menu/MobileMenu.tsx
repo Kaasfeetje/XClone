@@ -11,7 +11,7 @@ import MoneyIcon from "../icons/MoneyIcon";
 import ExternalLinkIcon from "../icons/ExternalLinkIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import LogOutIcon from "../icons/LogOutIcon";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import ProfileIconFilled from "../icons/ProfileIconFilled";
 import ListsIconFilled from "../icons/ListsIconFilled";
 import BookmarkIconFilled from "../icons/BookmarkIconFilled";
@@ -26,10 +26,10 @@ type Props = {
 const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen == true) {
+    if (isOpen == true && ref.current) {
       ref.current.focus();
     }
   }, [isOpen]);
@@ -50,7 +50,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<ProfileIcon className="h-6 w-6" />}
                 activeIcon={<ProfileIconFilled className="h-6 w-6" />}
                 active={router.pathname == "/[username]"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
                 href="#"
@@ -58,15 +58,15 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<LogoIcon className="h-6 w-6" />}
                 activeIcon={<LogoIcon className="h-6 w-6" />}
                 active={router.pathname == "/premium"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
-                href="#"
+                href={`/${session?.user.username}/lists`}
                 title="Lists"
                 icon={<ListsIcon className="h-6 w-6" />}
                 activeIcon={<ListsIconFilled className="h-6 w-6" />}
                 active={router.pathname == "/lists"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
                 href="/bookmarks"
@@ -74,7 +74,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<BookmarkIcon className="h-6 w-6" />}
                 activeIcon={<BookmarkIconFilled className="h-6 w-6" />}
                 active={router.pathname == "/bookmarks"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
                 href="#"
@@ -82,7 +82,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<CommunityIcon className="h-6 w-6" />}
                 activeIcon={<CommunityIconFilled className="h-6 w-6" />}
                 active={router.pathname == "/communities"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
                 href="#"
@@ -90,7 +90,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<MoneyIcon className="h-6 w-6" />}
                 activeIcon={<MoneyIcon className="h-6 w-6" />}
                 active={router.pathname == "/money"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
                 href="#"
@@ -98,7 +98,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<ExternalLinkIcon className="h-6 w-6" />}
                 activeIcon={<ExternalLinkIcon className="h-6 w-6" />}
                 active={router.pathname == "/ads"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
                 href="#"
@@ -106,7 +106,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<SettingsIcon className="h-6 w-6" />}
                 activeIcon={<SettingsIcon className="h-6 w-6" />}
                 active={router.pathname == "/settings"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
               <MenuItem
                 href="/auth/logout"
@@ -114,7 +114,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                 icon={<LogOutIcon className="h-6 w-6" />}
                 activeIcon={<LogOutIcon className="h-6 w-6" />}
                 active={router.pathname == "/auth/logout"}
-                onClick={()=>setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               />
             </ul>
           </nav>

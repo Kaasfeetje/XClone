@@ -15,6 +15,9 @@ import PostActions from "./PostActions";
 import Link from "next/link";
 import PostImageContainer from "./PostImageContainer";
 import PostOptions from "./PostOptions";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 export type PostIncludeType = {
   user: User;
@@ -105,8 +108,8 @@ const Post = ({ post, replying }: Props) => {
                 @{post.user.username}
               </span>
             </Link>
-            <span>*</span>
-            <span>16m</span>
+            <span>·</span>
+            <span className="mx-1">{`${dayjs(post.createdAt).fromNow()}`}</span>
             <PostOptions post={post} />
           </div>
           <div>

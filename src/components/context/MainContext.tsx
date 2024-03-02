@@ -23,6 +23,8 @@ export const MainContext = createContext({
   setMainPageSelectedTab: (value: MainPageTabs) => {},
   createPostModalIsOpen: false,
   setCreatePostModalIsOpen: (value: boolean) => {},
+  createListModalIsOpen: false,
+  setCreateListModalIsOpen: (value: boolean) => {},
 });
 
 type Props = {
@@ -37,6 +39,7 @@ const MainContextProvider = ({ children }: Props) => {
     MainPageTabs.ForYou,
   );
   const [createPostModalIsOpen, setCreatePostModalIsOpen] = useState(false);
+  const [createListModalIsOpen, setCreateListModalIsOpen] = useState(false);
   return (
     <MainContext.Provider
       value={{
@@ -48,6 +51,8 @@ const MainContextProvider = ({ children }: Props) => {
         setMainPageSelectedTab,
         createPostModalIsOpen,
         setCreatePostModalIsOpen,
+        createListModalIsOpen,
+        setCreateListModalIsOpen,
       }}
     >
       {children}

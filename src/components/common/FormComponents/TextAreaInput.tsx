@@ -28,7 +28,7 @@ const TextAreaInput = ({ placeholder, maxLength, value, onChange }: Props) => {
       </span>
       <div className="mt-4 px-2 pb-2 pt-3">
         <textarea
-          className="h-[60px] w-full text-xl outline-none"
+          className="h-[60px] w-full text-xl text-black outline-none"
           value={value}
           onChange={onChange}
         />

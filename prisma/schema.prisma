@@ -85,6 +85,10 @@ model User {
     searched      Search[]        @relation("Searched")
     // Images
     images        Image[]
+    // Lists
+    lists         List[]
+    listFollowers ListFollow[]    @relation("List Follower")
+    listMembers   ListMember[]    @relation("List Member")
 }
 
 model VerificationToken {
@@ -241,9 +245,53 @@ model Image {
 
     profileImageUsers User[] @relation("Profile Image")
     bannerImageUsers  User[] @relation("Banner Image")
+    bannerImageLists  List[]
 
     @@index([userId])
     @@index([postId])
+}
+
+model List {
+    id            String         @id @default(uuid())
+    name          String
+    bio           String?
+    visibility    LISTVISIBILITY @default(PUBLIC)
+    userId        String
+    user          User           @relation(fields: [userId], references: [id])
+    bannerImageId String?
+    bannerImage   Image?         @relation(fields: [bannerImageId], references: [id])
+
+    followers   ListFollow[]
+    listMembers ListMember[]
+
+    @@index([bannerImageId])
+    @@index([userId])
+}
+
+model ListMember {
+    memberId String
+    member   User   @relation("List Member", fields: [memberId], references: [id])
+    listId   String
+    list     List   @relation(fields: [listId], references: [id])
+
+    createdAt DateTime @default(now())
+
+    @@id([memberId, listId])
+    @@index([memberId])
+    @@index([listId])
+}
+
+model ListFollow {
+    followerId String
+    follower   User   @relation("List Follower", fields: [followerId], references: [id])
+    listId     String
+    list       List   @relation(fields: [listId], references: [id])
+
+    createdAt DateTime @default(now())
+
+    @@id([followerId, listId])
+    @@index([followerId])
+    @@index([listId])
 }
 
 enum COMMENTPERMISSIONS {
@@ -251,4 +299,9 @@ enum COMMENTPERMISSIONS {
     FOLLOW
     VERIFIED
     MENTIONED
+}
+
+enum LISTVISIBILITY {
+    PUBLIC
+    PRIVATE
 }

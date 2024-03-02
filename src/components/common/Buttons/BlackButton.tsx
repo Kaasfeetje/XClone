@@ -20,7 +20,7 @@ const BlackButton = ({
       onClick={onClick}
       disabled={disabled}
       type={type}
-      className={` h-9 cursor-pointer rounded-full bg-black px-4 font-bold text-white duration-200 hover:opacity-80 ${className ? className : ""}`}
+      className={` h-9 cursor-pointer rounded-full bg-black px-4 font-bold text-white duration-200 hover:opacity-80 disabled:bg-opacity-30 ${className ? className : ""}`}
     >
       {children}
     </button>

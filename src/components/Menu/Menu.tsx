@@ -88,7 +88,7 @@ const Menu = (props: Props) => {
                 active={router.pathname == "/messages"}
               />
               <MenuItem
-                href="#"
+                href={`/${session?.user.username}/lists`}
                 title="Lists"
                 icon={<ListsIcon className="h-7 w-7" />}
                 activeIcon={<ListsIconFilled className="h-7 w-7" />}
