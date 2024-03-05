@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Avatar from "~/components/common/Avatar";
 import OutsideAlerter from "~/components/hooks/useOutsideAlerter";
@@ -66,8 +67,11 @@ const ListSearchForm = ({ isOpen, setIsOpen }: Props) => {
             ) : (
               <div className="h-full w-full">
                 {fetchAutoCompleteQuery.data?.map((list) => (
-                  <div>
-                    <div className="h-10 w-10 rounded-lg bg-blue-500">
+                  <Link
+                    href={`/lists/${list.id}`}
+                    className="flex items-center p-4"
+                  >
+                    <div className="mr-2 h-10 w-10 overflow-hidden rounded-lg bg-blue-500">
                       <img
                         className="h-full w-full object-cover"
                         src={`${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${list.bannerImageId}`}
@@ -75,21 +79,23 @@ const ListSearchForm = ({ isOpen, setIsOpen }: Props) => {
                     </div>
                     <div className="flex flex-col text-lightGrayText">
                       <div>
-                        <span className="font-semibold text-grayText">
+                        <span className="font-bold text-grayText">
                           {list.name}
                         </span>
                         <span>·</span>
-                        <span>{`${list._count.listMembers} members`}</span>
+                        <span className="text-13px">{`${list._count.listMembers} members`}</span>
                       </div>
-                      <div>
-                        <Avatar
-                          profileImage={list.user.profileImageId}
-                          image={list.user.image}
-                        />
+                      <div className="-mt-1 flex items-center">
+                        <div className="mr-1 h-[14px] w-[14px]">
+                          <Avatar
+                            profileImage={list.user.profileImageId}
+                            image={list.user.image}
+                          />
+                        </div>
                         <span>{`${list._count.followers} followers`}</span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

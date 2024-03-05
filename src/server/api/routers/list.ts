@@ -1,6 +1,27 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { LISTVISIBILITY } from "@prisma/client";
+
+const hasListPermission = (userId: string) => {
+  return {
+    OR: [
+      {
+        userId: userId,
+      },
+      {
+        visibility: LISTVISIBILITY.PUBLIC,
+      },
+      {
+        followers: {
+          some: {
+            followerId: userId,
+          },
+        },
+      },
+    ],
+  };
+};
 
 export const listRouter = createTRPCRouter({
   create: protectedProcedure
@@ -17,7 +38,9 @@ export const listRouter = createTRPCRouter({
         data: {
           name: input.name,
           bio: input.bio,
-          visibility: input.isPrivate ? "PRIVATE" : "PUBLIC",
+          visibility: input.isPrivate
+            ? LISTVISIBILITY.PRIVATE
+            : LISTVISIBILITY.PUBLIC,
           bannerImageId: input.bannerImageId,
           userId: ctx.session.user.id,
         },
@@ -42,7 +65,9 @@ export const listRouter = createTRPCRouter({
         data: {
           name: input.name,
           bio: input.bio,
-          visibility: input.isPrivate ? "PRIVATE" : "PUBLIC",
+          visibility: input.isPrivate
+            ? LISTVISIBILITY.PRIVATE
+            : LISTVISIBILITY.PUBLIC,
           bannerImageId: input.bannerImageId,
         },
       });
@@ -90,10 +115,16 @@ export const listRouter = createTRPCRouter({
       const list = await ctx.db.list.findUnique({
         where: {
           id: input.listId,
+          ...hasListPermission(ctx.session.user.id),
         },
         include: {
           _count: true,
           user: true,
+          followers: {
+            where: {
+              followerId: ctx.session.user.id,
+            },
+          },
         },
       });
       return list;
@@ -144,6 +175,7 @@ export const listRouter = createTRPCRouter({
           name: {
             startsWith: input.keyword,
           },
+          ...hasListPermission(ctx.session.user.id),
         },
         include: {
           user: true,
@@ -185,5 +217,33 @@ export const listRouter = createTRPCRouter({
         })),
       });
       return { deleted, created };
+    }),
+  followList: protectedProcedure
+    .input(z.object({ listId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const followExists = await ctx.db.listFollow.findUnique({
+        where: {
+          followerId_listId: {
+            followerId: ctx.session.user.id,
+            listId: input.listId,
+          },
+        },
+      });
+      if (followExists) {
+        return await ctx.db.listFollow.delete({
+          where: {
+            followerId_listId: {
+              followerId: ctx.session.user.id,
+              listId: input.listId,
+            },
+          },
+        });
+      }
+      return await ctx.db.listFollow.create({
+        data: {
+          followerId: ctx.session.user.id,
+          listId: input.listId,
+        },
+      });
     }),
 });

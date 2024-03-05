@@ -3,13 +3,17 @@ import { env } from "~/env";
 import LockIcon from "../icons/LockIcon";
 import Link from "next/link";
 import Avatar from "../common/Avatar";
-import { List, User } from "@prisma/client";
+import { List, ListFollow, User } from "@prisma/client";
 import EditFormModal from "./EditFormModal";
 import ListMembersModal from "./ListMembersModal";
+import { useSession } from "next-auth/react";
+import BlackButton from "../common/Buttons/BlackButton";
+import { api } from "~/utils/api";
 
 type Props = {
   list?: List & {
     user: User;
+    followers: ListFollow[];
     _count: {
       followers: number;
       listMembers: number;
@@ -18,6 +22,11 @@ type Props = {
 };
 
 const DetailedList = ({ list }: Props) => {
+  const { data: session } = useSession();
+
+  const followListMutation = api.list.followList.useMutation();
+  // TODO: optimistically toggle follow
+
   const [editListModalIsOpen, setEditListModalIsOpen] = useState(false);
   const [listMembersModalIsOpen, setListMembersModalIsOpen] = useState(false);
 
@@ -79,12 +88,32 @@ const DetailedList = ({ list }: Props) => {
           </div>
         </div>
         <div className="mb-3 mt-5">
-          <button
-            onClick={() => setEditListModalIsOpen(true)}
-            className="h-9 rounded-full border border-gray-300 px-4 font-semibold duration-200 hover:bg-gray-200"
-          >
-            Edit List
-          </button>
+          {list.userId == session?.user.id && (
+            <button
+              onClick={() => setEditListModalIsOpen(true)}
+              className="h-9 rounded-full border border-gray-300 px-4 font-semibold duration-200 hover:bg-gray-200"
+            >
+              Edit List
+            </button>
+          )}
+          {list.userId != session?.user.id && (
+            <>
+              {list.followers.length == 1 ? (
+                <button
+                  onClick={() => followListMutation.mutate({ listId: list.id })}
+                  className="h-9 rounded-full border border-gray-300 px-4 font-semibold duration-200 hover:bg-gray-200"
+                >
+                  Unfollow
+                </button>
+              ) : (
+                <BlackButton
+                  onClick={() => followListMutation.mutate({ listId: list.id })}
+                >
+                  Follow
+                </BlackButton>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
