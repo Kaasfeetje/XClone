@@ -6,9 +6,14 @@ import TextInput from "../common/FormComponents/TextInput";
 import TextAreaInput from "../common/FormComponents/TextAreaInput";
 import { api } from "~/utils/api";
 import axios from "axios";
+import { List } from "@prisma/client";
+import { env } from "~/env";
+import AngleDownIcon from "../icons/AngleDownIcon";
 
 type Props = {
   headerText: string;
+  saveText: string;
+  list?: List;
   onSubmit: (listParams: {
     name: string;
     bio?: string;
@@ -16,17 +21,27 @@ type Props = {
     bannerImageId?: string;
   }) => void;
   onCancel: () => void;
+  onDelete?: () => void;
 };
 
-const ListForm = ({ headerText, onSubmit, onCancel }: Props) => {
+const ListForm = ({
+  headerText,
+  saveText,
+  list,
+  onSubmit,
+  onCancel,
+  onDelete,
+}: Props) => {
   const getUploadPresignedUrlMutation =
     api.upload.getUploadPresignedUrl.useMutation();
   const deleteUnusedUrlsMutation =
     api.upload.deleteUnusedPresignedUrls.useMutation();
 
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [name, setName] = useState(list?.name || "");
+  const [bio, setBio] = useState(list?.bio || "");
+  const [isPrivate, setIsPrivate] = useState(
+    list?.visibility == "PRIVATE" ? true : false,
+  );
   const [bannerImageFile, setBannerImageFile] = useState<File>();
 
   useEffect(() => {
@@ -95,14 +110,18 @@ const ListForm = ({ headerText, onSubmit, onCancel }: Props) => {
         </div>
         <span className="w-full text-xl font-semibold">{headerText}</span>
         <BlackButton disabled={name == ""} type="submit" onClick={handleSubmit}>
-          Next
+          {saveText}
         </BlackButton>
       </div>
       <div className="relative aspect-[3/1] w-full bg-gray-300">
         <img
           className="h-full w-full"
           src={
-            bannerImageFile ? URL.createObjectURL(bannerImageFile) : undefined
+            bannerImageFile
+              ? URL.createObjectURL(bannerImageFile)
+              : list
+                ? `${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${list.bannerImageId}`
+                : undefined
           }
         />
         <label className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black bg-opacity-50 fill-white hover:bg-opacity-40">
@@ -141,6 +160,25 @@ const ListForm = ({ headerText, onSubmit, onCancel }: Props) => {
           checked={isPrivate}
         />
       </div>
+      {list && (
+        <>
+          <div
+            onClick={() => alert("Not implemented yet.")}
+            className="flex cursor-pointer justify-between px-4 py-3"
+          >
+            <span>Manage members</span>
+            <div>
+              <AngleDownIcon className="h-4 w-4 -rotate-90 fill-lightGrayText" />
+            </div>
+          </div>
+          <button
+            onClick={onDelete}
+            className="mt-auto w-full p-4 text-red-500 hover:bg-red-100"
+          >
+            Delete List
+          </button>
+        </>
+      )}
     </form>
   );
 };

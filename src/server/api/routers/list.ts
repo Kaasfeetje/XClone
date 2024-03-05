@@ -23,6 +23,40 @@ export const listRouter = createTRPCRouter({
       });
       return list;
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        listId: z.string().min(1),
+        name: z.string().min(1),
+        bio: z.string().min(1).nullish(),
+        isPrivate: z.boolean().nullish(),
+        bannerImageId: z.string().min(1).nullish(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const list = await ctx.db.list.update({
+        where: {
+          id: input.listId,
+        },
+        data: {
+          name: input.name,
+          bio: input.bio,
+          visibility: input.isPrivate ? "PRIVATE" : "PUBLIC",
+          bannerImageId: input.bannerImageId,
+        },
+      });
+      return list;
+    }),
+  delete: protectedProcedure
+    .input(z.object({ listId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const list = await ctx.db.list.delete({
+        where: {
+          id: input.listId,
+        },
+      });
+      return list;
+    }),
   fetchUserLists: protectedProcedure
     .input(
       z.object({

@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { env } from "~/env";
 import LockIcon from "../icons/LockIcon";
 import Link from "next/link";
 import Avatar from "../common/Avatar";
 import { List, User } from "@prisma/client";
+import Modal from "../common/Modal";
+import ListForm from "./ListForm";
+import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 type Props = {
   list?: List & {
@@ -16,12 +20,59 @@ type Props = {
 };
 
 const DetailedList = ({ list }: Props) => {
+  const router = useRouter();
+  const updateListMutation = api.list.update.useMutation();
+  const deleteListMutation = api.list.delete.useMutation();
+  const [editListModalIsOpen, setEditListModalIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (deleteListMutation.isSuccess) {
+      router.push(`/`);
+    }
+  }, [deleteListMutation.isSuccess]);
+
   if (!list) {
     return <div>Loading...</div>;
   }
 
+  const handleEditList = ({
+    name,
+    bio,
+    isPrivate,
+    bannerImageId,
+  }: {
+    name: string;
+    bio?: string;
+    isPrivate?: boolean;
+    bannerImageId?: string;
+  }) => {
+    updateListMutation.mutate({
+      listId: list.id,
+      name,
+      bio,
+      isPrivate,
+      bannerImageId,
+    });
+
+    setEditListModalIsOpen(false);
+  };
+
   return (
     <div>
+      <Modal
+        centered
+        isOpen={editListModalIsOpen}
+        onClose={() => setEditListModalIsOpen(false)}
+      >
+        <ListForm
+          headerText="Edit List"
+          saveText="Done"
+          list={list}
+          onSubmit={handleEditList}
+          onCancel={() => setEditListModalIsOpen(false)}
+          onDelete={() => deleteListMutation.mutate({ listId: list.id })}
+        />
+      </Modal>
       <div className="aspect-[3/1] w-full bg-gray-300">
         <img
           className="h-full w-full"
@@ -61,7 +112,10 @@ const DetailedList = ({ list }: Props) => {
           </div>
         </div>
         <div className="mb-3 mt-5">
-          <button className="h-9 rounded-full border border-gray-300 px-4 font-semibold duration-200 hover:bg-gray-200">
+          <button
+            onClick={() => setEditListModalIsOpen(true)}
+            className="h-9 rounded-full border border-gray-300 px-4 font-semibold duration-200 hover:bg-gray-200"
+          >
             Edit List
           </button>
         </div>
