@@ -22,6 +22,7 @@ type Props = {
   }) => void;
   onCancel: () => void;
   onDelete?: () => void;
+  onManageMembers?: () => void;
 };
 
 const ListForm = ({
@@ -31,6 +32,7 @@ const ListForm = ({
   onSubmit,
   onCancel,
   onDelete,
+  onManageMembers,
 }: Props) => {
   const getUploadPresignedUrlMutation =
     api.upload.getUploadPresignedUrl.useMutation();
@@ -163,7 +165,7 @@ const ListForm = ({
       {list && (
         <>
           <div
-            onClick={() => alert("Not implemented yet.")}
+            onClick={onManageMembers}
             className="flex cursor-pointer justify-between px-4 py-3"
           >
             <span>Manage members</span>

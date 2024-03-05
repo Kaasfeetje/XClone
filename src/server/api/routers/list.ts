@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
 
 export const listRouter = createTRPCRouter({
   create: protectedProcedure
@@ -96,6 +97,44 @@ export const listRouter = createTRPCRouter({
         },
       });
       return list;
+    }),
+  fetchListMembers: protectedProcedure
+    .input(z.object({ listId: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const listMembers = await ctx.db.listMember.findMany({
+        where: {
+          listId: input.listId,
+        },
+        include: {
+          member: true,
+        },
+      });
+      return listMembers;
+    }),
+  deleteListMember: protectedProcedure
+    .input(z.object({ memberId: z.string().min(1), listId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const list = await ctx.db.list.findUnique({
+        where: {
+          id: input.listId,
+          userId: ctx.session.user.id,
+        },
+      });
+      if (!list)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to perform this action.",
+        });
+
+      const deleted = await ctx.db.listMember.delete({
+        where: {
+          memberId_listId: {
+            listId: input.listId,
+            memberId: input.memberId,
+          },
+        },
+      });
+      return deleted;
     }),
   fetchAutoComplete: protectedProcedure
     .input(z.object({ keyword: z.string() }))
