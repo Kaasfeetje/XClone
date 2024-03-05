@@ -5,7 +5,7 @@ type Props = {
   children: React.ReactNode;
   disabled?: boolean;
   type?: "submit" | "reset" | "button";
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
 const TextButton = ({ className, children, disabled, onClick }: Props) => {

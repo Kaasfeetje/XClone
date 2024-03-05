@@ -224,6 +224,33 @@ export const postRouter = createTRPCRouter({
       });
       return comments;
     }),
+  fetchListPosts: protectedProcedure
+    .input(z.object({ listId: z.string().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const list = await ctx.db.list.findUnique({
+        where: {
+          id: input.listId,
+        },
+        include: {
+          listMembers: {
+            select: {
+              memberId: true,
+            },
+          },
+        },
+      });
+
+      const posts = await ctx.db.post.findMany({
+        where: {
+          userId: {
+            in: list?.listMembers.map((user) => user.memberId),
+          },
+        },
+        include: postInclude(ctx.session.user.id),
+      });
+
+      return posts;
+    }),
   like: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))
     .mutation(async ({ input, ctx }) => {

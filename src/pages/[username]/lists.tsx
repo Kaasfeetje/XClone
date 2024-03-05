@@ -8,6 +8,7 @@ import Layout from "~/components/common/Layout";
 import Modal from "~/components/common/Modal";
 import { MainContext } from "~/components/context/MainContext";
 import ListsHeader from "~/components/headers/ListsHeader/ListsHeader";
+import PinIcon from "~/components/icons/PinIcon";
 import { api } from "~/utils/api";
 type Props = {};
 
@@ -84,7 +85,22 @@ const ListsPage = (props: Props) => {
               <h2 className="text-xl font-bold">Your lists</h2>
               <div className="py-4">
                 {fetchUserLists.data?.map((list) => (
-                  <List key={list.id} list={list} />
+                  <div className="flex items-center justify-between">
+                    <List
+                      key={list.id}
+                      list={list}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        router.push(`/lists/${list.id}`);
+                      }}
+                    />
+                    <div
+                      onClick={(e) => e.preventDefault()}
+                      className="flex min-h-[34px] min-w-[34px] items-center justify-center rounded-full fill-blue-500 duration-200 hover:bg-blue-100"
+                    >
+                      <PinIcon className="h-5 w-5" />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

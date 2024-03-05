@@ -14,13 +14,14 @@ type Props = {
       listMembers: number;
     };
   };
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
-const List = ({ list }: Props) => {
+const List = ({ list, onClick }: Props) => {
   return (
-    <Link
-      href={`/lists/${list.id}`}
-      className="flex items-center p-4 text-13px text-lightGrayText"
+    <div
+      onClick={onClick}
+      className="flex w-full cursor-pointer items-center p-4 text-13px text-lightGrayText"
     >
       <div className="mr-4 h-12 min-h-12 w-12 min-w-12 overflow-hidden rounded-lg ">
         <img
@@ -55,13 +56,7 @@ const List = ({ list }: Props) => {
           <span>{`@${list.user.username}`}</span>
         </Link>
       </div>
-      <div
-        onClick={(e) => e.preventDefault()}
-        className="flex min-h-[34px] min-w-[34px] items-center justify-center rounded-full fill-blue-500 duration-200 hover:bg-blue-100"
-      >
-        <PinIcon className="h-5 w-5" />
-      </div>
-    </Link>
+    </div>
   );
 };
 

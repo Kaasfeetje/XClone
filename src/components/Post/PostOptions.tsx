@@ -20,6 +20,7 @@ import HighlightIcon from "../icons/HighlightIcon";
 import { api } from "~/utils/api";
 import PinIconFilled from "../icons/PinIconFilled";
 import { PostIncludeType } from "./Post";
+import AddRemoveToListModal from "../Lists/AddRemoveToListModal";
 
 type Props = {
   post: Post & PostIncludeType;
@@ -27,6 +28,7 @@ type Props = {
 
 const PostOptions = ({ post }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [addToListIsOpen, setAddToListIsOpen] = useState(false);
 
   return (
     <div
@@ -47,9 +49,21 @@ const PostOptions = ({ post }: Props) => {
           onOutsideClick={() => setIsOpen(false)}
           className="absolute right-0 top-0 z-10 w-[350px] rounded-lg border border-gray-300 bg-white fill-black"
         >
-          <PostOptionsDropdown post={post} onClose={() => setIsOpen(false)} />
+          <PostOptionsDropdown
+            post={post}
+            onClose={() => setIsOpen(false)}
+            setAddToListIsOpen={setAddToListIsOpen}
+          />
         </OutsideAlerter>
       )}
+      <>
+        <AddRemoveToListModal
+          isOpen={addToListIsOpen}
+          setIsOpen={setAddToListIsOpen}
+          postUsername={post.user.username!}
+          userId={post.userId}
+        />
+      </>
     </div>
   );
 };
@@ -57,9 +71,14 @@ const PostOptions = ({ post }: Props) => {
 type DropdownType = {
   post: Post & PostIncludeType;
   onClose: () => void;
+  setAddToListIsOpen: (value: boolean) => void;
 };
 
-const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
+const PostOptionsDropdown = ({
+  post,
+  onClose,
+  setAddToListIsOpen,
+}: DropdownType) => {
   const deletePostMutation = api.post.delete.useMutation();
   const pinPostMutation = api.user.pinPost.useMutation();
   const unPinPostMutation = api.user.unPinPost.useMutation();
@@ -168,8 +187,9 @@ const PostOptionsDropdown = ({ post, onClose }: DropdownType) => {
       <PostOption
         icon={<AddListIcon className="h-5 w-5" />}
         text={`Add/remove @username from Lists`}
-        onClick={() => alert("Not implemented yet.")}
+        onClick={() => setAddToListIsOpen(true)}
       />
+
       <PostOption
         icon={<MuteIcon className="h-5 w-5" />}
         text={`Mute @username`}
