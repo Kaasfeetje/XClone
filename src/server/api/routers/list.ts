@@ -167,6 +167,19 @@ export const listRouter = createTRPCRouter({
       });
       return deleted;
     }),
+  fetchListFollowers: protectedProcedure
+    .input(z.object({ listId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const followers = await ctx.db.listFollow.findMany({
+        where: {
+          listId: input.listId,
+        },
+        include: {
+          follower: true,
+        },
+      });
+      return followers;
+    }),
   fetchAutoComplete: protectedProcedure
     .input(z.object({ keyword: z.string() }))
     .query(async ({ input, ctx }) => {

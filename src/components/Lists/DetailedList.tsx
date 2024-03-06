@@ -9,6 +9,7 @@ import ListMembersModal from "./ListMembersModal";
 import { useSession } from "next-auth/react";
 import BlackButton from "../common/Buttons/BlackButton";
 import { api } from "~/utils/api";
+import ListFollowersModal from "./ListFollowersModal";
 
 type Props = {
   list?: List & {
@@ -29,6 +30,8 @@ const DetailedList = ({ list }: Props) => {
 
   const [editListModalIsOpen, setEditListModalIsOpen] = useState(false);
   const [listMembersModalIsOpen, setListMembersModalIsOpen] = useState(false);
+  const [listFollowersModalIsOpen, setListFollowersModalIsOpen] =
+    useState(false);
 
   if (!list) {
     return <div>Loading...</div>;
@@ -45,6 +48,11 @@ const DetailedList = ({ list }: Props) => {
         listId={list.id}
         isOpen={listMembersModalIsOpen}
         setIsOpen={setListMembersModalIsOpen}
+      />
+      <ListFollowersModal
+        listId={list.id}
+        isOpen={listFollowersModalIsOpen}
+        setIsOpen={setListFollowersModalIsOpen}
       />
       <div className="aspect-[3/1] w-full bg-gray-300">
         <img
@@ -82,7 +90,10 @@ const DetailedList = ({ list }: Props) => {
             <span className="text-bold">{list._count.listMembers}</span>
             <span className="text-lightGrayText">{` Members`}</span>
           </div>
-          <div className="cursor-pointer hover:underline">
+          <div
+            onClick={() => setListFollowersModalIsOpen(true)}
+            className="cursor-pointer hover:underline"
+          >
             <span className="text-bold">{list._count.followers}</span>
             <span className="text-lightGrayText">{` Followers`}</span>
           </div>
