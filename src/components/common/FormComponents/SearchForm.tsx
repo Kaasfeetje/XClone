@@ -115,7 +115,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
               </div>
             ) : (
               <div className="h-full w-full">
-                <Link href={`/explore/${keyword}`}>
+                <Link href={`/explore/${keyword.replace("#", "%23")}`}>
                   <div className="p-4">Search for "{keyword}"</div>
                 </Link>
                 {searchAutocompleteQuery.data?.hashtags?.map((hashtag) => (

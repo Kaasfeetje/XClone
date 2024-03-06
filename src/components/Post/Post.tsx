@@ -27,7 +27,7 @@ export type PostIncludeType = {
   mentions: User[];
   hashtags: HashTag[];
   bookmarks: Bookmark[];
-  highlight?: PostHighlight;
+  highlight: PostHighlight | null;
   _count: {
     comments: number;
     hashtags: number;

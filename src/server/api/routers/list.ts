@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { LISTVISIBILITY } from "@prisma/client";
 
-const hasListPermission = (userId: string) => {
+export const hasListPermission = (userId: string) => {
   return {
     OR: [
       {

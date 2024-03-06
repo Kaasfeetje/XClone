@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { postInclude } from "./post";
+import { hasListPermission } from "./list";
 
 export const searchRouter = createTRPCRouter({
   search: protectedProcedure
@@ -108,5 +110,88 @@ export const searchRouter = createTRPCRouter({
       });
 
       return { hashtags, users };
+    }),
+  fetchSearchTop: protectedProcedure
+    .input(z.object({ keyword: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const posts = await ctx.db.post.findMany({
+        where: {
+          textContent: {
+            contains: input.keyword,
+          },
+        },
+        include: postInclude(ctx.session.user.id),
+      });
+      return posts;
+    }),
+  fetchSearchLatest: protectedProcedure
+    .input(z.object({ keyword: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const posts = await ctx.db.post.findMany({
+        where: {
+          textContent: {
+            contains: input.keyword,
+          },
+        },
+        include: postInclude(ctx.session.user.id),
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return posts;
+    }),
+  fetchSearchPeople: protectedProcedure
+    .input(z.object({ keyword: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const users = await ctx.db.user.findMany({
+        where: {
+          OR: [
+            {
+              username: {
+                contains: input.keyword,
+              },
+            },
+            {
+              displayName: {
+                contains: input.keyword,
+              },
+            },
+          ],
+        },
+      });
+      return users;
+    }),
+  fetchSearchMedia: protectedProcedure
+    .input(z.object({ keyword: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const posts = await ctx.db.post.findMany({
+        where: {
+          textContent: {
+            contains: input.keyword,
+          },
+          images: {
+            some: {},
+          },
+        },
+        include: postInclude(ctx.session.user.id),
+      });
+      return posts;
+    }),
+  fetchSearchList: protectedProcedure
+    .input(z.object({ keyword: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const lists = await ctx.db.list.findMany({
+        where: {
+          name: {
+            contains: input.keyword,
+          },
+          ...hasListPermission(ctx.session.user.id),
+        },
+        include: {
+          user: true,
+          _count: true,
+        },
+      });
+      return lists;
     }),
 });
