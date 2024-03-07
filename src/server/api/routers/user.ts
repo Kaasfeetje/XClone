@@ -136,7 +136,7 @@ export const userRouter = createTRPCRouter({
       });
 
       if (followExists) {
-        return await ctx.db.follow.delete({
+        await ctx.db.follow.delete({
           where: {
             followerId_followedId: {
               followedId: input.id,
@@ -144,14 +144,16 @@ export const userRouter = createTRPCRouter({
             },
           },
         });
+        return false;
       }
 
-      return await ctx.db.follow.create({
+      await ctx.db.follow.create({
         data: {
           followedId: input.id,
           followerId: ctx.session.user.id,
         },
       });
+      return true;
     }),
   pinPost: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))

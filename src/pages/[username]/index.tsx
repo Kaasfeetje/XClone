@@ -25,10 +25,6 @@ const ProfilePage = (props: Props) => {
   const { profilePageSelectedTab, setProfilePageSelectedTab } =
     useContext(MainContext);
 
-  if (!profile.data) {
-    return <>Loading</>;
-  }
-
   return (
     <>
       <Head>
@@ -39,45 +35,45 @@ const ProfilePage = (props: Props) => {
       <Layout
         menu={<Menu />}
         main={
-          profile.data ? (
-            <div className="h-full">
-              <BackHeader>
-                <div className="flex flex-col">
-                  <span className="text-xl font-semibold text-grayText">
-                    {profile.data?.displayName}
-                  </span>
-                  <span className="text-13px text-lightGrayText">
-                    {0} posts
-                  </span>
-                </div>
-              </BackHeader>
-              <Profile profile={profile.data!} />
-              {profilePageSelectedTab == ProfilePageTabs.Posts && (
-                <ProfilePostsContainer
-                  pinnedPost={
-                    profile.data.pinnedPost
-                      ? profile.data.pinnedPost
-                      : undefined
-                  }
-                  username={username as string}
-                />
-              )}
-              {profilePageSelectedTab == ProfilePageTabs.Replies && (
-                <ProfileRepliesContainer username={username as string} />
-              )}
-              {profilePageSelectedTab == ProfilePageTabs.Highlights && (
-                <ProfileHighlightsContainer username={username as string} />
-              )}
-              {profilePageSelectedTab == ProfilePageTabs.Media && (
-                <div>Media</div>
-              )}
-              {profilePageSelectedTab == ProfilePageTabs.Likes && (
-                <ProfileLikesContainer username={username as string} />
-              )}
-            </div>
-          ) : (
-            <div>Loading...</div>
-          )
+          <div className="h-full">
+            <BackHeader>
+              <div className="flex flex-col">
+                <span className="text-xl font-semibold text-grayText">
+                  {profile.data?.displayName}
+                </span>
+                <span className="text-13px text-lightGrayText">{0} posts</span>
+              </div>
+            </BackHeader>
+            {profile.data ? (
+              <>
+                <Profile profile={profile.data!} />
+                {profilePageSelectedTab == ProfilePageTabs.Posts && (
+                  <ProfilePostsContainer
+                    pinnedPost={
+                      profile.data.pinnedPost
+                        ? profile.data.pinnedPost
+                        : undefined
+                    }
+                    username={username as string}
+                  />
+                )}
+                {profilePageSelectedTab == ProfilePageTabs.Replies && (
+                  <ProfileRepliesContainer username={username as string} />
+                )}
+                {profilePageSelectedTab == ProfilePageTabs.Highlights && (
+                  <ProfileHighlightsContainer username={username as string} />
+                )}
+                {profilePageSelectedTab == ProfilePageTabs.Media && (
+                  <div>Media</div>
+                )}
+                {profilePageSelectedTab == ProfilePageTabs.Likes && (
+                  <ProfileLikesContainer username={username as string} />
+                )}
+              </>
+            ) : (
+              <div>loading...</div>
+            )}
+          </div>
         }
         sidebar={
           <div>

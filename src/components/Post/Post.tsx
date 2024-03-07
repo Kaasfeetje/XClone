@@ -20,7 +20,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 export type PostIncludeType = {
-  user: User;
+  user: User & {
+    followers: User[];
+  };
   images: Image[];
   likes: PostLike[];
   reposts: PostRepost[];

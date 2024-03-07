@@ -130,7 +130,7 @@ const PostForm = (props: Props) => {
         {isOpen && (
           <Select
             dropdownTitle="Who can reply?"
-            dropdownDescription="Choose who can reply to this post.\n Anyone mentioned can always reply."
+            dropdownDescription="Choose who can reply to this post. Anyone mentioned can always reply."
             options={commentPermissionOptions}
             selected={commentPermission}
             setSelected={setCommentPermission}

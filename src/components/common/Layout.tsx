@@ -48,8 +48,8 @@ const Layout = ({ menu, main, sidebar }: Props) => {
           onClose={() => setCreatePostModalIsOpen(false)}
           centered
         >
-          <div className="z-10 h-full w-full overflow-y-auto bg-white md:h-fit md:max-h-[calc(80%-53px)] md:w-[650px] md:rounded-2xl">
-            <div className="sticky top-0 z-20 flex h-[53px] items-center justify-between bg-white px-4">
+          <div className="z-10 h-full w-full  bg-white md:h-fit md:max-h-[calc(80%-53px)] md:w-[650px] md:overflow-y-auto md:rounded-2xl">
+            <div className="sticky top-0 z-20 flex h-[53px] items-center justify-between rounded-2xl bg-white px-4">
               <div
                 onClick={() => setCreatePostModalIsOpen(false)}
                 className="-ml-2 flex h-[34px] w-[34px] items-center justify-center rounded-full hover:bg-gray-200"
@@ -60,7 +60,7 @@ const Layout = ({ menu, main, sidebar }: Props) => {
               <TextButton>Drafts</TextButton>
             </div>
             {fetchPost.data && <Post post={fetchPost.data} replying />}
-            <div className=" px-4 py-2">
+            <div className="px-4 py-2">
               {createPostModalIsOpen && (
                 <DetailedPostForm
                   replyTo={fetchPost.data ? fetchPost.data : undefined}

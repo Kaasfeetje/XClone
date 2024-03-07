@@ -10,7 +10,15 @@ import {
 import { deletePost } from "../helpers/deletePost";
 
 export const postInclude = (userId: string) => ({
-  user: true,
+  user: {
+    include: {
+      followers: {
+        where: {
+          followerId: userId,
+        },
+      },
+    },
+  },
   images: true,
   likes: {
     where: {

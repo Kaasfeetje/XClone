@@ -21,6 +21,7 @@ import { api } from "~/utils/api";
 import PinIconFilled from "../icons/PinIconFilled";
 import { PostIncludeType } from "./Post";
 import AddRemoveToListModal from "../Lists/AddRemoveToListModal";
+import FollowedIcon from "../icons/FollowedIcon";
 
 type Props = {
   post: Post & PostIncludeType;
@@ -79,12 +80,28 @@ const PostOptionsDropdown = ({
   onClose,
   setAddToListIsOpen,
 }: DropdownType) => {
+  // Own post mutations
   const deletePostMutation = api.post.delete.useMutation();
   const pinPostMutation = api.user.pinPost.useMutation();
   const unPinPostMutation = api.user.unPinPost.useMutation();
   const highlightMutation = api.post.highlight.useMutation();
 
+  // Other posts mutations
+  const [following, setFollowing] = useState(post.user.followers.length == 1);
+  const followMutation = api.user.follow.useMutation({
+    onSuccess(data) {
+      if (data != following) setFollowing(data);
+    },
+  });
+
   const { data: session } = useSession();
+
+  const onFollow = () => {
+    if (followMutation.isLoading) return;
+    followMutation.mutate({ id: post.userId });
+    setFollowing(!following);
+  };
+
   if (post.userId == session?.user.id) {
     return (
       <>
@@ -179,11 +196,19 @@ const PostOptionsDropdown = ({
         text="Not interested in this post"
         onClick={() => alert("Not implemented yet.")}
       />
-      <PostOption
-        icon={<UnfollowIcon className="h-5 w-5" />}
-        text={`Unfollow @username`}
-        onClick={() => alert("Not implemented yet.")}
-      />
+      {following ? (
+        <PostOption
+          icon={<UnfollowIcon className="h-5 w-5" />}
+          text={`Unfollow @${post.user.username}`}
+          onClick={onFollow}
+        />
+      ) : (
+        <PostOption
+          icon={<FollowedIcon className="h-5 w-5" />}
+          text={`Follow @${post.user.username}`}
+          onClick={onFollow}
+        />
+      )}
       <PostOption
         icon={<AddListIcon className="h-5 w-5" />}
         text={`Add/remove @username from Lists`}
