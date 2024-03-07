@@ -33,6 +33,49 @@ export const postInclude = (userId: string) => ({
   _count: true,
 });
 
+const commentPermissionQuery = (userId: string) => ({
+  OR: [
+    {
+      commentPermission: COMMENTPERMISSIONS.EVERYONE,
+    },
+    {
+      commentPermission: COMMENTPERMISSIONS.FOLLOW,
+      user: {
+        OR: [
+          {
+            following: {
+              some: {
+                followedId: userId,
+              },
+            },
+          },
+          {
+            id: userId,
+          },
+        ],
+      },
+    },
+    {
+      commentPermission: COMMENTPERMISSIONS.VERIFIED,
+    },
+    {
+      commentPermission: COMMENTPERMISSIONS.MENTIONED,
+      OR: [
+        {
+          mentions: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+        {
+          userId: userId,
+        },
+      ],
+    },
+  ],
+});
+
 export const postRouter = createTRPCRouter({
   //THIS IS FOR DEV ONLY OBVIOUSLY HAS TO BE REMOVED LATER
   deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
@@ -53,6 +96,22 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      console.log(input);
+      if (input.commentToId) {
+        const post = await ctx.db.post.findUnique({
+          where: {
+            id: input.commentToId,
+            ...commentPermissionQuery(ctx.session.user.id),
+          },
+        });
+
+        if (!post)
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You do not have permission to perform this action.",
+          });
+      }
+
       //Add mentions
       const mentionRegex = /@\w{1,50}/g;
       let usernamesMentioned = [];
@@ -81,6 +140,7 @@ export const postRouter = createTRPCRouter({
           textContent: input.textContent,
           userId: ctx.session.user.id,
           commentToId: input.commentToId,
+          commentPermission: input.commentPermission,
           mentions: {
             connect: mentions.map((m) => ({ id: m.id })),
           },

@@ -25,6 +25,7 @@ const ExploreResultPage = (props: Props) => {
   const router = useRouter();
   const { keyword } = router.query;
   const [currentTab, setCurrentTab] = useState(SearchTabOptions.Top);
+  //   TODO: Probably only query with the actual hashtag instead of the word
 
   return (
     <>

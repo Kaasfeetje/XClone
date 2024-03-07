@@ -33,24 +33,30 @@ const PostPage = (props: Props) => {
       <Layout
         menu={<Menu />}
         main={
-          post.data ? (
-            <div className="h-full">
-              <BackHeader>
-                <div className="text-xl font-semibold">Post</div>
-              </BackHeader>
-              <DetailedPost post={post.data} />
-              <div className="hidden px-4 md:block">
-                <CommentForm comment={post.data} />
-              </div>
-              <div>
-                {comments.data?.map((comment) => (
+          <div className="h-full">
+            <BackHeader>
+              <div className="text-xl font-semibold">Post</div>
+            </BackHeader>
+            {post.data ? (
+              <>
+                <DetailedPost post={post.data} />
+                <div className="hidden px-4 md:block">
+                  <CommentForm comment={post.data} />
+                </div>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+            <div>
+              {comments.data ? (
+                comments.data?.map((comment) => (
                   <Post key={comment.id} post={comment} />
-                ))}
-              </div>
+                ))
+              ) : (
+                <div>Loading...</div>
+              )}
             </div>
-          ) : (
-            <div>Loading...</div>
-          )
+          </div>
         }
         sidebar={
           <div>
