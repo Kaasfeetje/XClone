@@ -34,7 +34,7 @@ const PostOptions = ({ post }: Props) => {
   return (
     <div
       onClick={(e) => e.preventDefault()}
-      className="relative -mr-2 -mt-2 ml-auto flex items-center"
+      className="relative -mr-2 -mt-2 ml-auto flex min-w-9 items-center"
     >
       <button
         onClick={(e) => {

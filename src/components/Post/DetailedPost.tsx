@@ -110,7 +110,7 @@ const DetailedPost = ({ post }: Props) => {
               )}
             </>
           ))}
-          <PostImageContainer images={post.images} />
+          <PostImageContainer images={post.images} postId={post.id} />
         </div>
         <div className="my-4 flex text-lightGrayText">
           <time dateTime={post.createdAt.toUTCString()}>

@@ -1,5 +1,6 @@
 import {
   Bookmark,
+  Follow,
   HashTag,
   Image,
   Post,
@@ -21,7 +22,7 @@ dayjs.extend(relativeTime);
 
 export type PostIncludeType = {
   user: User & {
-    followers: User[];
+    followers: Follow[];
   };
   images: Image[];
   likes: PostLike[];
@@ -41,9 +42,10 @@ export type PostIncludeType = {
 type Props = {
   post: Post & PostIncludeType;
   replying?: boolean;
+  imageView?: boolean;
 };
 
-const Post = ({ post, replying }: Props) => {
+const Post = ({ post, replying, imageView }: Props) => {
   const [parts, setParts] = useState<string[]>([]);
   const [between, setBetween] = useState<{ text: string; href: string }[]>([]);
 
@@ -85,11 +87,11 @@ const Post = ({ post, replying }: Props) => {
 
   return (
     <Link href={`/${post.user.username}/status/${post.id}`}>
-      <div className="flex px-4 py-3">
+      <div className="flex w-full px-4 py-3">
         <div className="flex flex-col items-center">
           <Link
             href={`/${post.user.username}`}
-            className="mr-3 block h-10 w-10 min-w-10"
+            className="mr-3 block h-10 min-h-10 w-10 min-w-10"
           >
             <Avatar
               profileImage={post.user.profileImageId}
@@ -111,7 +113,7 @@ const Post = ({ post, replying }: Props) => {
               </span>
             </Link>
             <span>·</span>
-            <span className="mx-1">{`${dayjs(post.createdAt).fromNow()}`}</span>
+            <span className="mx-1  truncate ">{`${dayjs(post.createdAt).fromNow()}`}</span>
             <PostOptions post={post} />
           </div>
           <div>
@@ -128,7 +130,9 @@ const Post = ({ post, replying }: Props) => {
                 )}
               </>
             ))}
-            <PostImageContainer images={post.images} />
+            {!imageView && (
+              <PostImageContainer postId={post.id} images={post.images} />
+            )}
           </div>
           {replying ? (
             <div className="mt-4 text-lightGrayText">

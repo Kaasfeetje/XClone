@@ -107,6 +107,7 @@ const Menu = (props: Props) => {
                 icon={<CommunityIcon className="h-7 w-7" />}
                 activeIcon={<CommunityIconFilled className="h-7 w-7" />}
                 active={router.pathname == "/communities"}
+                onClick={() => alert("Not implemented.")}
               />
               <MenuItem
                 href="#"
@@ -114,6 +115,7 @@ const Menu = (props: Props) => {
                 icon={<LogoIcon className="h-7 w-7" />}
                 activeIcon={<LogoIcon className="h-7 w-7" />}
                 active={router.pathname == "/premium"}
+                onClick={() => alert("Not implemented.")}
               />
               <MenuItem
                 href={`/${session?.user.username}`}
@@ -128,6 +130,7 @@ const Menu = (props: Props) => {
                 icon={<MoreIcon className="h-7 w-7" />}
                 activeIcon={<MoreIcon className="h-7 w-7" />}
                 active={router.pathname == "/more"}
+                onClick={() => alert("Not implemented.")}
               />
             </ul>
           </nav>

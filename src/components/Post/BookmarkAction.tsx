@@ -9,6 +9,7 @@ import BookmarkIconFilled from "../icons/BookmarkIconFilled";
 import PrimaryButton from "../common/Buttons/PrimaryButton";
 
 type Props = {
+  imageView?: boolean;
   className?: string;
   postId: string;
   onBookmark: (bookmark: {
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const BookmarkAction = ({
+  imageView,
   className,
   postId,
   onBookmark,
@@ -71,6 +73,7 @@ const BookmarkAction = ({
       onClick={(e) => e.preventDefault()}
     >
       <PostAction
+        imageView={imageView}
         icon={
           <BookmarkIcon
             className={`h-5 w-5 ${isOpen ? "fill-blue-500" : ""}`}

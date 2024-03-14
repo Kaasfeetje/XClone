@@ -11,6 +11,7 @@ import BookmarkAction from "./BookmarkAction";
 import LikeIconFilled from "../icons/LikeIconFilled";
 
 type Props = {
+  imageView?: boolean;
   postId: string;
   liked: boolean;
   likeCount: number;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const PostActions = ({
+  imageView,
   postId,
   liked,
   likeCount,
@@ -31,7 +33,6 @@ const PostActions = ({
   commentCount,
   detailed,
 }: Props) => {
-  // TODO: do bookmark creating here pls thank you <3
   const utils = api.useUtils();
   const repostMutation = api.post.repost.useMutation({
     onMutate() {
@@ -112,6 +113,7 @@ const PostActions = ({
         icon={<CommentIcon className="h-5 w-5" />}
         value={commentCount}
         color={PostActionColorVariants.blue}
+        imageView={imageView}
         onClick={(e) => {
           e.preventDefault();
           alert("Not implemented yet.");
@@ -121,6 +123,7 @@ const PostActions = ({
         icon={<RepostIcon className="h-5 w-5" />}
         value={_repostCount}
         color={PostActionColorVariants.green}
+        imageView={imageView}
         onClick={onRepost}
         active={isReposted}
       />
@@ -129,6 +132,7 @@ const PostActions = ({
         activeIcon={<LikeIconFilled className="h-5 w-5" />}
         value={_likeCount}
         color={PostActionColorVariants.red}
+        imageView={imageView}
         onClick={onLike}
         active={isLiked}
       />
@@ -137,6 +141,7 @@ const PostActions = ({
           icon={<StatsIcon className="h-5 w-5" />}
           value={0}
           color={PostActionColorVariants.blue}
+          imageView={imageView}
           onClick={(e) => {
             e.preventDefault();
             alert("Not implemented yet.");
@@ -150,10 +155,12 @@ const PostActions = ({
             postId={postId}
             onBookmark={onBookmark}
             onDeleteBookmark={onDeleteBookmark}
+            imageView={imageView}
             active={isBookmarked}
           />
           <PostAction
             icon={<ShareIcon className="h-5 w-5" />}
+            imageView={imageView}
             color={PostActionColorVariants.blue}
             onClick={(e) => {
               e.preventDefault();
@@ -165,6 +172,7 @@ const PostActions = ({
         <div className={`flex`}>
           <BookmarkAction
             className={`relative mr-3 hidden md:block`}
+            imageView={imageView}
             postId={postId}
             onBookmark={onBookmark}
             onDeleteBookmark={onDeleteBookmark}
@@ -172,6 +180,7 @@ const PostActions = ({
           />
           <PostAction
             icon={<ShareIcon className="h-5 w-5" />}
+            imageView={imageView}
             color={PostActionColorVariants.blue}
             onClick={(e) => {
               e.preventDefault();
