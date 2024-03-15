@@ -1,15 +1,13 @@
 import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { api } from "~/utils/api";
 import Post from "../Post/Post";
-import { useInView } from "react-intersection-observer";
 
-type Props = {
-  username: string;
-};
+type Props = {};
 
-const ProfileLikesContainer = ({ username }: Props) => {
-  const posts = api.post.fetchProfileLikes.useInfiniteQuery(
-    { username },
+const FollowingContainer = (props: Props) => {
+  const posts = api.post.fetchFollowing.useInfiniteQuery(
+    {},
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -25,14 +23,11 @@ const ProfileLikesContainer = ({ username }: Props) => {
     }
   }, [inView, posts.hasNextPage, posts.isLoading, posts.fetchStatus]);
 
-  if (!posts.data) {
-    return <div></div>;
-  }
   return (
     <div>
       {posts.data?.pages.map((page, idx) => (
-        <div key={page.likedPosts[0]?.id}>
-          {page.likedPosts.map((post) => (
+        <div key={page.posts[0]?.id}>
+          {page.posts.map((post) => (
             <Post key={post.id} post={post} />
           ))}
         </div>
@@ -42,4 +37,4 @@ const ProfileLikesContainer = ({ username }: Props) => {
   );
 };
 
-export default ProfileLikesContainer;
+export default FollowingContainer;

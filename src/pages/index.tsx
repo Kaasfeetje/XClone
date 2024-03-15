@@ -1,11 +1,12 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useContext } from "react";
 import Menu from "~/components/Menu/Menu";
-import MobileActions from "~/components/MobileActions";
-import PostContainer from "~/components/PostContainer";
+import FollowingContainer from "~/components/PostContainers/FollowingContainer";
+import PostContainer from "~/components/PostContainers/PostContainer";
 import Layout from "~/components/common/Layout";
+import { MainContext, MainPageTabs } from "~/components/context/MainContext";
 import MainHeader from "~/components/headers/MainHeader/MainHeader";
 import { api } from "~/utils/api";
 
@@ -14,6 +15,8 @@ export default function Home() {
 
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  const { mainPageSelectedTab } = useContext(MainContext);
 
   if (status === "loading") {
     return <p>Loading...</p>;
@@ -47,11 +50,10 @@ export default function Home() {
             >
               DELETE ALL
             </button>
-            <PostContainer />
-            <div className="h-screen w-full bg-blue-200">main content</div>
-            <div className="h-screen w-full">main content</div>
-            <div className="h-screen w-full bg-blue-200">main content</div>
-            <div className="h-screen w-full">main content</div>
+            {mainPageSelectedTab == MainPageTabs.Following && (
+              <FollowingContainer />
+            )}
+            {mainPageSelectedTab == MainPageTabs.ForYou && <PostContainer />}
           </div>
         }
         sidebar={

@@ -12,7 +12,7 @@ const ListsHeader = (props: Props) => {
   const { setCreateListModalIsOpen } = useContext(MainContext);
 
   return (
-    <div className="sticky top-0 flex h-[53px] items-center justify-between bg-white px-4">
+    <div className="sticky top-0 z-10 flex h-[53px] items-center justify-between bg-white px-4">
       <div className="w-14">
         <div className="-ml-2 flex h-[34px] w-[34px] items-center justify-center rounded-full duration-200 hover:bg-gray-200">
           <LeftArrowIcon className="h-5 w-5" />

@@ -11,7 +11,10 @@ type Props = {
 };
 
 const ListMembersModal = ({ isOpen, setIsOpen, listId }: Props) => {
-  const fetchListMembers = api.list.fetchListMembers.useQuery({ listId });
+  const fetchListMembers = api.list.fetchListMembers.useQuery(
+    { listId },
+    { enabled: isOpen },
+  );
   return (
     <Modal centered isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <div className="z-10 h-full w-full overflow-y-auto border-2  border-white bg-white md:h-fit md:max-h-[calc(80%-53px)] md:min-h-[650px] md:w-[600px] md:rounded-2xl">
@@ -29,7 +32,7 @@ const ListMembersModal = ({ isOpen, setIsOpen, listId }: Props) => {
         <div>
           {fetchListMembers.data && fetchListMembers.data.length != 0 ? (
             fetchListMembers.data.map((member) => (
-              <ListMember member={member} />
+              <ListMember key={member.memberId} member={member} />
             ))
           ) : (
             <div className="py-4 text-center font-semibold text-blue-500">

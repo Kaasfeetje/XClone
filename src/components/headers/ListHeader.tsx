@@ -20,7 +20,7 @@ const ListHeader = ({ list }: Props) => {
   const router = useRouter();
 
   return (
-    <div className="sticky top-0 flex h-[53px] items-center justify-between bg-white px-4">
+    <div className="sticky top-0 z-10 flex h-[53px] items-center justify-between bg-white px-4">
       <div className="w-14 min-w-14">
         <button
           className="flex h-[34px] w-[34px] items-center justify-center rounded-full hover:bg-gray-200"

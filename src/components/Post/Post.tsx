@@ -118,7 +118,7 @@ const Post = ({ post, replying, imageView }: Props) => {
           </div>
           <div>
             {parts.map((part, index) => (
-              <>
+              <React.Fragment key={`${part}+${index}`}>
                 <span>{part}</span>
                 {between[index] && (
                   <Link
@@ -128,7 +128,7 @@ const Post = ({ post, replying, imageView }: Props) => {
                     {between[index]!.text}
                   </Link>
                 )}
-              </>
+              </React.Fragment>
             ))}
             {!imageView && (
               <PostImageContainer postId={post.id} images={post.images} />

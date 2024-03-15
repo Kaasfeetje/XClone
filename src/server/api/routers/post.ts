@@ -8,6 +8,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { deletePost } from "../helpers/deletePost";
+import { getNextPostCursor } from "../helpers/getNextCursor";
 
 export const postInclude = (userId: string) => ({
   user: {
@@ -84,6 +85,13 @@ const commentPermissionQuery = (userId: string) => ({
   ],
 });
 
+export type CursorType = {
+  id?: string;
+  createdAt?: Date;
+};
+
+const POST_PER_REQUEST = 2;
+
 export const postRouter = createTRPCRouter({
   //THIS IS FOR DEV ONLY OBVIOUSLY HAS TO BE REMOVED LATER
   deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
@@ -104,7 +112,6 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      console.log(input);
       if (input.commentToId) {
         const post = await ctx.db.post.findUnique({
           where: {
@@ -191,19 +198,84 @@ export const postRouter = createTRPCRouter({
 
       await deletePost(post.id);
     }),
-  fetchAll: protectedProcedure.query(async ({ ctx }) => {
-    const posts = await ctx.db.post.findMany({
-      where: {
-        commentToId: null,
-      },
-      include: postInclude(ctx.session.user.id),
-    });
-    return posts;
-  }),
-  fetchProfilePosts: protectedProcedure
-    .input(z.object({ username: z.string().min(1) }))
+  fetchAll: protectedProcedure
+    .input(
+      z.object({
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const posts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
+        where: {
+          commentToId: null,
+        },
+        include: postInclude(ctx.session.user.id),
+      });
+      const nextItem = posts.pop();
+      let nextCursor: CursorType | undefined = undefined;
+      if (posts.length > POST_PER_REQUEST - 1) {
+        nextCursor = {
+          id: nextItem?.id,
+          createdAt: nextItem?.createdAt,
+        };
+      }
+      return { posts, nextCursor };
+    }),
+  fetchFollowing: protectedProcedure
+    .input(
+      z.object({
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const posts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
+        where: {
+          commentToId: null,
+          OR: [
+            {
+              user: {
+                followers: {
+                  some: {
+                    followerId: ctx.session.user.id,
+                  },
+                },
+              },
+            },
+            {
+              userId: ctx.session.user.id,
+            },
+          ],
+        },
+        include: postInclude(ctx.session.user.id),
+      });
+      const nextItem = posts.pop();
+      let nextCursor: CursorType | undefined = undefined;
+      if (posts.length > POST_PER_REQUEST - 1) {
+        nextCursor = {
+          id: nextItem?.id,
+          createdAt: nextItem?.createdAt,
+        };
+      }
+      return { posts, nextCursor };
+    }),
+  fetchProfilePosts: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(1),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const posts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           AND: [
             {
@@ -216,12 +288,27 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      return posts;
+
+      const nextCursor = getNextPostCursor(
+        input.cursor,
+        posts,
+        POST_PER_REQUEST,
+      );
+
+      return { posts, nextCursor };
     }),
   fetchProfileReplies: protectedProcedure
-    .input(z.object({ username: z.string().min(1) }))
+    .input(
+      z.object({
+        username: z.string().min(1),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const replies = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           AND: [
             {
@@ -236,12 +323,26 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      return replies;
+      const nextCursor = getNextPostCursor(
+        input.cursor,
+        replies,
+        POST_PER_REQUEST,
+      );
+
+      return { replies, nextCursor };
     }),
   fetchProfileHighlights: protectedProcedure
-    .input(z.object({ username: z.string().min(1) }))
+    .input(
+      z.object({
+        username: z.string().min(1),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const highlightedPosts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           highlight: {
             user: {
@@ -251,12 +352,25 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      return highlightedPosts;
+      const nextCursor = getNextPostCursor(
+        input.cursor,
+        highlightedPosts,
+        POST_PER_REQUEST,
+      );
+      return { highlightedPosts, nextCursor };
     }),
   fetchProfileLikes: protectedProcedure
-    .input(z.object({ username: z.string() }))
+    .input(
+      z.object({
+        username: z.string(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const likedPosts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           likes: {
             some: {
@@ -268,7 +382,12 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      return likedPosts;
+      const nextCursor = getNextPostCursor(
+        input.cursor,
+        likedPosts,
+        POST_PER_REQUEST,
+      );
+      return { likedPosts, nextCursor };
     }),
   fetch: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))
@@ -293,7 +412,12 @@ export const postRouter = createTRPCRouter({
       return comments;
     }),
   fetchListPosts: protectedProcedure
-    .input(z.object({ listId: z.string().min(1) }))
+    .input(
+      z.object({
+        listId: z.string().min(1),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const list = await ctx.db.list.findUnique({
         where: {
@@ -309,6 +433,9 @@ export const postRouter = createTRPCRouter({
       });
 
       const posts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           userId: {
             in: list?.listMembers.map((user) => user.memberId),
@@ -316,8 +443,13 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
+      const nextCursor = getNextPostCursor(
+        input.cursor,
+        posts,
+        POST_PER_REQUEST,
+      );
 
-      return posts;
+      return { posts, nextCursor };
     }),
   like: protectedProcedure
     .input(z.object({ postId: z.string().min(1) }))

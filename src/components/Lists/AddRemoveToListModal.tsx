@@ -111,6 +111,7 @@ const AddRemoveToListModal = ({
         </TextButton>
         {fetchListsQuery.data?.map((list, idx) => (
           <ListCheckbox
+            key={list.id}
             list={list}
             checked={addedList[idx]!}
             onToggleChecked={() => {

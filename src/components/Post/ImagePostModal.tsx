@@ -138,7 +138,7 @@ const ImagePostModal = ({
             </>
           )}
           {comments.data?.map((comment) => (
-            <Post post={comment} imageView={true} />
+            <Post key={comment.id} post={comment} imageView={true} />
           ))}
         </div>
       </div>
