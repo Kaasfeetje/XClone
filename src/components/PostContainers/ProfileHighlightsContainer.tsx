@@ -31,7 +31,7 @@ const ProfileHighlightsContainer = ({ username }: Props) => {
   return (
     <div>
       {posts.data?.pages.map((page, idx) => (
-        <div key={page.highlightedPosts[0]?.id}>
+        <div key={page.highlightedPosts[0]?.id || "test"}>
           {page.highlightedPosts.map((post) => (
             <Post key={post.id} post={post} />
           ))}

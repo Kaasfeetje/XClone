@@ -33,12 +33,8 @@ const Menu = (props: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const {
-    mobileMenuIsOpen,
-    setMobileMenuIsOpen,
-    createPostModalIsOpen,
-    setCreatePostModalIsOpen,
-  } = useContext(MainContext);
+  const { mobileMenuIsOpen, setMobileMenuIsOpen, setCreatePostModalIsOpen } =
+    useContext(MainContext);
 
   return (
     <div>
@@ -92,7 +88,7 @@ const Menu = (props: Props) => {
                 title="Lists"
                 icon={<ListsIcon className="h-7 w-7" />}
                 activeIcon={<ListsIconFilled className="h-7 w-7" />}
-                active={router.pathname == "/lists"}
+                active={router.pathname == "/[username]/lists"}
               />
               <MenuItem
                 href="/bookmarks"

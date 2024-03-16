@@ -163,7 +163,7 @@ const PostOptionsDropdown = ({
         <PostOption
           icon={<AddListIcon className="h-5 w-5" />}
           text={`Add/remove @${post.user.username}`}
-          onClick={() => alert("Not implemented yet.")}
+          onClick={() => setAddToListIsOpen(true)}
         />
         <PostOption
           icon={<CommentIcon className="h-5 w-5" />}
@@ -194,7 +194,7 @@ const PostOptionsDropdown = ({
       <PostOption
         icon={<SadEmojiIcon className="h-5 w-5" />}
         text="Not interested in this post"
-        onClick={() => alert("Not implemented yet.")}
+        onClick={() => alert("Not implemented.")}
       />
       {following ? (
         <PostOption
@@ -211,18 +211,17 @@ const PostOptionsDropdown = ({
       )}
       <PostOption
         icon={<AddListIcon className="h-5 w-5" />}
-        text={`Add/remove @username from Lists`}
+        text={`Add/remove @${post.user.username}`}
         onClick={() => setAddToListIsOpen(true)}
       />
-
       <PostOption
         icon={<MuteIcon className="h-5 w-5" />}
-        text={`Mute @username`}
+        text={`Mute @${post.user.username}`}
         onClick={() => alert("Not implemented yet.")}
       />
       <PostOption
         icon={<BlockIcon className="h-5 w-5" />}
-        text={`Block @username`}
+        text={`Block @${post.user.username}`}
         onClick={() => alert("Not implemented yet.")}
       />
       <PostOption

@@ -261,6 +261,7 @@ model List {
     user          User           @relation(fields: [userId], references: [id])
     bannerImageId String?
     bannerImage   Image?         @relation(fields: [bannerImageId], references: [id])
+    isPinned      Boolean        @default(false)
 
     followers   ListFollow[]
     listMembers ListMember[]

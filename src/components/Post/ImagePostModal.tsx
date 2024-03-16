@@ -111,7 +111,7 @@ const ImagePostModal = ({
               >
                 <PostActions
                   imageView={true}
-                  postId={post.data.id}
+                  post={post.data}
                   liked={post.data.likes.length > 0}
                   likeCount={post.data._count.likes}
                   reposted={post.data.reposts.length > 0}

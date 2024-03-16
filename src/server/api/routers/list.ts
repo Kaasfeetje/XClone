@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { LISTVISIBILITY } from "@prisma/client";
+import { deleteImage, deleteImages } from "../helpers/deleteImage";
 
 export const hasListPermission = (userId: string) => {
   return {
@@ -28,7 +29,7 @@ export const listRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1),
-        bio: z.string().min(1).nullish(),
+        bio: z.string().nullish(),
         isPrivate: z.boolean().nullish(),
         bannerImageId: z.string().min(1).nullish(),
       }),
@@ -76,11 +77,26 @@ export const listRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ listId: z.string().min(1) }))
     .mutation(async ({ input, ctx }) => {
+      await ctx.db.listMember.deleteMany({
+        where: {
+          listId: input.listId,
+        },
+      });
+      await ctx.db.listFollow.deleteMany({
+        where: {
+          listId: input.listId,
+        },
+      });
+
       const list = await ctx.db.list.delete({
         where: {
           id: input.listId,
         },
+        include: {
+          bannerImage: true,
+        },
       });
+      if (list.bannerImage) deleteImage(list.bannerImage);
       return list;
     }),
   fetchUserLists: protectedProcedure
@@ -256,6 +272,24 @@ export const listRouter = createTRPCRouter({
         data: {
           followerId: ctx.session.user.id,
           listId: input.listId,
+        },
+      });
+    }),
+  pinList: protectedProcedure
+    .input(z.object({ listId: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const list = await ctx.db.list.findUnique({
+        where: {
+          id: input.listId,
+        },
+      });
+
+      await ctx.db.list.update({
+        where: {
+          id: input.listId,
+        },
+        data: {
+          isPinned: !list?.isPinned,
         },
       });
     }),

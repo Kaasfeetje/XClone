@@ -147,7 +147,7 @@ const Post = ({ post, replying, imageView }: Props) => {
             </div>
           ) : (
             <PostActions
-              postId={post.id}
+              post={post}
               liked={post.likes.length > 0}
               likeCount={post._count.likes}
               reposted={post.reposts.length > 0}

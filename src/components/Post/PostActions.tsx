@@ -10,10 +10,14 @@ import { api } from "~/utils/api";
 import BookmarkAction from "./BookmarkAction";
 import LikeIconFilled from "../icons/LikeIconFilled";
 import { CursorType } from "~/server/api/routers/post";
+import { useRouter } from "next/router";
+import { Post, User } from "@prisma/client";
 
 type Props = {
   imageView?: boolean;
-  postId: string;
+  post: Post & {
+    user: User;
+  };
   liked: boolean;
   likeCount: number;
   reposted: boolean;
@@ -25,7 +29,7 @@ type Props = {
 
 const PostActions = ({
   imageView,
-  postId,
+  post,
   liked,
   likeCount,
   reposted,
@@ -34,6 +38,7 @@ const PostActions = ({
   commentCount,
   detailed,
 }: Props) => {
+  const router = useRouter();
   const utils = api.useUtils();
   const repostMutation = api.post.repost.useMutation({
     onMutate() {
@@ -88,13 +93,13 @@ const PostActions = ({
   const onRepost = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (repostMutation.isLoading) return;
-    repostMutation.mutate({ postId });
+    repostMutation.mutate({ postId: post.id });
   };
 
   const onLike = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (likeMutation.isLoading) return;
-    likeMutation.mutate({ postId });
+    likeMutation.mutate({ postId: post.id });
   };
 
   const onBookmark = (bookmark: {
@@ -109,7 +114,7 @@ const PostActions = ({
   };
 
   const refetchPage = (lastPage: any, index: any, allPages: any) => {
-    const test = lastPage.posts.filter((post: any) => post.id == postId);
+    const test = lastPage.posts.filter((_post: any) => _post.id == post.id);
     return test.length != 0;
   };
 
@@ -145,7 +150,7 @@ const PostActions = ({
         imageView={imageView}
         onClick={(e) => {
           e.preventDefault();
-          alert("Not implemented yet.");
+          router.push(`/${post.user.username}/status/${post.id}`);
         }}
       />
       <PostAction
@@ -173,7 +178,7 @@ const PostActions = ({
           imageView={imageView}
           onClick={(e) => {
             e.preventDefault();
-            alert("Not implemented yet.");
+            alert("Not implemented.");
           }}
         />
       )}
@@ -181,7 +186,7 @@ const PostActions = ({
         <>
           <BookmarkAction
             className="relative"
-            postId={postId}
+            postId={post.id}
             onBookmark={onBookmark}
             onDeleteBookmark={onDeleteBookmark}
             imageView={imageView}
@@ -202,7 +207,7 @@ const PostActions = ({
           <BookmarkAction
             className={`relative mr-3 hidden md:block`}
             imageView={imageView}
-            postId={postId}
+            postId={post.id}
             onBookmark={onBookmark}
             onDeleteBookmark={onDeleteBookmark}
             active={isBookmarked}

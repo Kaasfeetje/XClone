@@ -9,6 +9,7 @@ import Modal from "~/components/common/Modal";
 import { MainContext } from "~/components/context/MainContext";
 import ListsHeader from "~/components/headers/ListsHeader/ListsHeader";
 import PinIcon from "~/components/icons/PinIcon";
+import PinIconFilled from "~/components/icons/PinIconFilled";
 import { api } from "~/utils/api";
 type Props = {};
 
@@ -18,11 +19,17 @@ const ListsPage = (props: Props) => {
   const { createListModalIsOpen, setCreateListModalIsOpen } =
     useContext(MainContext);
 
+  const utils = api.useUtils();
   const createListMutation = api.list.create.useMutation();
   const fetchUserLists = api.list.fetchUserLists.useQuery(
     { username: username as string },
     { enabled: username != undefined },
   );
+  const pinListMutation = api.list.pinList.useMutation({
+    onSuccess(data, variables, context) {
+      utils.list.fetchUserLists.invalidate();
+    },
+  });
 
   const handleCreateList = ({
     name,
@@ -72,11 +79,40 @@ const ListsPage = (props: Props) => {
             <ListsHeader />
             <div className="px-4 py-3">
               <h2 className="text-xl font-bold">Pinned Lists</h2>
-              <div className="p-8">
-                <span>
-                  Nothing to see here yet - pin your favorite Lists to access
-                  them quickly.
-                </span>
+              <div className="">
+                {fetchUserLists.data?.filter((list) => list.isPinned).length ==
+                0 ? (
+                  <span className="block p-8">
+                    Nothing to see here yet - pin your favorite Lists to access
+                    them quickly.
+                  </span>
+                ) : (
+                  fetchUserLists.data?.map((list) => (
+                    <div className="flex items-center justify-between">
+                      <List
+                        key={list.id}
+                        list={list}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          router.push(`/lists/${list.id}`);
+                        }}
+                      />
+                      <div
+                        onClick={(e) => {
+                          e.preventDefault();
+                          pinListMutation.mutate({ listId: list.id });
+                        }}
+                        className="flex min-h-[34px] min-w-[34px] items-center justify-center rounded-full fill-blue-500 duration-200 hover:bg-blue-100"
+                      >
+                        {list.isPinned ? (
+                          <PinIconFilled className="h-5 w-5" />
+                        ) : (
+                          <PinIcon className="h-5 w-5" />
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
             <div className="px-4">
@@ -97,10 +133,17 @@ const ListsPage = (props: Props) => {
                       }}
                     />
                     <div
-                      onClick={(e) => e.preventDefault()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        pinListMutation.mutate({ listId: list.id });
+                      }}
                       className="flex min-h-[34px] min-w-[34px] items-center justify-center rounded-full fill-blue-500 duration-200 hover:bg-blue-100"
                     >
-                      <PinIcon className="h-5 w-5" />
+                      {list.isPinned ? (
+                        <PinIconFilled className="h-5 w-5" />
+                      ) : (
+                        <PinIcon className="h-5 w-5" />
+                      )}
                     </div>
                   </div>
                 ))}
