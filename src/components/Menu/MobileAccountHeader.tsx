@@ -6,13 +6,15 @@ import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { MainContext } from "../context/MainContext";
 
-type Props = {};
+type Props = {
+  isOpen?: boolean;
+};
 
-const MobileAccountHeader = (props: Props) => {
+const MobileAccountHeader = ({ isOpen }: Props) => {
   const { data: session } = useSession();
   const fetchProfileQuery = api.user.fetchProfile.useQuery(
     { username: session?.user.username as string },
-    { enabled: session?.user.username !== "" },
+    { enabled: session?.user.username !== "" && isOpen },
   );
   const { setMobileMenuIsOpen } = useContext(MainContext);
 

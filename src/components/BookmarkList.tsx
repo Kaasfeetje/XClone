@@ -7,29 +7,14 @@ import {
   User,
 } from "@prisma/client";
 import React, { useState } from "react";
-import Post from "./Post/Post";
+import Post, { PostIncludeType } from "./Post/Post";
 import AngleDownIcon from "./icons/AngleDownIcon";
 
 type Props = {
   name: string;
-  bookmarks: Bookmark &
-    {
-      post: PostType & {
-        user: User;
-        likes: PostLike[];
-        reposts: PostRepost[];
-        mentions: User[];
-        hashtags: HashTag[];
-        bookmarks: Bookmark[];
-        _count: {
-          comments: number;
-          hashtags: number;
-          likes: number;
-          mentions: number;
-          reposts: number;
-        };
-      };
-    }[];
+  bookmarks: (Bookmark & {
+    post: PostType & PostIncludeType;
+  })[];
 };
 
 const BookmarkList = ({ name, bookmarks }: Props) => {

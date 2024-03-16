@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../common/Modal";
 import CloseIcon from "../icons/CloseIcon";
 import AngleDownIcon from "../icons/AngleDownIcon";
@@ -8,6 +8,7 @@ import { env } from "~/env";
 import PostActions from "./PostActions";
 import LeftArrowIcon from "../icons/LeftArrow";
 import CommentForm from "../common/CommentForm";
+import { useInView } from "react-intersection-observer";
 
 type Props = {
   postId: string;
@@ -30,10 +31,23 @@ const ImagePostModal = ({
     { postId },
     { enabled: postId != undefined },
   );
-  const comments = api.post.fetchComments.useQuery(
+  const comments = api.post.fetchComments.useInfiniteQuery(
     { postId },
-    { enabled: postId != undefined },
+    {
+      enabled: postId != undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
   );
+
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      if (comments.hasNextPage && !comments.isLoading) {
+        comments.fetchNextPage();
+      }
+    }
+  }, [inView, comments.hasNextPage, comments.isLoading, comments.fetchStatus]);
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(true);
 
@@ -137,9 +151,14 @@ const ImagePostModal = ({
               </div>
             </>
           )}
-          {comments.data?.map((comment) => (
-            <Post key={comment.id} post={comment} imageView={true} />
+          {comments.data?.pages.map((page, idx) => (
+            <div key={page.comments[0]?.id}>
+              {page.comments.map((post) => (
+                <Post key={post.id} post={post} />
+              ))}
+            </div>
           ))}
+          {comments.hasNextPage && <div ref={ref}>Loading...</div>}
         </div>
       </div>
     </Modal>

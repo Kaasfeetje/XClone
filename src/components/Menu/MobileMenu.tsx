@@ -41,7 +41,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
           ref={ref}
           className={`pointer-events-auto relative z-50 ${isOpen ? "left-0" : "-left-3/4"} h-screen max-h-screen w-3/4 overflow-scroll bg-white pb-11 duration-300`}
         >
-          <MobileAccountHeader />
+          <MobileAccountHeader isOpen={isOpen} />
           <nav>
             <ul>
               <MenuItem

@@ -48,7 +48,10 @@ const BookmarkAction = ({
   const [lists, setLists] = useState<(BookmarkList | { name: string })[]>([]);
 
   useEffect(() => {
-    if (fetchBookmarkLists.data) setLists(fetchBookmarkLists.data);
+    if (fetchBookmarkLists.data) {
+      setLists(fetchBookmarkLists.data);
+      setSelectedList(fetchBookmarkLists.data[0]?.name || "");
+    }
   }, [fetchBookmarkLists.data]);
 
   const onCreateList = (e?: React.FormEvent<HTMLFormElement>) => {

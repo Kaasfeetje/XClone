@@ -371,15 +371,24 @@ export const postRouter = createTRPCRouter({
       return post;
     }),
   fetchComments: protectedProcedure
-    .input(z.object({ postId: z.string().min(1) }))
+    .input(
+      z.object({
+        postId: z.string().min(1),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const comments = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           commentToId: input.postId,
         },
         include: postInclude(ctx.session.user.id),
       });
-      return comments;
+      const nextCursor = getNextPostCursor(comments, POST_PER_REQUEST);
+      return { comments, nextCursor };
     }),
   fetchListPosts: protectedProcedure
     .input(

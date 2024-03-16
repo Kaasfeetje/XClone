@@ -48,7 +48,7 @@ const Layout = ({ menu, main, sidebar }: Props) => {
           onClose={() => setCreatePostModalIsOpen(false)}
           centered
         >
-          <div className="z-10 h-full w-full  bg-white md:h-fit md:max-h-[calc(80%-53px)] md:w-[650px] md:overflow-y-auto md:rounded-2xl">
+          <div className="z-10 h-full w-full overflow-y-auto  bg-white md:h-fit md:max-h-[calc(80%-53px)] md:w-[650px] md:overflow-y-auto md:rounded-2xl">
             <div className="sticky top-0 z-20 flex h-[53px] items-center justify-between rounded-2xl bg-white px-4">
               <div
                 onClick={() => setCreatePostModalIsOpen(false)}

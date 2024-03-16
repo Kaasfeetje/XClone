@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import Menu from "~/components/Menu/Menu";
 import DetailedPost from "~/components/Post/DetailedPost";
 import Post from "~/components/Post/Post";
@@ -18,10 +19,22 @@ const PostPage = (props: Props) => {
     { postId: postId as string },
     { enabled: postId != undefined },
   );
-  const comments = api.post.fetchComments.useQuery(
+  const comments = api.post.fetchComments.useInfiniteQuery(
     { postId: postId as string },
-    { enabled: postId != undefined },
+    {
+      enabled: postId != undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
   );
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      if (comments.hasNextPage && !comments.isLoading) {
+        comments.fetchNextPage();
+      }
+    }
+  }, [inView, comments.hasNextPage, comments.isLoading, comments.fetchStatus]);
 
   return (
     <>
@@ -48,13 +61,14 @@ const PostPage = (props: Props) => {
               <div>Loading...</div>
             )}
             <div>
-              {comments.data ? (
-                comments.data?.map((comment) => (
-                  <Post key={comment.id} post={comment} />
-                ))
-              ) : (
-                <div>Loading...</div>
-              )}
+              {comments.data?.pages.map((page, idx) => (
+                <div key={page.comments[0]?.id}>
+                  {page.comments.map((post) => (
+                    <Post key={post.id} post={post} />
+                  ))}
+                </div>
+              ))}
+              {comments.hasNextPage && <div ref={ref}>Loading...</div>}
             </div>
           </div>
         }

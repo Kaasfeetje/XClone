@@ -28,9 +28,9 @@ const Bookmarks = (props: Props) => {
               <BookmarkList
                 key={list.id}
                 name={list.name}
-                bookmarks={fetchBookmarks.data?.filter(
-                  (b) => list.id == b.listId,
-                )}
+                bookmarks={
+                  fetchBookmarks.data?.filter((b) => list.id == b.listId) || []
+                }
               />
             ))}
           </div>

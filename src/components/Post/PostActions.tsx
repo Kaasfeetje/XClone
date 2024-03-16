@@ -4,12 +4,10 @@ import CommentIcon from "../icons/CommentIcon";
 import RepostIcon from "../icons/RepostIcon";
 import LikeIcon from "../icons/LikeIcon";
 import StatsIcon from "../icons/StatsIcon";
-import BookmarkIcon from "../icons/BookmarkIcon";
 import ShareIcon from "../icons/ShareIcon";
 import { api } from "~/utils/api";
 import BookmarkAction from "./BookmarkAction";
 import LikeIconFilled from "../icons/LikeIconFilled";
-import { CursorType } from "~/server/api/routers/post";
 import { useRouter } from "next/router";
 import { Post, User } from "@prisma/client";
 
@@ -113,8 +111,13 @@ const PostActions = ({
     deleteBookmarkMutation.mutate({ postId });
   };
 
-  const refetchPage = (lastPage: any, index: any, allPages: any) => {
-    const test = lastPage.posts.filter((_post: any) => _post.id == post.id);
+  const refetchPage = (
+    lastPage: any,
+    index: any,
+    allPages: any,
+    key: string = "posts",
+  ) => {
+    const test = lastPage[key].filter((_post: any) => _post.id == post.id);
     return test.length != 0;
   };
 
@@ -125,6 +128,16 @@ const PostActions = ({
     utils.post.fetchProfileLikes.invalidate({}, { refetchPage });
     utils.post.fetchProfilePosts.invalidate({}, { refetchPage });
     utils.post.fetchProfileReplies.invalidate({}, { refetchPage });
+    utils.post.fetch.invalidate({ postId: post.id });
+    // Add more in the future
+    // Maybe find a better way of adding the key value
+    utils.post.fetchComments.invalidate(
+      {},
+      {
+        refetchPage: (lastPage, index, allPages) =>
+          refetchPage(lastPage, index, allPages, "comments"),
+      },
+    );
   };
 
   useEffect(() => {

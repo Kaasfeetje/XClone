@@ -27,10 +27,7 @@ const PostContainer = (props: Props) => {
       {posts.data?.pages.map((page, idx) => (
         <div key={page.posts[0]?.id}>
           {page.posts.map((post) => (
-            <Post
-              key={post.id}
-              post={post}
-            />
+            <Post key={post.id} post={post} />
           ))}
         </div>
       ))}
