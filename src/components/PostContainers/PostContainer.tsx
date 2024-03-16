@@ -22,13 +22,15 @@ const PostContainer = (props: Props) => {
       }
     }
   }, [inView, posts.hasNextPage, posts.isLoading, posts.fetchStatus]);
-
   return (
     <div>
       {posts.data?.pages.map((page, idx) => (
         <div key={page.posts[0]?.id}>
           {page.posts.map((post) => (
-            <Post key={post.id} post={post} />
+            <Post
+              key={post.id}
+              post={post}
+            />
           ))}
         </div>
       ))}

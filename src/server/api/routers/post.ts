@@ -214,14 +214,7 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextItem = posts.pop();
-      let nextCursor: CursorType | undefined = undefined;
-      if (posts.length > POST_PER_REQUEST - 1) {
-        nextCursor = {
-          id: nextItem?.id,
-          createdAt: nextItem?.createdAt,
-        };
-      }
+      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
       return { posts, nextCursor };
     }),
   fetchFollowing: protectedProcedure
@@ -254,14 +247,7 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextItem = posts.pop();
-      let nextCursor: CursorType | undefined = undefined;
-      if (posts.length > POST_PER_REQUEST - 1) {
-        nextCursor = {
-          id: nextItem?.id,
-          createdAt: nextItem?.createdAt,
-        };
-      }
+      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
       return { posts, nextCursor };
     }),
   fetchProfilePosts: protectedProcedure
@@ -289,11 +275,7 @@ export const postRouter = createTRPCRouter({
         include: postInclude(ctx.session.user.id),
       });
 
-      const nextCursor = getNextPostCursor(
-        input.cursor,
-        posts,
-        POST_PER_REQUEST,
-      );
+      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
 
       return { posts, nextCursor };
     }),
@@ -323,11 +305,7 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextCursor = getNextPostCursor(
-        input.cursor,
-        replies,
-        POST_PER_REQUEST,
-      );
+      const nextCursor = getNextPostCursor(replies, POST_PER_REQUEST);
 
       return { replies, nextCursor };
     }),
@@ -352,11 +330,7 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextCursor = getNextPostCursor(
-        input.cursor,
-        highlightedPosts,
-        POST_PER_REQUEST,
-      );
+      const nextCursor = getNextPostCursor(highlightedPosts, POST_PER_REQUEST);
       return { highlightedPosts, nextCursor };
     }),
   fetchProfileLikes: protectedProcedure
@@ -382,11 +356,7 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextCursor = getNextPostCursor(
-        input.cursor,
-        likedPosts,
-        POST_PER_REQUEST,
-      );
+      const nextCursor = getNextPostCursor(likedPosts, POST_PER_REQUEST);
       return { likedPosts, nextCursor };
     }),
   fetch: protectedProcedure
@@ -443,11 +413,7 @@ export const postRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextCursor = getNextPostCursor(
-        input.cursor,
-        posts,
-        POST_PER_REQUEST,
-      );
+      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
 
       return { posts, nextCursor };
     }),

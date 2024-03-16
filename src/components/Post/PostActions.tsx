@@ -9,6 +9,7 @@ import ShareIcon from "../icons/ShareIcon";
 import { api } from "~/utils/api";
 import BookmarkAction from "./BookmarkAction";
 import LikeIconFilled from "../icons/LikeIconFilled";
+import { CursorType } from "~/server/api/routers/post";
 
 type Props = {
   imageView?: boolean;
@@ -45,7 +46,7 @@ const PostActions = ({
       }
     },
     onSuccess() {
-      utils.post.fetchAll.invalidate();
+      invalidate();
     },
   });
   const likeMutation = api.post.like.useMutation({
@@ -59,7 +60,7 @@ const PostActions = ({
       }
     },
     onSuccess() {
-      utils.post.fetchAll.invalidate();
+      invalidate();
     },
   });
   const bookmarkMutation = api.bookmark.createBookmark.useMutation({
@@ -67,7 +68,7 @@ const PostActions = ({
       setIsBookmarked(true);
     },
     onSuccess() {
-      utils.post.fetchAll.invalidate();
+      invalidate();
     },
   });
   const deleteBookmarkMutation = api.bookmark.deleteBookmark.useMutation({
@@ -75,7 +76,7 @@ const PostActions = ({
       setIsBookmarked(false);
     },
     onSuccess() {
-      utils.post.fetchAll.invalidate();
+      invalidate();
     },
   });
   const [isLiked, setIsLiked] = useState(liked);
@@ -106,6 +107,34 @@ const PostActions = ({
   const onDeleteBookmark = (postId: string) => {
     deleteBookmarkMutation.mutate({ postId });
   };
+
+  const refetchPage = (lastPage: any, index: any, allPages: any) => {
+    const test = lastPage.posts.filter((post: any) => post.id == postId);
+    return test.length != 0;
+  };
+
+  const invalidate = () => {
+    utils.post.fetchAll.invalidate({}, { refetchPage });
+    utils.post.fetchListPosts.invalidate({}, { refetchPage });
+    utils.post.fetchProfileHighlights.invalidate({}, { refetchPage });
+    utils.post.fetchProfileLikes.invalidate({}, { refetchPage });
+    utils.post.fetchProfilePosts.invalidate({}, { refetchPage });
+    utils.post.fetchProfileReplies.invalidate({}, { refetchPage });
+  };
+
+  useEffect(() => {
+    setIsReposted(reposted);
+    setRepostCount(repostCount);
+  }, [reposted]);
+
+  useEffect(() => {
+    setIsLiked(liked);
+    setLikeCount(likeCount);
+  }, [liked]);
+
+  useEffect(() => {
+    setIsBookmarked(bookmarked);
+  }, [bookmarked]);
 
   return (
     <div className="mt-3 flex w-full justify-between">

@@ -18,6 +18,7 @@ import PostImageContainer from "./PostImageContainer";
 import PostOptions from "./PostOptions";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { CursorType } from "~/server/api/routers/post";
 dayjs.extend(relativeTime);
 
 export type PostIncludeType = {
