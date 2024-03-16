@@ -29,12 +29,12 @@ const ImagePostModal = ({
 }: Props) => {
   const post = api.post.fetch.useQuery(
     { postId },
-    { enabled: postId != undefined },
+    { enabled: postId != undefined && isOpen },
   );
   const comments = api.post.fetchComments.useInfiniteQuery(
     { postId },
     {
-      enabled: postId != undefined,
+      enabled: postId != undefined && isOpen,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );

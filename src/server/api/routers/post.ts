@@ -90,7 +90,7 @@ export type CursorType = {
   createdAt?: Date;
 };
 
-const POST_PER_REQUEST = 2;
+export const POST_PER_REQUEST = 2;
 
 export const postRouter = createTRPCRouter({
   //THIS IS FOR DEV ONLY OBVIOUSLY HAS TO BE REMOVED LATER

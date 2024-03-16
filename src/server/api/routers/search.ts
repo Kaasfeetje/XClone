@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { postInclude } from "./post";
+import { POST_PER_REQUEST, postInclude } from "./post";
 import { hasListPermission } from "./list";
+import { getNextPostCursor } from "../helpers/getNextCursor";
 
 export const searchRouter = createTRPCRouter({
   search: protectedProcedure
@@ -112,9 +113,24 @@ export const searchRouter = createTRPCRouter({
       return { hashtags, users };
     }),
   fetchSearchTop: protectedProcedure
-    .input(z.object({ keyword: z.string() }))
+    .input(
+      z.object({
+        keyword: z.string(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const posts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: [
+          {
+            likes: {
+              _count: "desc",
+            },
+          },
+          { createdAt: "desc" },
+        ],
         where: {
           textContent: {
             contains: input.keyword,
@@ -122,23 +138,30 @@ export const searchRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      return posts;
+      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
+      return { posts, nextCursor };
     }),
   fetchSearchLatest: protectedProcedure
-    .input(z.object({ keyword: z.string() }))
+    .input(
+      z.object({
+        keyword: z.string(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const posts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           textContent: {
             contains: input.keyword,
           },
         },
         include: postInclude(ctx.session.user.id),
-        orderBy: {
-          createdAt: "desc",
-        },
       });
-      return posts;
+      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
+      return { posts, nextCursor };
     }),
   fetchSearchPeople: protectedProcedure
     .input(z.object({ keyword: z.string() }))
@@ -162,9 +185,17 @@ export const searchRouter = createTRPCRouter({
       return users;
     }),
   fetchSearchMedia: protectedProcedure
-    .input(z.object({ keyword: z.string() }))
+    .input(
+      z.object({
+        keyword: z.string(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const posts = await ctx.db.post.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           textContent: {
             contains: input.keyword,
@@ -175,7 +206,8 @@ export const searchRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      return posts;
+      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
+      return { posts, nextCursor };
     }),
   fetchSearchList: protectedProcedure
     .input(z.object({ keyword: z.string() }))
