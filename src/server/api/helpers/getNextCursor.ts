@@ -1,8 +1,7 @@
-import { Post } from "@prisma/client";
 import { CursorType } from "../routers/post";
 
-export const getNextPostCursor = (
-  posts: Post[],
+export const getNextCreatedAtCursor = (
+  posts: { id: string; createdAt: Date }[],
   POST_PER_REQUEST = 20,
 ) => {
   let nextCursor: CursorType | undefined = undefined;

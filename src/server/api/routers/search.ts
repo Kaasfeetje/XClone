@@ -3,7 +3,9 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { POST_PER_REQUEST, postInclude } from "./post";
 import { hasListPermission } from "./list";
-import { getNextPostCursor } from "../helpers/getNextCursor";
+import { getNextCreatedAtCursor } from "../helpers/getNextCursor";
+
+const AUTOCOMPLETE_RESULT_COUNT = 4;
 
 export const searchRouter = createTRPCRouter({
   search: protectedProcedure
@@ -32,18 +34,31 @@ export const searchRouter = createTRPCRouter({
       });
       return search;
     }),
-  fetchSearchHistory: protectedProcedure.query(async ({ ctx }) => {
-    const searchHistory = await ctx.db.search.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-      include: {
-        hashtag: true,
-        searchedUser: true,
-      },
-    });
-    return searchHistory;
-  }),
+  fetchSearchHistory: protectedProcedure
+    .input(
+      z.object({
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const searchHistory = await ctx.db.search.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
+        where: {
+          userId: ctx.session.user.id,
+        },
+        include: {
+          hashtag: true,
+          searchedUser: true,
+        },
+      });
+      const nextCursor = getNextCreatedAtCursor(
+        searchHistory,
+        POST_PER_REQUEST,
+      );
+      return { searchHistory, nextCursor };
+    }),
   clearSearchHistory: protectedProcedure.mutation(async ({ ctx }) => {
     await ctx.db.search.deleteMany({
       where: {
@@ -52,10 +67,20 @@ export const searchRouter = createTRPCRouter({
     });
   }),
   fetchAutoComplete: protectedProcedure
-    .input(z.object({ keyword: z.string().min(1) }))
+    .input(
+      z.object({
+        keyword: z.string().min(1),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       if (input.keyword.startsWith("#")) {
         const hashtags = await ctx.db.hashTag.findMany({
+          take: AUTOCOMPLETE_RESULT_COUNT,
+          orderBy: {
+            posts: {
+              _count: "desc",
+            },
+          },
           where: {
             hashtag: {
               startsWith: input.keyword.replace("#", ""),
@@ -67,6 +92,12 @@ export const searchRouter = createTRPCRouter({
 
       if (input.keyword.startsWith("@")) {
         const users = await ctx.db.user.findMany({
+          take: AUTOCOMPLETE_RESULT_COUNT,
+          orderBy: {
+            followers: {
+              _count: "desc",
+            },
+          },
           where: {
             OR: [
               {
@@ -86,6 +117,12 @@ export const searchRouter = createTRPCRouter({
       }
 
       const hashtags = await ctx.db.hashTag.findMany({
+        take: AUTOCOMPLETE_RESULT_COUNT / 2,
+        orderBy: {
+          posts: {
+            _count: "desc",
+          },
+        },
         where: {
           hashtag: {
             startsWith: input.keyword,
@@ -94,6 +131,12 @@ export const searchRouter = createTRPCRouter({
       });
 
       const users = await ctx.db.user.findMany({
+        take: AUTOCOMPLETE_RESULT_COUNT / 2,
+        orderBy: {
+          followers: {
+            _count: "desc",
+          },
+        },
         where: {
           OR: [
             {
@@ -138,7 +181,7 @@ export const searchRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
+      const nextCursor = getNextCreatedAtCursor(posts, POST_PER_REQUEST);
       return { posts, nextCursor };
     }),
   fetchSearchLatest: protectedProcedure
@@ -160,7 +203,7 @@ export const searchRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
+      const nextCursor = getNextCreatedAtCursor(posts, POST_PER_REQUEST);
       return { posts, nextCursor };
     }),
   fetchSearchPeople: protectedProcedure
@@ -206,7 +249,7 @@ export const searchRouter = createTRPCRouter({
         },
         include: postInclude(ctx.session.user.id),
       });
-      const nextCursor = getNextPostCursor(posts, POST_PER_REQUEST);
+      const nextCursor = getNextCreatedAtCursor(posts, POST_PER_REQUEST);
       return { posts, nextCursor };
     }),
   fetchSearchList: protectedProcedure

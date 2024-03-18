@@ -229,6 +229,7 @@ model Search {
     hashtag        HashTag? @relation(fields: [hashtagId], references: [hashtag])
     searchedUserId String?
     searchedUser   User?    @relation("Searched", fields: [searchedUserId], references: [id])
+    createdAt      DateTime @default(now())
 
     @@index([userId])
     @@index([hashtagId])

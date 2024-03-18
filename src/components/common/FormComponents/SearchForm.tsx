@@ -9,6 +9,7 @@ import UserResult from "~/components/headers/ExploreHeader/UserResult";
 import SearchResult from "~/components/headers/ExploreHeader/SearchResult";
 import Link from "next/link";
 import CloseIcon from "~/components/icons/CloseIcon";
+import { useInView } from "react-intersection-observer";
 
 type Props = {
   isOpen: boolean;
@@ -24,9 +25,13 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
     },
     { enabled: false, refetchOnWindowFocus: false },
   );
-  const searchHistoryQuery = api.search.fetchSearchHistory.useQuery(undefined, {
-    enabled: isOpen && keyword == "",
-  });
+  const searchHistoryQuery = api.search.fetchSearchHistory.useInfiniteQuery(
+    {},
+    {
+      enabled: isOpen && keyword == "",
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
   const createSearchMutation = api.search.search.useMutation();
   const clearSearchHistoryMutation =
     api.search.clearSearchHistory.useMutation();
@@ -38,12 +43,30 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
     return () => clearTimeout(timeout);
   }, [keyword]);
 
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      if (searchHistoryQuery.hasNextPage && !searchHistoryQuery.isLoading) {
+        searchHistoryQuery.fetchNextPage();
+      }
+    }
+  }, [
+    inView,
+    searchHistoryQuery.hasNextPage,
+    searchHistoryQuery.isLoading,
+    searchHistoryQuery.fetchStatus,
+  ]);
+
   return (
     <OutsideAlerter onOutsideClick={() => setIsOpen(false)} className="w-full">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          router.push(`/explore/${keyword}`);
+          createSearchMutation.mutate({
+            keyword,
+          });
+          router.push(`/explore/${keyword.replace("#", "%23")}`);
         }}
         onFocusCapture={() => setIsOpen(true)}
         className="group/focus  relative w-full rounded-full border border-white py-px focus-within:border-blue-500"
@@ -84,38 +107,50 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
                     Clear all
                   </TextButton>
                 </div>
-                <div>
-                  {searchHistoryQuery.data?.map((history) => {
-                    if (history.hashtag) {
-                      return (
-                        <HashtagResult
-                          hashtag={history.hashtag}
-                          key={history.id}
-                        />
-                      );
-                    }
-                    if (history.searchedUser) {
-                      return (
-                        <UserResult
-                          key={history.id}
-                          user={history.searchedUser}
-                        />
-                      );
-                    }
-                    if (history.text) {
-                      return (
-                        <SearchResult
-                          key={history.id}
-                          searchWord={history.text}
-                        />
-                      );
-                    }
-                  })}
+                <div className="max-h-[350px] overflow-y-auto">
+                  {searchHistoryQuery.data?.pages.map((page) =>
+                    page.searchHistory.map((history) => {
+                      if (history.hashtag) {
+                        return (
+                          <HashtagResult
+                            hashtag={history.hashtag}
+                            key={history.id}
+                          />
+                        );
+                      }
+                      if (history.searchedUser) {
+                        return (
+                          <UserResult
+                            key={history.id}
+                            user={history.searchedUser}
+                          />
+                        );
+                      }
+                      if (history.text) {
+                        return (
+                          <SearchResult
+                            key={history.id}
+                            searchWord={history.text}
+                          />
+                        );
+                      }
+                    }),
+                  )}
+                  {searchHistoryQuery.hasNextPage && (
+                    <div ref={ref}>Loading...</div>
+                  )}
                 </div>
               </div>
             ) : (
               <div className="h-full w-full">
-                <Link href={`/explore/${keyword.replace("#", "%23")}`}>
+                <Link
+                  href={`/explore/${keyword.replace("#", "%23")}`}
+                  onClick={() => {
+                    createSearchMutation.mutate({
+                      keyword,
+                    });
+                  }}
+                >
                   <div className="p-4">Search for "{keyword}"</div>
                 </Link>
                 {searchAutocompleteQuery.data?.hashtags?.map((hashtag) => (
