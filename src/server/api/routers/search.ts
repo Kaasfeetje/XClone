@@ -207,9 +207,17 @@ export const searchRouter = createTRPCRouter({
       return { posts, nextCursor };
     }),
   fetchSearchPeople: protectedProcedure
-    .input(z.object({ keyword: z.string() }))
+    .input(
+      z.object({
+        keyword: z.string(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const users = await ctx.db.user.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           OR: [
             {
@@ -225,7 +233,8 @@ export const searchRouter = createTRPCRouter({
           ],
         },
       });
-      return users;
+      const nextCursor = getNextCreatedAtCursor(users, POST_PER_REQUEST);
+      return { users, nextCursor };
     }),
   fetchSearchMedia: protectedProcedure
     .input(
@@ -253,9 +262,17 @@ export const searchRouter = createTRPCRouter({
       return { posts, nextCursor };
     }),
   fetchSearchList: protectedProcedure
-    .input(z.object({ keyword: z.string() }))
+    .input(
+      z.object({
+        keyword: z.string(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const lists = await ctx.db.list.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           name: {
             contains: input.keyword,
@@ -267,6 +284,7 @@ export const searchRouter = createTRPCRouter({
           _count: true,
         },
       });
-      return lists;
+      const nextCursor = getNextCreatedAtCursor(lists, POST_PER_REQUEST);
+      return { lists, nextCursor };
     }),
 });

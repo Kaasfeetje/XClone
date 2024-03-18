@@ -1,5 +1,5 @@
-import React from "react";
-import Post from "~/components/Post/Post";
+import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import UserResult from "~/components/headers/ExploreHeader/UserResult";
 import { api } from "~/utils/api";
 
@@ -8,15 +8,27 @@ type Props = {
 };
 
 const PeopleSearchContainer = ({ keyword }: Props) => {
-  const users = api.search.fetchSearchPeople.useQuery({ keyword });
+  const users = api.search.fetchSearchPeople.useInfiniteQuery(
+    { keyword },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor },
+  );
+  const { ref, inView } = useInView();
+  useEffect(() => {
+    if (inView) {
+      if (users.hasNextPage && !users.isLoading) {
+        users.fetchNextPage();
+      }
+    }
+  }, [inView, users.hasNextPage, users.isLoading, users.fetchStatus]);
   if (!users.data) {
     return <div></div>;
   }
   return (
     <div>
-      {users.data.map((user) => (
-        <UserResult user={user} />
-      ))}
+      {users.data.pages.map((page) =>
+        page.users.map((user) => <UserResult user={user} />),
+      )}
+      {users.hasNextPage && <div ref={ref}>Loading...</div>}
     </div>
   );
 };

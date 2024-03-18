@@ -18,7 +18,7 @@ const ListSearchForm = ({ isOpen, setIsOpen }: Props) => {
     {
       keyword,
     },
-    { enabled: false, refetchOnWindowFocus: false },
+    { enabled: false },
   );
 
   useEffect(() => {

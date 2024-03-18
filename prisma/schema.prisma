@@ -263,6 +263,7 @@ model List {
     bannerImageId String?
     bannerImage   Image?         @relation(fields: [bannerImageId], references: [id])
     isPinned      Boolean        @default(false)
+    createdAt     DateTime       @default(now())
 
     followers   ListFollow[]
     listMembers ListMember[]

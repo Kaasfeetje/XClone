@@ -199,10 +199,11 @@ export const listRouter = createTRPCRouter({
   fetchAutoComplete: protectedProcedure
     .input(z.object({ keyword: z.string() }))
     .query(async ({ input, ctx }) => {
+      // TODO: paginate all the list stuff
       const lists = await ctx.db.list.findMany({
         where: {
           name: {
-            startsWith: input.keyword,
+            contains: input.keyword,
           },
           ...hasListPermission(ctx.session.user.id),
         },
