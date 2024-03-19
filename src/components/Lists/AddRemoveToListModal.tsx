@@ -6,6 +6,7 @@ import TextButton from "../common/Buttons/TextButton";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import ListCheckbox from "./ListCheckbox";
+import ListForm from "./ListForm";
 
 type Props = {
   isOpen: boolean;
@@ -14,12 +15,18 @@ type Props = {
   userId?: string;
 };
 
+enum AddRemoveListState {
+  normal,
+  create,
+}
+
 const AddRemoveToListModal = ({
   isOpen,
   setIsOpen,
   postUsername,
   userId,
 }: Props) => {
+  const utils = api.useUtils();
   const { data: session } = useSession();
   const fetchListsQuery = api.list.fetchUserLists.useQuery(
     { username: session?.user.username!, postUsername: postUsername },
@@ -31,6 +38,15 @@ const AddRemoveToListModal = ({
     },
   );
   const addRemoveMembersMutation = api.list.addRemoveMembers.useMutation();
+  const createListMutation = api.list.create.useMutation({
+    onSuccess() {
+      utils.list.fetchUserLists.invalidate();
+    },
+  });
+
+  const [state, setState] = useState<AddRemoveListState>(
+    AddRemoveListState.normal,
+  );
 
   const [hasChanged, setHasChanged] = useState(false);
   const [addedList, setAddedList] = useState<boolean[]>([]);
@@ -54,6 +70,27 @@ const AddRemoveToListModal = ({
       return false;
     }
     return true;
+  };
+
+  const handleCreateList = ({
+    name,
+    bio,
+    isPrivate,
+    bannerImageId,
+  }: {
+    name: string;
+    bio?: string;
+    isPrivate?: boolean;
+    bannerImageId?: string;
+  }) => {
+    createListMutation.mutate({
+      name,
+      bio,
+      isPrivate,
+      bannerImageId,
+    });
+
+    setState(AddRemoveListState.normal);
   };
 
   const save = () => {
@@ -90,43 +127,54 @@ const AddRemoveToListModal = ({
 
   return (
     <Modal centered isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <div className="z-10 h-[650px] w-[600px] overflow-y-auto rounded-2xl bg-white">
-        <div className="flex h-[53px] items-center px-4">
-          <div className="w-14">
-            <div
-              onClick={() => setIsOpen(false)}
-              className="-ml-2 flex h-9 w-9 items-center justify-center rounded-full hover:bg-gray-200"
-            >
-              <CloseIcon className="h-5 w-5" />
+      {state == AddRemoveListState.create && (
+        <ListForm
+          headerText="Create a new List"
+          saveText="Save"
+          onSubmit={handleCreateList}
+          onCancel={() => setState(AddRemoveListState.normal)}
+          onDelete={() => {}}
+        />
+      )}
+      {state == AddRemoveListState.normal && (
+        <div className="z-10 h-[650px] w-[600px] overflow-y-auto rounded-2xl bg-white">
+          <div className="sticky top-0 flex h-[53px] items-center bg-white px-4">
+            <div className="w-14 cursor-pointer">
+              <div
+                onClick={() => setIsOpen(false)}
+                className="-ml-2 flex h-9 w-9 items-center justify-center rounded-full hover:bg-gray-200"
+              >
+                <CloseIcon className="h-5 w-5" />
+              </div>
             </div>
+            <div className="w-full text-xl font-semibold">Pick a List</div>
+            <BlackButton onClick={save} disabled={!hasChanged}>
+              Save
+            </BlackButton>
           </div>
-          <div className="w-full text-xl font-semibold">Pick a List</div>
-          <BlackButton onClick={save} disabled={!hasChanged}>
-            Save
-          </BlackButton>
+          <TextButton
+            type="button"
+            onClick={(e) => setState(AddRemoveListState.create)}
+            className="ml-1 font-normal text-blue-400"
+          >
+            Create a new List
+          </TextButton>
+          {fetchListsQuery.data?.map((list, idx) => (
+            <ListCheckbox
+              key={list.id}
+              list={list}
+              checked={addedList[idx]!}
+              onToggleChecked={() => {
+                const newList = addedList.map((val, index) =>
+                  index == idx ? !val : val,
+                );
+                setAddedList(newList);
+                setHasChanged(isChanged(newList));
+              }}
+            />
+          ))}
         </div>
-        <TextButton
-          type="button"
-          onClick={(e) => e.preventDefault()}
-          className="ml-1 font-normal text-blue-400"
-        >
-          Create a new List
-        </TextButton>
-        {fetchListsQuery.data?.map((list, idx) => (
-          <ListCheckbox
-            key={list.id}
-            list={list}
-            checked={addedList[idx]!}
-            onToggleChecked={() => {
-              const newList = addedList.map((val, index) =>
-                index == idx ? !val : val,
-              );
-              setAddedList(newList);
-              setHasChanged(isChanged(newList));
-            }}
-          />
-        ))}
-      </div>
+      )}
     </Modal>
   );
 };

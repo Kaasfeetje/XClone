@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CloseIcon from "../icons/CloseIcon";
 import BlackButton from "../common/Buttons/BlackButton";
 import CameraIcon from "../icons/CameraIcon";
@@ -126,9 +126,19 @@ const ListForm = ({
                 : undefined
           }
         />
-        <label className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black bg-opacity-50 fill-white hover:bg-opacity-40">
+        <label
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black bg-opacity-50 fill-white hover:bg-opacity-40"
+        >
           <CameraIcon className="h-5 w-5" />
-          <input type="file" className="h-0 w-0" onChange={handleImageFile} />
+          <input
+            onClick={(e) => console.log(e.defaultPrevented)}
+            type="file"
+            className="h-0 w-0"
+            onChange={handleImageFile}
+          />
         </label>
       </div>
       <div className="px-4 py-3">

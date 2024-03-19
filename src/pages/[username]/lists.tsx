@@ -70,7 +70,7 @@ const ListsPage = (props: Props) => {
             >
               <ListForm
                 headerText="Create a new List"
-                saveText="Next"
+                saveText="Save"
                 onSubmit={handleCreateList}
                 onCancel={() => setCreateListModalIsOpen(false)}
                 onDelete={() => {}}

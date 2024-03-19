@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import DotsIcon from "../icons/DotsIcon";
 import OutsideAlerter from "../hooks/useOutsideAlerter";
 import PostOption from "./PostOption";
@@ -22,6 +22,7 @@ import PinIconFilled from "../icons/PinIconFilled";
 import { PostIncludeType } from "./Post";
 import AddRemoveToListModal from "../Lists/AddRemoveToListModal";
 import FollowedIcon from "../icons/FollowedIcon";
+import { MainContext } from "../context/MainContext";
 
 type Props = {
   post: Post & PostIncludeType;
@@ -38,7 +39,7 @@ const PostOptions = ({ post }: Props) => {
     >
       <button
         onClick={(e) => {
-          e.preventDefault;
+          e.preventDefault();
           setIsOpen(!isOpen);
         }}
         className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-blue-100 hover:fill-blue-500"
@@ -57,14 +58,12 @@ const PostOptions = ({ post }: Props) => {
           />
         </OutsideAlerter>
       )}
-      <>
-        <AddRemoveToListModal
-          isOpen={addToListIsOpen}
-          setIsOpen={setAddToListIsOpen}
-          postUsername={post.user.username!}
-          userId={post.userId}
-        />
-      </>
+      <AddRemoveToListModal
+        isOpen={addToListIsOpen}
+        setIsOpen={setAddToListIsOpen}
+        postUsername={post.user.username!}
+        userId={post.userId}
+      />
     </div>
   );
 };

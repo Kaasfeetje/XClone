@@ -10,6 +10,7 @@ import DetailedPostForm from "../Post/PostForm/DetailedPostForm";
 import { useRouter } from "next/router";
 import Post from "../Post/Post";
 import { api } from "~/utils/api";
+import AddRemoveToListModal from "../Lists/AddRemoveToListModal";
 
 type Props = {
   menu: React.ReactNode;
@@ -20,13 +21,16 @@ type Props = {
 const Layout = ({ menu, main, sidebar }: Props) => {
   const router = useRouter();
   const { id } = router.query;
-  const { createPostModalIsOpen, setCreatePostModalIsOpen } =
-    useContext(MainContext);
+  const {
+    createPostModalIsOpen,
+    setCreatePostModalIsOpen,
+  } = useContext(MainContext);
 
   const fetchPost = api.post.fetch.useQuery(
     { postId: id as string },
     { enabled: router.pathname == "/[username]/status/[id]" && id != "" },
   );
+
   return (
     <div className="w-full text-normal lg:flex lg:justify-center">
       <div className="pointer-events-none fixed top-0 z-50 w-full max-w-[1310px]">
@@ -70,6 +74,7 @@ const Layout = ({ menu, main, sidebar }: Props) => {
             </div>
           </div>
         </Modal>
+        
       </main>
     </div>
   );
