@@ -9,14 +9,18 @@ import PostFormInput from "./PostFormInput";
 import PrimaryButton from "~/components/common/Buttons/PrimaryButton";
 import { commentPermissionOptions } from "~/components/common/data/commentPermissionOptions";
 import PostFormActions from "./PostFormActions";
-import ImagePreview from "./ImagePreview";
 import axios from "axios";
 import ImagePreviewContainer from "./ImagePreviewContainer";
 
 type Props = {};
 
 const PostForm = (props: Props) => {
-  const useCreatePostMutation = api.post.create.useMutation();
+  const utils = api.useUtils();
+  const useCreatePostMutation = api.post.create.useMutation({
+    onSuccess() {
+      utils.post.invalidate();
+    },
+  });
   const getUploadPresignedUrlMutation =
     api.upload.getUploadPresignedUrl.useMutation();
   const deleteUnusedUrlsMutation =

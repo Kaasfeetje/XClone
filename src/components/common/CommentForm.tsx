@@ -2,13 +2,7 @@ import { COMMENTPERMISSIONS, Post, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import AutoHeightTextArea from "~/components/common/AutoHeightTextArea";
 import Avatar from "~/components/common/Avatar";
-import IconButton from "~/components/common/IconButton";
-import EmojiIcon from "~/components/icons/EmojiIcon";
-import GifIcon from "~/components/icons/GifIcon";
-import ImageIcon from "~/components/icons/ImageIcon";
-import LocationIcon from "~/components/icons/LocationIcon";
 import { api } from "~/utils/api";
 import PrimaryButton from "./Buttons/PrimaryButton";
 import axios from "axios";
@@ -22,7 +16,12 @@ type Props = {
 };
 
 const CommentForm = ({ comment }: Props) => {
-  const createCommentMutation = api.post.create.useMutation();
+  const utils = api.useUtils();
+  const createCommentMutation = api.post.create.useMutation({
+    onSuccess() {
+      utils.post.fetchComments.invalidate();
+    },
+  });
   const getUploadPresignedUrlMutation =
     api.upload.getUploadPresignedUrl.useMutation();
   const deleteUnusedUrlsMutation =

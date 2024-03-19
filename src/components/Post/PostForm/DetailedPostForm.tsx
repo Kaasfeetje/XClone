@@ -18,7 +18,12 @@ type Props = {
 };
 
 const DetailedPostForm = ({ onPost, replyTo }: Props) => {
-  const useCreatePostMutation = api.post.create.useMutation();
+  const utils = api.useUtils();
+  const useCreatePostMutation = api.post.create.useMutation({
+    onSuccess() {
+      utils.post.invalidate();
+    },
+  });
   const getUploadPresignedUrlMutation =
     api.upload.getUploadPresignedUrl.useMutation();
   const deleteUnusedUrlsMutation =
