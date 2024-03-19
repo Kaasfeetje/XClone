@@ -5,7 +5,7 @@ import { POST_PER_REQUEST, postInclude } from "./post";
 import { hasListPermission } from "./list";
 import { getNextCreatedAtCursor } from "../helpers/getNextCursor";
 
-const AUTOCOMPLETE_RESULT_COUNT = 4;
+export const AUTOCOMPLETE_RESULT_COUNT = 4;
 
 export const searchRouter = createTRPCRouter({
   search: protectedProcedure

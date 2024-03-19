@@ -4,16 +4,18 @@ import DotsIcon from "~/components/icons/DotsIcon";
 import LeftArrowIcon from "~/components/icons/LeftArrow";
 import ListSearchForm from "./ListSearchForm";
 import { MainContext } from "~/components/context/MainContext";
+import { useRouter } from "next/router";
 
 type Props = {};
 
 const ListsHeader = (props: Props) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { setCreateListModalIsOpen } = useContext(MainContext);
 
   return (
     <div className="sticky top-0 z-10 flex h-[53px] items-center justify-between bg-white px-4">
-      <div className="w-14">
+      <div onClick={() => router.back()} className="w-14">
         <div className="-ml-2 flex h-[34px] w-[34px] items-center justify-center rounded-full duration-200 hover:bg-gray-200">
           <LeftArrowIcon className="h-5 w-5" />
         </div>

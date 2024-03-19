@@ -1,17 +1,11 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import DetailedList from "~/components/Lists/DetailedList";
 import Menu from "~/components/Menu/Menu";
 import ListPostsContainer from "~/components/PostContainers/ListPostsContainer";
-import Avatar from "~/components/common/Avatar";
-import TextButton from "~/components/common/Buttons/TextButton";
 import Layout from "~/components/common/Layout";
 import ListHeader from "~/components/headers/ListHeader";
-import SettingsButton from "~/components/headers/MainHeader/SettingsButton";
-import LockIcon from "~/components/icons/LockIcon";
-import { env } from "~/env";
 import { api } from "~/utils/api";
 
 export default function ListPage() {

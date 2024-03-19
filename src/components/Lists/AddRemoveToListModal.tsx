@@ -90,7 +90,7 @@ const AddRemoveToListModal = ({
 
   return (
     <Modal centered isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <div className="z-10 h-[650px] w-[600px] rounded-2xl bg-white">
+      <div className="z-10 h-[650px] w-[600px] overflow-y-auto rounded-2xl bg-white">
         <div className="flex h-[53px] items-center px-4">
           <div className="w-14">
             <div

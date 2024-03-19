@@ -29,7 +29,17 @@ const BookmarkAction = ({
   active,
 }: Props) => {
   const utils = api.useUtils();
-  const fetchBookmarkLists = api.bookmark.fetchBookmarkLists.useQuery();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+
+  const [selectedList, setSelectedList] = useState("");
+  const [lists, setLists] = useState<(BookmarkList | { name: string })[]>([]);
+
+  const fetchBookmarkLists = api.bookmark.fetchBookmarkLists.useQuery(
+    undefined,
+    { enabled: isOpen },
+  );
   const createBookmarkListMutation =
     api.bookmark.createBookmarkList.useMutation({
       onMutate(value) {
@@ -40,12 +50,6 @@ const BookmarkAction = ({
         utils.bookmark.fetchBookmarkLists.invalidate();
       },
     });
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
-
-  const [selectedList, setSelectedList] = useState("");
-  const [lists, setLists] = useState<(BookmarkList | { name: string })[]>([]);
 
   useEffect(() => {
     if (fetchBookmarkLists.data) {

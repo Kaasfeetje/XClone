@@ -85,10 +85,7 @@ const commentPermissionQuery = (userId: string) => ({
   ],
 });
 
-export type CursorType = {
-  id?: string;
-  createdAt?: Date;
-};
+
 
 export const POST_PER_REQUEST = 2;
 

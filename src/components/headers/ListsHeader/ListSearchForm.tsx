@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import Avatar from "~/components/common/Avatar";
 import OutsideAlerter from "~/components/hooks/useOutsideAlerter";
 import CloseIcon from "~/components/icons/CloseIcon";
@@ -68,6 +69,7 @@ const ListSearchForm = ({ isOpen, setIsOpen }: Props) => {
               <div className="h-full w-full">
                 {fetchAutoCompleteQuery.data?.map((list) => (
                   <Link
+                    key={list.id}
                     href={`/lists/${list.id}`}
                     className="flex items-center p-4"
                   >

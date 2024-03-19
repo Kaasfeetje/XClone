@@ -87,31 +87,33 @@ const ListsPage = (props: Props) => {
                     them quickly.
                   </span>
                 ) : (
-                  fetchUserLists.data?.map((list) => (
-                    <div className="flex items-center justify-between">
-                      <List
-                        key={list.id}
-                        list={list}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          router.push(`/lists/${list.id}`);
-                        }}
-                      />
-                      <div
-                        onClick={(e) => {
-                          e.preventDefault();
-                          pinListMutation.mutate({ listId: list.id });
-                        }}
-                        className="flex min-h-[34px] min-w-[34px] items-center justify-center rounded-full fill-blue-500 duration-200 hover:bg-blue-100"
-                      >
-                        {list.isPinned ? (
-                          <PinIconFilled className="h-5 w-5" />
-                        ) : (
-                          <PinIcon className="h-5 w-5" />
-                        )}
+                  fetchUserLists.data
+                    ?.filter((list) => list.isPinned)
+                    .map((list) => (
+                      <div className="flex items-center justify-between">
+                        <List
+                          key={list.id}
+                          list={list}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            router.push(`/lists/${list.id}`);
+                          }}
+                        />
+                        <div
+                          onClick={(e) => {
+                            e.preventDefault();
+                            pinListMutation.mutate({ listId: list.id });
+                          }}
+                          className="flex min-h-[34px] min-w-[34px] items-center justify-center rounded-full fill-blue-500 duration-200 hover:bg-blue-100"
+                        >
+                          {list.isPinned ? (
+                            <PinIconFilled className="h-5 w-5" />
+                          ) : (
+                            <PinIcon className="h-5 w-5" />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))
                 )}
               </div>
             </div>

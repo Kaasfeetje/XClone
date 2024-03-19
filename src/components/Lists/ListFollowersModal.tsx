@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "../common/Modal";
 import CloseIcon from "../icons/CloseIcon";
 import { api } from "~/utils/api";
-import ListMember from "./ListMember";
 import ListUser from "./ListUser";
+import { useInView } from "react-intersection-observer";
 
 type Props = {
   listId: string;
@@ -12,10 +12,28 @@ type Props = {
 };
 
 const ListFollowersModal = ({ listId, isOpen, setIsOpen }: Props) => {
-  const listFollowersQuery = api.list.fetchListFollowers.useQuery(
+  const listFollowersQuery = api.list.fetchListFollowers.useInfiniteQuery(
     { listId },
-    { enabled: listId !== undefined },
+    {
+      enabled: listId !== undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
   );
+
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      if (listFollowersQuery.hasNextPage && !listFollowersQuery.isLoading) {
+        listFollowersQuery.fetchNextPage();
+      }
+    }
+  }, [
+    inView,
+    listFollowersQuery.hasNextPage,
+    listFollowersQuery.isLoading,
+    listFollowersQuery.fetchStatus,
+  ]);
 
   return (
     <Modal centered isOpen={isOpen} onClose={() => setIsOpen(false)}>
@@ -32,14 +50,22 @@ const ListFollowersModal = ({ listId, isOpen, setIsOpen }: Props) => {
           <div className="text-xl font-semibold">List followers</div>
         </div>
         <div>
-          {listFollowersQuery.data && listFollowersQuery.data.length == 0 ? (
+          {listFollowersQuery.data &&
+          listFollowersQuery.data.pages.length == 0 ? (
             <div className="mt-3 select-none text-center font-semibold text-lightGrayText">
               This list does not have any followers
             </div>
           ) : (
-            listFollowersQuery.data?.map((follower) => (
-              <ListUser user={follower.follower} />
-            ))
+            <>
+              {listFollowersQuery.data?.pages.map((page) =>
+                page.followers.map((follower) => (
+                  <ListUser user={follower.follower} />
+                )),
+              )}
+              {listFollowersQuery.hasNextPage && (
+                <div ref={ref}>Loading...</div>
+              )}
+            </>
           )}
         </div>
       </div>

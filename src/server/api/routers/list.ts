@@ -3,6 +3,13 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { LISTVISIBILITY } from "@prisma/client";
 import { deleteImage, deleteImages } from "../helpers/deleteImage";
+import { AUTOCOMPLETE_RESULT_COUNT } from "./search";
+import {
+  getNextCreatedAtCursor,
+  getNextListFollowerCursor,
+  getNextListMemberCursor,
+} from "../helpers/getNextCursor";
+import { POST_PER_REQUEST } from "./post";
 
 export const hasListPermission = (userId: string) => {
   return {
@@ -146,9 +153,25 @@ export const listRouter = createTRPCRouter({
       return list;
     }),
   fetchListMembers: protectedProcedure
-    .input(z.object({ listId: z.string().min(1) }))
+    .input(
+      z.object({
+        listId: z.string().min(1),
+        cursor: z
+          .object({
+            memberId_listId: z.object({
+              listId: z.string(),
+              memberId: z.string(),
+            }),
+            createdAt: z.date(),
+          })
+          .nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const listMembers = await ctx.db.listMember.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           listId: input.listId,
         },
@@ -156,7 +179,9 @@ export const listRouter = createTRPCRouter({
           member: true,
         },
       });
-      return listMembers;
+
+      const nextCursor = getNextListMemberCursor(listMembers, POST_PER_REQUEST);
+      return { listMembers, nextCursor };
     }),
   deleteListMember: protectedProcedure
     .input(z.object({ memberId: z.string().min(1), listId: z.string().min(1) }))
@@ -184,9 +209,25 @@ export const listRouter = createTRPCRouter({
       return deleted;
     }),
   fetchListFollowers: protectedProcedure
-    .input(z.object({ listId: z.string() }))
+    .input(
+      z.object({
+        listId: z.string(),
+        cursor: z
+          .object({
+            followerId_listId: z.object({
+              followerId: z.string(),
+              listId: z.string(),
+            }),
+            createdAt: z.date(),
+          })
+          .nullish(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const followers = await ctx.db.listFollow.findMany({
+        take: POST_PER_REQUEST + 1,
+        cursor: input.cursor ? input.cursor : undefined,
+        orderBy: { createdAt: "desc" },
         where: {
           listId: input.listId,
         },
@@ -194,13 +235,21 @@ export const listRouter = createTRPCRouter({
           follower: true,
         },
       });
-      return followers;
+
+      const nextCursor = getNextListFollowerCursor(followers, POST_PER_REQUEST);
+      return { followers, nextCursor };
     }),
   fetchAutoComplete: protectedProcedure
-    .input(z.object({ keyword: z.string() }))
+    .input(
+      z.object({
+        keyword: z.string(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       // TODO: paginate all the list stuff
       const lists = await ctx.db.list.findMany({
+        take: AUTOCOMPLETE_RESULT_COUNT,
+        orderBy: { createdAt: "desc" },
         where: {
           name: {
             contains: input.keyword,
@@ -232,21 +281,25 @@ export const listRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const deleted = await ctx.db.listMember.deleteMany({
-        where: {
-          AND: input.delete.map((del) => ({
-            listId: del.listId,
-            memberId: del.userId,
+      if (input.delete.length > 0) {
+        const deleted = await ctx.db.listMember.deleteMany({
+          where: {
+            AND: input.delete.map((del) => ({
+              listId: del.listId,
+              memberId: del.userId,
+            })),
+          },
+        });
+      }
+      if (input.create.length > 0) {
+        const created = await ctx.db.listMember.createMany({
+          data: input.create.map((create) => ({
+            listId: create.listId,
+            memberId: create.userId,
           })),
-        },
-      });
-      const created = await ctx.db.listMember.createMany({
-        data: input.create.map((create) => ({
-          listId: create.listId,
-          memberId: create.userId,
-        })),
-      });
-      return { deleted, created };
+        });
+      }
+      return true;
     }),
   followList: protectedProcedure
     .input(z.object({ listId: z.string().min(1) }))
