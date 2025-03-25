@@ -29,7 +29,7 @@ const AddRemoveToListModal = ({
   const utils = api.useUtils();
   const { data: session } = useSession();
   const fetchListsQuery = api.list.fetchUserLists.useQuery(
-    { username: session?.user.username || "", postUsername: postUsername },
+    { username: session?.user.username ?? "", postUsername: postUsername },
     {
       enabled:
         session?.user.username != undefined &&

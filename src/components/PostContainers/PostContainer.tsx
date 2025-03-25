@@ -18,7 +18,7 @@ const PostContainer = (props: Props) => {
   useEffect(() => {
     if (inView) {
       if (posts.hasNextPage && !posts.isLoading) {
-        posts.fetchNextPage().then();
+        void posts.fetchNextPage();
       }
     }
   }, [inView, posts.hasNextPage, posts.isLoading, posts.fetchStatus]);

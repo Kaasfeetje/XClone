@@ -28,7 +28,7 @@ const ListsPage = (props: Props) => {
   );
   const pinListMutation = api.list.pinList.useMutation({
     onSuccess(data, variables, context) {
-      utils.list.fetchUserLists.invalidate().then();
+      void utils.list.fetchUserLists.invalidate();
     },
   });
 
@@ -101,7 +101,7 @@ const ListsPage = (props: Props) => {
                           list={list}
                           onClick={(e) => {
                             e.preventDefault();
-                            router.push(`/lists/${list.id}`).then();
+                            void router.push(`/lists/${list.id}`);
                           }}
                         />
                         <div
@@ -139,7 +139,7 @@ const ListsPage = (props: Props) => {
                       list={list}
                       onClick={(e) => {
                         e.preventDefault();
-                        router.push(`/lists/${list.id}`).then();
+                        void router.push(`/lists/${list.id}`);
                       }}
                     />
                     <div

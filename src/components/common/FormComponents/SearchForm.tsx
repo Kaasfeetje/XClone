@@ -38,7 +38,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (keyword != "") searchAutocompleteQuery.refetch().then();
+      if (keyword != "") void searchAutocompleteQuery.refetch();
     }, 500);
     return () => clearTimeout(timeout);
   }, [keyword]);
@@ -48,7 +48,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
   useEffect(() => {
     if (inView) {
       if (searchHistoryQuery.hasNextPage && !searchHistoryQuery.isLoading) {
-        searchHistoryQuery.fetchNextPage().then();
+        void searchHistoryQuery.fetchNextPage();
       }
     }
   }, [
@@ -77,7 +77,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
           createSearchMutation.mutate({
             keyword,
           });
-          router.push(`/explore/${keyword.replace("#", "%23")}`).then();
+          void router.push(`/explore/${keyword.replace("#", "%23")}`);
         }}
         onFocusCapture={() => setIsOpen(true)}
         className="group/focus  relative w-full rounded-full border border-white py-px focus-within:border-blue-500"
@@ -180,7 +180,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
                     key={user.id}
                     user={user}
                     onClick={() =>
-                    createSearchMutation.mutate({ searchedUserId: user.id })
+                      createSearchMutation.mutate({ searchedUserId: user.id })
                     }
                   />
                 ))}

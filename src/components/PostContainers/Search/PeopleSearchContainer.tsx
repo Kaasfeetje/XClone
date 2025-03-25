@@ -16,7 +16,7 @@ const PeopleSearchContainer = ({ keyword }: Props) => {
   useEffect(() => {
     if (inView) {
       if (users.hasNextPage && !users.isLoading) {
-        users.fetchNextPage().then();
+        void users.fetchNextPage();
       }
     }
   }, [inView, users.hasNextPage, users.isLoading, users.fetchStatus]);

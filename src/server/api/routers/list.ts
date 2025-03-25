@@ -103,7 +103,7 @@ export const listRouter = createTRPCRouter({
           bannerImage: true,
         },
       });
-      if (list.bannerImage) deleteImage(list.bannerImage).then();
+      if (list.bannerImage) void deleteImage(list.bannerImage);
       return list;
     }),
   fetchUserLists: protectedProcedure

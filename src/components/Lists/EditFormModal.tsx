@@ -26,7 +26,7 @@ const EditFormModal = ({
 
   useEffect(() => {
     if (deleteListMutation.isSuccess) {
-      router.push(`/`).then();
+      void router.push(`/`);
     }
   }, [deleteListMutation.isSuccess]);
 

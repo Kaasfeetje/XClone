@@ -143,24 +143,22 @@ const PostActions = ({
   };
 
   const invalidate = () => {
-    utils.post.fetchAll.invalidate({}, { refetchPage }).then();
-    utils.post.fetchListPosts.invalidate({}, { refetchPage }).then();
-    utils.post.fetchProfileHighlights.invalidate({}, { refetchPage }).then();
-    utils.post.fetchProfileLikes.invalidate({}, { refetchPage }).then();
-    utils.post.fetchProfilePosts.invalidate({}, { refetchPage }).then();
-    utils.post.fetchProfileReplies.invalidate({}, { refetchPage }).then();
-    utils.post.fetch.invalidate({ postId: post.id });
+    void utils.post.fetchAll.invalidate({}, { refetchPage });
+    void utils.post.fetchListPosts.invalidate({}, { refetchPage });
+    void utils.post.fetchProfileHighlights.invalidate({}, { refetchPage });
+    void utils.post.fetchProfileLikes.invalidate({}, { refetchPage });
+    void utils.post.fetchProfilePosts.invalidate({}, { refetchPage });
+    void utils.post.fetchProfileReplies.invalidate({}, { refetchPage });
+    void utils.post.fetch.invalidate({ postId: post.id });
     // Add more in the future
     // Maybe find a better way of adding the key value
-    utils.post.fetchComments
-      .invalidate(
-        {},
-        {
-          refetchPage: (lastPage, index, allPages) =>
-            refetchPage(lastPage, index, allPages, "comments"),
-        },
-      )
-      .then();
+    void utils.post.fetchComments.invalidate(
+      {},
+      {
+        refetchPage: (lastPage, index, allPages) =>
+          refetchPage(lastPage, index, allPages, "comments"),
+      },
+    );
   };
 
   useEffect(() => {

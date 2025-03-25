@@ -77,7 +77,7 @@ const ShareOptionsDropdown = ({ url, onClose }: ShareOptionsDropdownProps) => {
         text="Copy link"
         onClick={(e) => {
           e.preventDefault();
-          navigator.clipboard.writeText(url).then();
+          void navigator.clipboard.writeText(url);
           onClose();
         }}
       />

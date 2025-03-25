@@ -93,7 +93,7 @@ export const userRouter = createTRPCRouter({
       if (input.bannerImageId && user.bannerImage) {
         imagesToDelete.push(user.bannerImage);
       }
-      deleteImages(imagesToDelete).then();
+      void deleteImages(imagesToDelete);
 
       const updatedUser = await ctx.db.user.update({
         where: {

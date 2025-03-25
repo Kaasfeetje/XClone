@@ -21,9 +21,7 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
   const utils = api.useUtils();
   const editProfileMutation = api.user.editProfile.useMutation({
     onSuccess() {
-      utils.user.fetchProfile
-        .invalidate({ username: profile.username! })
-        .then();
+      void utils.user.fetchProfile.invalidate({ username: profile.username! });
     },
   });
   const getUploadPresignedUrlMutation =
@@ -112,11 +110,10 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
             type = "profile";
           }
         }
-        axios
-          .put(image.presignedUrl, imgFile?.slice(), {
-            headers: { "Content-Type": imgFile?.type },
-          })
-          .then();
+        void axios.put(image.presignedUrl, imgFile?.slice(), {
+          headers: { "Content-Type": imgFile?.type },
+        });
+
         return { id: image.image.id, type };
       });
     }

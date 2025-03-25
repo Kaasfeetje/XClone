@@ -5,7 +5,7 @@ type Props = Record<string, string>;
 
 const Logout = (props: Props) => {
   useEffect(() => {
-    signOut({ callbackUrl: "/auth/login" }).then();
+    void signOut({ callbackUrl: "/auth/login" });
   }, []);
   return <div>Logout</div>;
 };

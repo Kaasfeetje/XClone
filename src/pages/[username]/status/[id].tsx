@@ -31,7 +31,7 @@ const PostPage = (props: Props) => {
   useEffect(() => {
     if (inView) {
       if (comments.hasNextPage && !comments.isLoading) {
-        comments.fetchNextPage().then();
+        void comments.fetchNextPage();
       }
     }
   }, [inView, comments.hasNextPage, comments.isLoading, comments.fetchStatus]);

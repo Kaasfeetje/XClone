@@ -40,14 +40,14 @@ const PostFormInput = ({ value, onChange, onFocus, setText }: Props) => {
       setAutoCompleteIsOpen("mention");
       setACMentionKeyword(currentWord.replace("@", ""));
       const delayedSearch = setTimeout(() => {
-        refetchUsers().then();
+        void refetchUsers();
       }, 200);
       return () => clearTimeout(delayedSearch);
     } else if (currentWord?.startsWith("#")) {
       setAutoCompleteIsOpen("hashtag");
       setACHashtagKeyword(currentWord.replace("#", ""));
       const delayedSearch = setTimeout(() => {
-        refetchHashtags().then();
+        void refetchHashtags();
       }, 200);
       return () => clearTimeout(delayedSearch);
     } else {

@@ -25,7 +25,7 @@ const ListFollowersModal = ({ listId, isOpen, setIsOpen }: Props) => {
   useEffect(() => {
     if (inView) {
       if (listFollowersQuery.hasNextPage && !listFollowersQuery.isLoading) {
-        listFollowersQuery.fetchNextPage().then();
+        void listFollowersQuery.fetchNextPage();
       }
     }
   }, [

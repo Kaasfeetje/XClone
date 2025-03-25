@@ -19,7 +19,7 @@ const CommentForm = ({ comment }: Props) => {
   const utils = api.useUtils();
   const createCommentMutation = api.post.create.useMutation({
     onSuccess() {
-      utils.post.fetchComments.invalidate().then();
+      void utils.post.fetchComments.invalidate()
     },
   });
   const getUploadPresignedUrlMutation =

@@ -16,7 +16,7 @@ const CompleteSignup = (props: Props) => {
 
   useEffect(() => {
     if (completeSignupMutation.isSuccess) {
-      router.push("/").then();
+      void router.push("/");
     }
   }, [completeSignupMutation.isSuccess]);
 

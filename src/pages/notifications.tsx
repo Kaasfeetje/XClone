@@ -13,11 +13,11 @@ export default function NotificationsPage() {
   }
 
   if (status === "unauthenticated") {
-    router.push("/auth/login").then();
+    void router.push("/auth/login");
   }
 
   if (!session?.user.username) {
-    router.push("/auth/complete-signup").then();
+    void router.push("/auth/complete-signup");
   }
 
   return (

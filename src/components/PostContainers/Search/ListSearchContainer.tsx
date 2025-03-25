@@ -18,7 +18,7 @@ const ListSearchContainer = ({ keyword }: Props) => {
   useEffect(() => {
     if (inView) {
       if (lists.hasNextPage && !lists.isLoading) {
-        lists.fetchNextPage().then();
+        void lists.fetchNextPage();
       }
     }
   }, [inView, lists.hasNextPage, lists.isLoading, lists.fetchStatus]);
