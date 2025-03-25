@@ -40,8 +40,9 @@ const ManageMembers = ({ listId, setIsManagingMembers }: Props) => {
       />
       {currentTab == ManageMembersTabs.Members && (
         <div>
-          {fetchListMembers.data && fetchListMembers.data.length != 0 ? (
-            fetchListMembers.data.map((member) => (
+          {fetchListMembers.data &&
+          fetchListMembers.data.listMembers.length != 0 ? (
+            fetchListMembers.data.listMembers.map((member) => (
               <ListMember member={member} />
             ))
           ) : (

@@ -13,7 +13,7 @@ export const db =
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     datasources: {
       db: {
-        url: env.DATABASE_URL,
+        url: env.DIRECT_DATABASE_URL,
       },
     },
   });
