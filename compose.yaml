@@ -13,30 +13,7 @@ services:
       - 3306:3306
     volumes:
       - db:/var/lib/mysql
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    develop:
-      watch:
-        - path: ./package.json
-          action: rebuild
-        - path: ./next.config.json
-          action: rebuild
-        - path: ./package-lock.json
-          action: rebuild
-        - path: ./.env
-          action: rebuild
-        - path: .
-          target: /app
-          action: sync
-    env_file:
-      - .env
-    ports:
-      - 3000:3000    
   
-
-
 volumes:
   db:
     driver: local

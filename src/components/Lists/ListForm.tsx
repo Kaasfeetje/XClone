@@ -116,16 +116,18 @@ const ListForm = ({
         </BlackButton>
       </div>
       <div className="relative aspect-[3/1] w-full bg-gray-300">
-        <img
-          className="h-full w-full"
-          src={
-            bannerImageFile
-              ? URL.createObjectURL(bannerImageFile)
-              : list
-                ? `${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${list.bannerImageId}`
-                : undefined
-          }
-        />
+        {(list?.bannerImageId || bannerImageFile) && (
+          <img
+            className="h-full w-full"
+            src={
+              bannerImageFile
+                ? URL.createObjectURL(bannerImageFile)
+                : list
+                  ? `${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${list.bannerImageId}`
+                  : undefined
+            }
+          />
+        )}
         <label
           onClick={(e) => {
             e.stopPropagation();

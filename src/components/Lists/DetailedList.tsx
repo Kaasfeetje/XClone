@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { env } from "~/env";
 import LockIcon from "../icons/LockIcon";
 import Link from "next/link";
@@ -23,15 +23,29 @@ type Props = {
 };
 
 const DetailedList = ({ list }: Props) => {
+  const utils = api.useUtils();
   const { data: session } = useSession();
+  const [followed, setFollowed] = useState(false);
 
-  const followListMutation = api.list.followList.useMutation();
-  // TODO: optimistically toggle follow
+  const followListMutation = api.list.followList.useMutation({
+    onMutate() {
+      setFollowed((val) => !val);
+    },
+    onSuccess() {
+      utils.list.fetch.invalidate({ listId: list?.id });
+    },
+  });
 
   const [editListModalIsOpen, setEditListModalIsOpen] = useState(false);
   const [listMembersModalIsOpen, setListMembersModalIsOpen] = useState(false);
   const [listFollowersModalIsOpen, setListFollowersModalIsOpen] =
     useState(false);
+
+  useEffect(() => {
+    if (list && list.followers.length != 0) {
+      setFollowed(true);
+    }
+  }, [list]);
 
   if (!list) {
     return <div>Loading...</div>;
@@ -55,10 +69,12 @@ const DetailedList = ({ list }: Props) => {
         setIsOpen={setListFollowersModalIsOpen}
       />
       <div className="aspect-[3/1] w-full bg-gray-300">
-        <img
-          className="h-full w-full"
-          src={`${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${list.bannerImageId}`}
-        />
+        {list.bannerImageId && (
+          <img
+            className="h-full w-full"
+            src={`${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${list.bannerImageId}`}
+          />
+        )}
       </div>
       <div className="flex flex-col items-center p-3">
         <div className="mb-3 flex items-center">
@@ -109,7 +125,7 @@ const DetailedList = ({ list }: Props) => {
           )}
           {list.userId != session?.user.id && (
             <>
-              {list.followers.length == 1 ? (
+              {followed ? (
                 <button
                   onClick={() => followListMutation.mutate({ listId: list.id })}
                   className="h-9 rounded-full border border-gray-300 px-4 font-semibold duration-200 hover:bg-gray-200"

@@ -58,6 +58,17 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
     searchHistoryQuery.fetchStatus,
   ]);
 
+  useEffect(() => {
+    if (
+      router.pathname == "/explore/[keyword]" ||
+      router.pathname == "/hashtag/[keyword]"
+    ) {
+      if (router.query) {
+        setKeyword((router.query.keyword as string) || "");
+      }
+    }
+  }, [router.pathname, router.query]);
+
   return (
     <OutsideAlerter onOutsideClick={() => setIsOpen(false)} className="w-full">
       <form

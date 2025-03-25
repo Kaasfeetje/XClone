@@ -138,7 +138,7 @@ const ImagePostModal = ({
           </div>
         </div>
         <div
-          className={`hidden h-full w-[400px] min-w-[400px] bg-white duration-200 md:flex ${sidebarIsOpen ? "" : "-mr-[400px]"}`}
+          className={`hidden h-full w-[400px] min-w-[400px] bg-white duration-200 md:flex md:flex-col ${sidebarIsOpen ? "" : "-mr-[400px]"}`}
           onClick={(e) => {
             e.stopPropagation();
           }}
