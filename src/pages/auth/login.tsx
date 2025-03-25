@@ -6,7 +6,7 @@ import MinimalistButton from "~/components/common/Buttons/MinimalistButton";
 import GoogleIcon from "~/components/icons/GoogleIcon";
 import LogoIcon from "~/components/icons/LogoIcon";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const Login = (props: Props) => {
   return (
@@ -47,7 +47,7 @@ const Login = (props: Props) => {
           </span> */}
 
           <span className="mt-10 block">
-            Don't have an account?{" "}
+            Don't have an account?
             <Link
               href={"/auth/signup"}
               className="text-blue-500 hover:underline"

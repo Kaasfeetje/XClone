@@ -4,7 +4,7 @@ import Menu from "~/components/Menu/Menu";
 import Layout from "~/components/common/Layout";
 import ExploreHeader from "~/components/headers/ExploreHeader/ExploreHeader";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const ExplorePage = (props: Props) => {
   return (

@@ -11,7 +11,7 @@ import Layout from "~/components/common/Layout";
 import Tabs from "~/components/common/Tabs";
 import ExploreHeader from "~/components/headers/ExploreHeader/ExploreHeader";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const SearchTabOptions = {
   Top: "Top",

@@ -1,11 +1,11 @@
 import { signOut } from "next-auth/react";
 import React, { useEffect } from "react";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const Logout = (props: Props) => {
   useEffect(() => {
-    signOut({ callbackUrl: "/auth/login" });
+    signOut({ callbackUrl: "/auth/login" }).then();
   }, []);
   return <div>Logout</div>;
 };

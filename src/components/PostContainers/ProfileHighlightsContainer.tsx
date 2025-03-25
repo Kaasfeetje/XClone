@@ -20,7 +20,7 @@ const ProfileHighlightsContainer = ({ username }: Props) => {
   useEffect(() => {
     if (inView) {
       if (posts.hasNextPage && !posts.isLoading) {
-        posts.fetchNextPage();
+        posts.fetchNextPage().then();
       }
     }
   }, [inView, posts.hasNextPage, posts.isLoading, posts.fetchStatus]);
@@ -31,7 +31,7 @@ const ProfileHighlightsContainer = ({ username }: Props) => {
   return (
     <div>
       {posts.data?.pages.map((page, idx) => (
-        <div key={page.highlightedPosts[0]?.id || "test"}>
+        <div key={page.highlightedPosts[0]?.id ?? "test"}>
           {page.highlightedPosts.map((post) => (
             <Post key={post.id} post={post} />
           ))}

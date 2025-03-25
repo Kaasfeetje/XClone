@@ -4,7 +4,7 @@ import BlackButton from "~/components/common/Buttons/BlackButton";
 import PrimaryButton from "~/components/common/Buttons/PrimaryButton";
 import { api } from "~/utils/api";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const CompleteSignup = (props: Props) => {
   const completeSignupMutation = api.user.completeSignup.useMutation();
@@ -16,7 +16,7 @@ const CompleteSignup = (props: Props) => {
 
   useEffect(() => {
     if (completeSignupMutation.isSuccess) {
-      router.push("/");
+      router.push("/").then();
     }
   }, [completeSignupMutation.isSuccess]);
 

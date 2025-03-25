@@ -14,6 +14,7 @@ export enum MainPageTabs {
   Following = "Following",
 }
 
+/* eslint-disable @typescript-eslint/no-empty-function */
 export const MainContext = createContext({
   mobileMenuIsOpen: false,
   setMobileMenuIsOpen: (value: boolean) => {},

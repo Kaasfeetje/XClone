@@ -10,7 +10,7 @@ import Layout from "~/components/common/Layout";
 import BackHeader from "~/components/headers/BackHeader";
 import { api } from "~/utils/api";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const PostPage = (props: Props) => {
   const router = useRouter();
@@ -31,7 +31,7 @@ const PostPage = (props: Props) => {
   useEffect(() => {
     if (inView) {
       if (comments.hasNextPage && !comments.isLoading) {
-        comments.fetchNextPage();
+        comments.fetchNextPage().then();
       }
     }
   }, [inView, comments.hasNextPage, comments.isLoading, comments.fetchStatus]);

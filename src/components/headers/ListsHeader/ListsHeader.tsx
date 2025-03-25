@@ -6,7 +6,7 @@ import ListSearchForm from "./ListSearchForm";
 import { MainContext } from "~/components/context/MainContext";
 import { useRouter } from "next/router";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const ListsHeader = (props: Props) => {
   const router = useRouter();

@@ -19,7 +19,7 @@ const ProfileRepliesContainer = ({ username }: Props) => {
   useEffect(() => {
     if (inView) {
       if (replies.hasNextPage && !replies.isLoading) {
-        replies.fetchNextPage();
+        replies.fetchNextPage().then();
       }
     }
   }, [inView, replies.hasNextPage, replies.isLoading, replies.fetchStatus]);

@@ -46,15 +46,15 @@ const BookmarkAction = ({
         setLists([...lists, { name: value.name }]);
         setSelectedList(value.name);
       },
-      onSuccess() {
-        utils.bookmark.fetchBookmarkLists.invalidate();
+      async onSuccess() {
+        await utils.bookmark.fetchBookmarkLists.invalidate();
       },
     });
 
   useEffect(() => {
     if (fetchBookmarkLists.data) {
       setLists(fetchBookmarkLists.data);
-      setSelectedList(fetchBookmarkLists.data[0]?.name || "");
+      setSelectedList(fetchBookmarkLists.data[0]?.name ?? "");
     }
   }, [fetchBookmarkLists.data]);
 

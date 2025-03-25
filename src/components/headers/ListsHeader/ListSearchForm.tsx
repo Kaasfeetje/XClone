@@ -24,7 +24,7 @@ const ListSearchForm = ({ isOpen, setIsOpen }: Props) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (keyword != "") fetchAutoCompleteQuery.refetch();
+      if (keyword != "") fetchAutoCompleteQuery.refetch().then();
     }, 500);
     return () => clearTimeout(timeout);
   }, [keyword]);

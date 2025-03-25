@@ -3,7 +3,7 @@ import LeftArrowIcon from "../../icons/LeftArrow";
 import SettingsIcon from "../../icons/SettingsIcon";
 import SearchForm from "~/components/common/FormComponents/SearchForm";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const ExploreHeader = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);

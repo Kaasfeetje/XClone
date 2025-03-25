@@ -39,8 +39,8 @@ const ListForm = ({
   const deleteUnusedUrlsMutation =
     api.upload.deleteUnusedPresignedUrls.useMutation();
 
-  const [name, setName] = useState(list?.name || "");
-  const [bio, setBio] = useState(list?.bio || "");
+  const [name, setName] = useState(list?.name ?? "");
+  const [bio, setBio] = useState(list?.bio ?? "");
   const [isPrivate, setIsPrivate] = useState(
     list?.visibility == "PRIVATE" ? true : false,
   );
@@ -63,7 +63,7 @@ const ListForm = ({
   };
 
   const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0]) {
+    if (!e.target?.files?.[0]) {
       return;
     }
     setBannerImageFile(e.target.files[0]);
@@ -75,10 +75,7 @@ const ListForm = ({
 
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
-    if (
-      getUploadPresignedUrlMutation.data &&
-      getUploadPresignedUrlMutation.data[0]
-    )
+    if (getUploadPresignedUrlMutation.data?.[0])
       await axios.put(
         getUploadPresignedUrlMutation.data[0].presignedUrl,
         bannerImageFile?.slice(),
@@ -116,7 +113,7 @@ const ListForm = ({
         </BlackButton>
       </div>
       <div className="relative aspect-[3/1] w-full bg-gray-300">
-        {(list?.bannerImageId || bannerImageFile) && (
+        {(list?.bannerImageId ?? bannerImageFile) && (
           <img
             className="h-full w-full"
             src={

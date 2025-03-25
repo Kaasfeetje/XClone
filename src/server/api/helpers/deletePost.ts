@@ -8,7 +8,7 @@ export const deletePost = async (postId: string) => {
       postId: postId,
     },
   });
-  deleteImages(images);
+  deleteImages(images).then();
 
   // Delete bookmarks
   // Delete likes

@@ -85,8 +85,6 @@ const commentPermissionQuery = (userId: string) => ({
   ],
 });
 
-
-
 export const POST_PER_REQUEST = 2;
 
 export const postRouter = createTRPCRouter({
@@ -126,8 +124,8 @@ export const postRouter = createTRPCRouter({
 
       //Add mentions
       const mentionRegex = /@\w{1,50}/g;
-      let usernamesMentioned = [];
-      var match;
+      const usernamesMentioned = [];
+      let match;
       while ((match = mentionRegex.exec(input.textContent!)) != null) {
         usernamesMentioned.push(match[0].replace("@", ""));
       }

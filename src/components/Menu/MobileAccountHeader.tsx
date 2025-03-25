@@ -13,7 +13,7 @@ type Props = {
 const MobileAccountHeader = ({ isOpen }: Props) => {
   const { data: session } = useSession();
   const fetchProfileQuery = api.user.fetchProfile.useQuery(
-    { username: session?.user.username as string },
+    { username: session?.user.username! },
     { enabled: session?.user.username !== "" && isOpen },
   );
   const { setMobileMenuIsOpen } = useContext(MainContext);

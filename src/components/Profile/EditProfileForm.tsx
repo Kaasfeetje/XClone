@@ -21,7 +21,9 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
   const utils = api.useUtils();
   const editProfileMutation = api.user.editProfile.useMutation({
     onSuccess() {
-      utils.user.fetchProfile.invalidate({ username: profile.username! });
+      utils.user.fetchProfile
+        .invalidate({ username: profile.username! })
+        .then();
     },
   });
   const getUploadPresignedUrlMutation =
@@ -29,10 +31,10 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
   const deleteUnusedUrlsMutation =
     api.upload.deleteUnusedPresignedUrls.useMutation();
 
-  const [name, setName] = useState(profile.displayName || "");
-  const [bio, setBio] = useState(profile.bio || "");
-  const [location, setLocation] = useState(profile.location || "");
-  const [website, setWebsite] = useState(profile.website || "");
+  const [name, setName] = useState(profile.displayName ?? "");
+  const [bio, setBio] = useState(profile.bio ?? "");
+  const [location, setLocation] = useState(profile.location ?? "");
+  const [website, setWebsite] = useState(profile.website ?? "");
   const [profileImageFile, setProfileImageFile] = useState<File | undefined>();
   const [bannerImageFile, setBannerImageFile] = useState<File>();
 
@@ -53,10 +55,10 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
   };
 
   const close = () => {
-    setName(profile.displayName || "");
-    setBio(profile.bio || "");
-    setLocation(profile.location || "");
-    setWebsite(profile.website || "");
+    setName(profile.displayName ?? "");
+    setBio(profile.bio ?? "");
+    setLocation(profile.location ?? "");
+    setWebsite(profile.website ?? "");
     setIsOpen(false);
     setProfileImageFile(undefined);
     setBannerImageFile(undefined);
@@ -66,7 +68,7 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
     files: FileList | null,
     type: "profile" | "banner",
   ) => {
-    if (files && files[0]) {
+    if (files?.[0]) {
       const toBeAdded = [];
       if (type == "profile") {
         setProfileImageFile(files[0]);
@@ -110,9 +112,11 @@ const EditProfileForm = ({ isOpen, setIsOpen, profile }: Props) => {
             type = "profile";
           }
         }
-        axios.put(image.presignedUrl, imgFile?.slice(), {
-          headers: { "Content-Type": imgFile?.type },
-        });
+        axios
+          .put(image.presignedUrl, imgFile?.slice(), {
+            headers: { "Content-Type": imgFile?.type },
+          })
+          .then();
         return { id: image.image.id, type };
       });
     }

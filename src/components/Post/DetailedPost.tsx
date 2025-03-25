@@ -58,8 +58,8 @@ const DetailedPost = ({ post }: Props) => {
 
       const newRegex = new RegExp(`${combined}`, "g");
 
-      let results = [];
-      var match;
+      const results = [];
+      let match;
       while ((match = newRegex.exec(post.textContent!)) != null) {
         const word = match[0].replace(/@|#/g, "");
         results.push({

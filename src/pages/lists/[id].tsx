@@ -23,11 +23,11 @@ export default function ListPage() {
   }
 
   if (status === "unauthenticated") {
-    router.push("/auth/login");
+    router.push("/auth/login").then();
   }
 
   if (!session?.user.username) {
-    router.push("/auth/complete-signup");
+    router.push("/auth/complete-signup").then();
   }
 
   return (

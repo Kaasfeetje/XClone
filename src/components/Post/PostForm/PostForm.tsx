@@ -12,13 +12,13 @@ import PostFormActions from "./PostFormActions";
 import axios from "axios";
 import ImagePreviewContainer from "./ImagePreviewContainer";
 
-type Props = {};
+type Props = Record<string, unknown>;
 
 const PostForm = (props: Props) => {
   const utils = api.useUtils();
   const useCreatePostMutation = api.post.create.useMutation({
-    onSuccess() {
-      utils.post.invalidate();
+    async onSuccess() {
+      await utils.post.invalidate();
     },
   });
   const getUploadPresignedUrlMutation =
@@ -87,13 +87,13 @@ const PostForm = (props: Props) => {
     if (text == "" && !files) {
       return;
     }
-    if (files && files[0] && getUploadPresignedUrlMutation.data) {
+    if (files?.[0] && getUploadPresignedUrlMutation.data) {
       // Upload each pic to s3
-      getUploadPresignedUrlMutation.data.forEach((image, idx) =>
+      getUploadPresignedUrlMutation.data.forEach((image, idx) => {
         axios.put(image.presignedUrl, files[idx]?.slice(), {
           headers: { "Content-Type": files[idx]?.type },
-        }),
-      );
+        });
+      });
     }
 
     useCreatePostMutation.mutate({

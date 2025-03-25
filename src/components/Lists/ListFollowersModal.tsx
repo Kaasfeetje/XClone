@@ -25,7 +25,7 @@ const ListFollowersModal = ({ listId, isOpen, setIsOpen }: Props) => {
   useEffect(() => {
     if (inView) {
       if (listFollowersQuery.hasNextPage && !listFollowersQuery.isLoading) {
-        listFollowersQuery.fetchNextPage();
+        listFollowersQuery.fetchNextPage().then();
       }
     }
   }, [
@@ -59,7 +59,10 @@ const ListFollowersModal = ({ listId, isOpen, setIsOpen }: Props) => {
             <>
               {listFollowersQuery.data?.pages.map((page) =>
                 page.followers.map((follower) => (
-                  <ListUser user={follower.follower} />
+                  <ListUser
+                    key={follower.followerId}
+                    user={follower.follower}
+                  />
                 )),
               )}
               {listFollowersQuery.hasNextPage && (

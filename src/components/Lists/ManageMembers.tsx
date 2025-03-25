@@ -43,7 +43,7 @@ const ManageMembers = ({ listId, setIsManagingMembers }: Props) => {
           {fetchListMembers.data &&
           fetchListMembers.data.listMembers.length != 0 ? (
             fetchListMembers.data.listMembers.map((member) => (
-              <ListMember member={member} />
+              <ListMember key={member.memberId} member={member} />
             ))
           ) : (
             <div className="py-4 text-center font-semibold text-blue-500">

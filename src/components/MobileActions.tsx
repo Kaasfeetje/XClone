@@ -14,7 +14,7 @@ import BellIconFilled from "./icons/BellIconFilled";
 import MailIconFilled from "./icons/MailIconFilled";
 import CommentIcon from "./icons/CommentIcon";
 
-type Props = {};
+type Props = Record<string, unknown>;
 
 const MobileActions = (props: Props) => {
   const router = useRouter();

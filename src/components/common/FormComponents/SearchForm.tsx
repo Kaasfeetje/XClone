@@ -38,7 +38,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (keyword != "") searchAutocompleteQuery.refetch();
+      if (keyword != "") searchAutocompleteQuery.refetch().then();
     }, 500);
     return () => clearTimeout(timeout);
   }, [keyword]);
@@ -48,7 +48,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
   useEffect(() => {
     if (inView) {
       if (searchHistoryQuery.hasNextPage && !searchHistoryQuery.isLoading) {
-        searchHistoryQuery.fetchNextPage();
+        searchHistoryQuery.fetchNextPage().then();
       }
     }
   }, [
@@ -77,7 +77,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
           createSearchMutation.mutate({
             keyword,
           });
-          router.push(`/explore/${keyword.replace("#", "%23")}`);
+          router.push(`/explore/${keyword.replace("#", "%23")}`).then();
         }}
         onFocusCapture={() => setIsOpen(true)}
         className="group/focus  relative w-full rounded-full border border-white py-px focus-within:border-blue-500"
@@ -162,7 +162,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
                     });
                   }}
                 >
-                  <div className="p-4">Search for "{keyword}"</div>
+                  <div className="p-4">Search for &quot;{keyword}&quot;</div>
                 </Link>
                 {searchAutocompleteQuery.data?.hashtags?.map((hashtag) => (
                   <HashtagResult
@@ -180,7 +180,7 @@ const SearchForm = ({ isOpen, setIsOpen }: Props) => {
                     key={user.id}
                     user={user}
                     onClick={() =>
-                      createSearchMutation.mutate({ searchedUserId: user.id })
+                    createSearchMutation.mutate({ searchedUserId: user.id })
                     }
                   />
                 ))}

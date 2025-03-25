@@ -16,7 +16,7 @@ const PeopleSearchContainer = ({ keyword }: Props) => {
   useEffect(() => {
     if (inView) {
       if (users.hasNextPage && !users.isLoading) {
-        users.fetchNextPage();
+        users.fetchNextPage().then();
       }
     }
   }, [inView, users.hasNextPage, users.isLoading, users.fetchStatus]);
@@ -26,7 +26,7 @@ const PeopleSearchContainer = ({ keyword }: Props) => {
   return (
     <div>
       {users.data.pages.map((page) =>
-        page.users.map((user) => <UserResult user={user} />),
+        page.users.map((user) => <UserResult key={user.id} user={user} />),
       )}
       {users.hasNextPage && <div ref={ref}>Loading...</div>}
     </div>

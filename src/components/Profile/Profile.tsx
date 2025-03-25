@@ -35,7 +35,7 @@ const Profile = ({ profile }: Props) => {
       setFollowed((val) => !val);
     },
     onSuccess() {
-      utils.user.fetchProfile.invalidate();
+      utils.user.fetchProfile.invalidate().then();
     },
   });
 

@@ -2,7 +2,7 @@ import React from "react";
 import DotsIcon from "../icons/DotsIcon";
 import { useSession } from "next-auth/react";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const BookmarkHeader = (props: Props) => {
   const { data: session } = useSession();

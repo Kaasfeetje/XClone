@@ -6,7 +6,7 @@ import Layout from "~/components/common/Layout";
 import BookmarkHeader from "~/components/headers/BookmarkHeader";
 import { api } from "~/utils/api";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const Bookmarks = (props: Props) => {
   const fetchBookmarkLists = api.bookmark.fetchBookmarkLists.useQuery();
@@ -29,7 +29,7 @@ const Bookmarks = (props: Props) => {
                 key={list.id}
                 name={list.name}
                 bookmarks={
-                  fetchBookmarks.data?.filter((b) => list.id == b.listId) || []
+                  fetchBookmarks.data?.filter((b) => list.id == b.listId) ?? []
                 }
               />
             ))}

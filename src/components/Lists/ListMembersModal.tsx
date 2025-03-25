@@ -22,7 +22,7 @@ const ListMembersModal = ({ isOpen, setIsOpen, listId }: Props) => {
   useEffect(() => {
     if (inView) {
       if (fetchListMembers.hasNextPage && !fetchListMembers.isLoading) {
-        fetchListMembers.fetchNextPage();
+        fetchListMembers.fetchNextPage().then();
       }
     }
   }, [

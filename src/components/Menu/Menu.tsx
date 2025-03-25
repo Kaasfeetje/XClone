@@ -27,7 +27,7 @@ import ProfileIconFilled from "../icons/ProfileIconFilled";
 import { useRouter } from "next/router";
 import PrimaryButton from "../common/Buttons/PrimaryButton";
 
-type Props = {};
+type Props = Record<string, unknown>;
 
 const Menu = (props: Props) => {
   const { data: session } = useSession();

@@ -3,7 +3,7 @@ import { useInView } from "react-intersection-observer";
 import { api } from "~/utils/api";
 import Post from "../Post/Post";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const FollowingContainer = (props: Props) => {
   const posts = api.post.fetchFollowing.useInfiniteQuery(
@@ -18,7 +18,7 @@ const FollowingContainer = (props: Props) => {
   useEffect(() => {
     if (inView) {
       if (posts.hasNextPage && !posts.isLoading) {
-        posts.fetchNextPage();
+        posts.fetchNextPage().then();
       }
     }
   }, [inView, posts.hasNextPage, posts.isLoading, posts.fetchStatus]);

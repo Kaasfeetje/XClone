@@ -31,8 +31,8 @@ const DetailedList = ({ list }: Props) => {
     onMutate() {
       setFollowed((val) => !val);
     },
-    onSuccess() {
-      utils.list.fetch.invalidate({ listId: list?.id });
+    async onSuccess() {
+      await utils.list.fetch.invalidate({ listId: list?.id });
     },
   });
 

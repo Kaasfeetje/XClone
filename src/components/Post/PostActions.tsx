@@ -112,33 +112,55 @@ const PostActions = ({
     deleteBookmarkMutation.mutate({ postId });
   };
 
-  const refetchPage = (
-    lastPage: any,
-    index: any,
-    allPages: any,
-    key: string = "posts",
+  const refetchPage:
+    | ((
+        lastPage: unknown,
+        index: number,
+        allPages: unknown[],
+        key?: string,
+      ) => boolean)
+    | undefined = (
+    lastPage: unknown, // Keep the type as unknown
+    index: number,
+    allPages: unknown[],
+    key: unknown = "posts",
   ) => {
-    const test = lastPage[key].filter((_post: any) => _post.id == post.id);
+    const typedLastPage = lastPage as {
+      posts?: Post[];
+      comments?: Post[];
+      nextCursor: {
+        id: string;
+        createdAt: Date;
+      };
+    };
+
+    const typedKey = key as "posts" | "comments";
+
+    const test = typedLastPage[typedKey]!.filter(
+      (_post) => _post.id == post.id,
+    );
     return test.length != 0;
   };
 
   const invalidate = () => {
-    utils.post.fetchAll.invalidate({}, { refetchPage });
-    utils.post.fetchListPosts.invalidate({}, { refetchPage });
-    utils.post.fetchProfileHighlights.invalidate({}, { refetchPage });
-    utils.post.fetchProfileLikes.invalidate({}, { refetchPage });
-    utils.post.fetchProfilePosts.invalidate({}, { refetchPage });
-    utils.post.fetchProfileReplies.invalidate({}, { refetchPage });
+    utils.post.fetchAll.invalidate({}, { refetchPage }).then();
+    utils.post.fetchListPosts.invalidate({}, { refetchPage }).then();
+    utils.post.fetchProfileHighlights.invalidate({}, { refetchPage }).then();
+    utils.post.fetchProfileLikes.invalidate({}, { refetchPage }).then();
+    utils.post.fetchProfilePosts.invalidate({}, { refetchPage }).then();
+    utils.post.fetchProfileReplies.invalidate({}, { refetchPage }).then();
     utils.post.fetch.invalidate({ postId: post.id });
     // Add more in the future
     // Maybe find a better way of adding the key value
-    utils.post.fetchComments.invalidate(
-      {},
-      {
-        refetchPage: (lastPage, index, allPages) =>
-          refetchPage(lastPage, index, allPages, "comments"),
-      },
-    );
+    utils.post.fetchComments
+      .invalidate(
+        {},
+        {
+          refetchPage: (lastPage, index, allPages) =>
+            refetchPage(lastPage, index, allPages, "comments"),
+        },
+      )
+      .then();
   };
 
   useEffect(() => {

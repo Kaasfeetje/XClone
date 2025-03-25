@@ -5,7 +5,7 @@ import OutsideAlerter from "../hooks/useOutsideAlerter";
 import { useSession } from "next-auth/react";
 import Avatar from "../common/Avatar";
 
-type Props = {};
+type Props = Record<string, unknown>;
 
 const DesktopAccountFooter = (props: Props) => {
   const { data: session } = useSession();

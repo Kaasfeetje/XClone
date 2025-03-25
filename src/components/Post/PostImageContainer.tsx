@@ -133,8 +133,8 @@ const PostImageContainer = ({ postId, images }: Props) => {
               setImageIndex(0);
             }}
             className="max-h-[257px] w-full max-w-[257px] object-cover"
-            src={`${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${images[0]!.id}`}
-            key={images[0]!.id}
+            src={`${env.NEXT_PUBLIC_IMAGE_HOSTING_URL}${images[0].id}`}
+            key={images[0].id}
           />
           <img
             onClick={(e) => {

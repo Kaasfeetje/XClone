@@ -7,7 +7,7 @@ import { MainContext, MainPageTabs } from "~/components/context/MainContext";
 import Avatar from "~/components/common/Avatar";
 import { useSession } from "next-auth/react";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const MainHeader = (props: Props) => {
   const { data: session } = useSession();

@@ -40,14 +40,14 @@ const PostFormInput = ({ value, onChange, onFocus, setText }: Props) => {
       setAutoCompleteIsOpen("mention");
       setACMentionKeyword(currentWord.replace("@", ""));
       const delayedSearch = setTimeout(() => {
-        refetchUsers();
+        refetchUsers().then();
       }, 200);
       return () => clearTimeout(delayedSearch);
     } else if (currentWord?.startsWith("#")) {
       setAutoCompleteIsOpen("hashtag");
       setACHashtagKeyword(currentWord.replace("#", ""));
       const delayedSearch = setTimeout(() => {
-        refetchHashtags();
+        refetchHashtags().then();
       }, 200);
       return () => clearTimeout(delayedSearch);
     } else {
@@ -62,7 +62,7 @@ const PostFormInput = ({ value, onChange, onFocus, setText }: Props) => {
           if (
             (autoCompleteIsOpen == "mention" &&
               autoCompleteUsers &&
-              autoCompleteIndex < autoCompleteUsers.length - 1) ||
+              autoCompleteIndex < autoCompleteUsers.length - 1) ??
             (autoCompleteIsOpen == "hashtag" &&
               autoCompleteHashtags &&
               autoCompleteIndex < autoCompleteHashtags.length - 1)
@@ -146,9 +146,8 @@ const PostFormInput = ({ value, onChange, onFocus, setText }: Props) => {
 
       {autoCompleteIsOpen != "" && (
         <ul className="absolute top-14 z-30 w-[380px] rounded-md border border-gray-300 bg-white">
-          {autoCompleteIsOpen == "mention" &&
-            autoCompleteUsers &&
-            autoCompleteUsers.map((user, idx) => (
+          {autoCompleteIsOpen === "mention" &&
+            autoCompleteUsers?.map((user, idx) => (
               <li
                 key={user.id}
                 onClick={() => onAutoComplete(`@${user.username!}`)}
@@ -169,8 +168,7 @@ const PostFormInput = ({ value, onChange, onFocus, setText }: Props) => {
               </li>
             ))}
           {autoCompleteIsOpen == "hashtag" &&
-            autoCompleteHashtags &&
-            autoCompleteHashtags.map((hashtag, idx) => (
+            autoCompleteHashtags?.map((hashtag, idx) => (
               <li
                 key={hashtag.hashtag}
                 onClick={() => onAutoComplete(`#${hashtag.hashtag}`)}

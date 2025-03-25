@@ -49,6 +49,7 @@ const Select = ({
             <ul>
               {options.map((option) => (
                 <Option
+                  key={option.value}
                   option={option}
                   onClick={(option) => {
                     setSelected(option);

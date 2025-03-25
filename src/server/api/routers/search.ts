@@ -17,7 +17,7 @@ export const searchRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (!(input.searchedUserId || input.hashtag || input.keyword)) {
+      if (!(input.searchedUserId ?? input.hashtag ?? input.keyword)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Must define at least one field",

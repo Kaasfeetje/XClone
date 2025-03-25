@@ -11,7 +11,8 @@ import ListsHeader from "~/components/headers/ListsHeader/ListsHeader";
 import PinIcon from "~/components/icons/PinIcon";
 import PinIconFilled from "~/components/icons/PinIconFilled";
 import { api } from "~/utils/api";
-type Props = {};
+
+type Props = Record<string, string>;
 
 const ListsPage = (props: Props) => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const ListsPage = (props: Props) => {
   );
   const pinListMutation = api.list.pinList.useMutation({
     onSuccess(data, variables, context) {
-      utils.list.fetchUserLists.invalidate();
+      utils.list.fetchUserLists.invalidate().then();
     },
   });
 
@@ -73,6 +74,7 @@ const ListsPage = (props: Props) => {
                 saveText="Save"
                 onSubmit={handleCreateList}
                 onCancel={() => setCreateListModalIsOpen(false)}
+                /* eslint-disable-next-line @typescript-eslint/no-empty-function */
                 onDelete={() => {}}
               />
             </Modal>
@@ -90,13 +92,16 @@ const ListsPage = (props: Props) => {
                   fetchUserLists.data
                     ?.filter((list) => list.isPinned)
                     .map((list) => (
-                      <div className="flex items-center justify-between">
+                      <div
+                        key={list.id}
+                        className="flex items-center justify-between"
+                      >
                         <List
                           key={list.id}
                           list={list}
                           onClick={(e) => {
                             e.preventDefault();
-                            router.push(`/lists/${list.id}`);
+                            router.push(`/lists/${list.id}`).then();
                           }}
                         />
                         <div
@@ -125,13 +130,16 @@ const ListsPage = (props: Props) => {
               <h2 className="text-xl font-bold">Your lists</h2>
               <div className="py-4">
                 {fetchUserLists.data?.map((list) => (
-                  <div className="flex items-center justify-between">
+                  <div
+                    key={list.id}
+                    className="flex items-center justify-between"
+                  >
                     <List
                       key={list.id}
                       list={list}
                       onClick={(e) => {
                         e.preventDefault();
-                        router.push(`/lists/${list.id}`);
+                        router.push(`/lists/${list.id}`).then();
                       }}
                     />
                     <div

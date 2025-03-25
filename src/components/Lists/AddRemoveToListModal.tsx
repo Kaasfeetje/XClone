@@ -29,7 +29,7 @@ const AddRemoveToListModal = ({
   const utils = api.useUtils();
   const { data: session } = useSession();
   const fetchListsQuery = api.list.fetchUserLists.useQuery(
-    { username: session?.user.username!, postUsername: postUsername },
+    { username: session?.user.username || "", postUsername: postUsername },
     {
       enabled:
         session?.user.username != undefined &&
@@ -39,8 +39,8 @@ const AddRemoveToListModal = ({
   );
   const addRemoveMembersMutation = api.list.addRemoveMembers.useMutation();
   const createListMutation = api.list.create.useMutation({
-    onSuccess() {
-      utils.list.fetchUserLists.invalidate();
+    async onSuccess() {
+      await utils.list.fetchUserLists.invalidate();
     },
   });
 
@@ -133,7 +133,9 @@ const AddRemoveToListModal = ({
           saveText="Save"
           onSubmit={handleCreateList}
           onCancel={() => setState(AddRemoveListState.normal)}
-          onDelete={() => {}}
+          onDelete={() => {
+            // eslint-disable-line @typescript-eslint/no-empty-function
+          }}
         />
       )}
       {state == AddRemoveListState.normal && (

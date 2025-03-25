@@ -23,7 +23,7 @@ const ProfilePostsContainer = ({ pinnedPost, username }: Props) => {
   useEffect(() => {
     if (inView) {
       if (posts.hasNextPage && !posts.isLoading) {
-        posts.fetchNextPage();
+        posts.fetchNextPage().then();
       }
     }
   }, [inView, posts.hasNextPage, posts.isLoading, posts.fetchStatus]);

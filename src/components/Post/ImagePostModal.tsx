@@ -44,7 +44,7 @@ const ImagePostModal = ({
   useEffect(() => {
     if (inView) {
       if (comments.hasNextPage && !comments.isLoading) {
-        comments.fetchNextPage();
+        comments.fetchNextPage().then();
       }
     }
   }, [inView, comments.hasNextPage, comments.isLoading, comments.fetchStatus]);

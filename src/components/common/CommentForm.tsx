@@ -19,7 +19,7 @@ const CommentForm = ({ comment }: Props) => {
   const utils = api.useUtils();
   const createCommentMutation = api.post.create.useMutation({
     onSuccess() {
-      utils.post.fetchComments.invalidate();
+      utils.post.fetchComments.invalidate().then();
     },
   });
   const getUploadPresignedUrlMutation =
@@ -80,13 +80,13 @@ const CommentForm = ({ comment }: Props) => {
     if (text == "") {
       return;
     }
-    if (files && files[0] && getUploadPresignedUrlMutation.data) {
+    if (files?.[0] && getUploadPresignedUrlMutation.data) {
       // Upload each pic to s3
-      getUploadPresignedUrlMutation.data.forEach((image, idx) =>
+      getUploadPresignedUrlMutation.data.forEach((image, idx) => {
         axios.put(image.presignedUrl, files[idx]?.slice(), {
           headers: { "Content-Type": files[idx]?.type },
-        }),
-      );
+        });
+      });
     }
 
     createCommentMutation.mutate({

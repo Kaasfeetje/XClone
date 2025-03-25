@@ -12,7 +12,7 @@ import { MainContext, ProfilePageTabs } from "~/components/context/MainContext";
 import BackHeader from "~/components/headers/BackHeader";
 import { api } from "~/utils/api";
 
-type Props = {};
+type Props = Record<string, string>;
 
 const ProfilePage = (props: Props) => {
   const router = useRouter();
@@ -46,7 +46,7 @@ const ProfilePage = (props: Props) => {
             </BackHeader>
             {profile.data ? (
               <>
-                <Profile profile={profile.data!} />
+                <Profile profile={profile.data} />
                 {profilePageSelectedTab == ProfilePageTabs.Posts && (
                   <ProfilePostsContainer
                     pinnedPost={

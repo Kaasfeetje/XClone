@@ -18,7 +18,7 @@ const ListSearchContainer = ({ keyword }: Props) => {
   useEffect(() => {
     if (inView) {
       if (lists.hasNextPage && !lists.isLoading) {
-        lists.fetchNextPage();
+        lists.fetchNextPage().then();
       }
     }
   }, [inView, lists.hasNextPage, lists.isLoading, lists.fetchStatus]);
@@ -29,7 +29,11 @@ const ListSearchContainer = ({ keyword }: Props) => {
     <div>
       {lists.data.pages.map((page) =>
         page.lists.map((list) => (
-          <List onClick={() => router.push(`/lists/${list.id}`)} list={list} />
+          <List
+            key={list.id}
+            onClick={() => router.push(`/lists/${list.id}`)}
+            list={list}
+          />
         )),
       )}
       {lists.hasNextPage && <div ref={ref}>Loading...</div>}
