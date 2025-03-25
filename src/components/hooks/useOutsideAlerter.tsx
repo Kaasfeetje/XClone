@@ -11,8 +11,9 @@ function useOutsideAlerter(
     /**
      * Alert if clicked on outside of element
      */
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      const node = ref instanceof Function ? ref(null) : ref?.current;
+      if (node && !node.contains(event.target as Node)) {
         event.stopPropagation();
         onOutsideClick();
         // alert("You clicked outside of me!");
