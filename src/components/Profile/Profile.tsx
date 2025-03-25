@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Avatar from "../common/Avatar";
-import { User } from "@prisma/client";
+import { Follow, User } from "@prisma/client";
 import Tabs from "../common/Tabs";
 import { MainContext, ProfilePageTabs } from "../context/MainContext";
 import EditProfileForm from "./EditProfileForm";
@@ -19,7 +19,7 @@ import { env } from "~/env";
 
 type Props = {
   profile: User & {
-    followers: User[];
+    followers: Follow[];
     _count: {
       followers: number;
       following: number;
