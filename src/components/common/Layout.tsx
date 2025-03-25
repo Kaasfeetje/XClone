@@ -4,13 +4,11 @@ import { MainContext } from "../context/MainContext";
 import Modal from "./Modal";
 import CloseIcon from "../icons/CloseIcon";
 import TextButton from "./Buttons/TextButton";
-import PostForm from "../Post/PostForm/PostForm";
 import LeftArrowIcon from "../icons/LeftArrow";
 import DetailedPostForm from "../Post/PostForm/DetailedPostForm";
 import { useRouter } from "next/router";
 import Post from "../Post/Post";
 import { api } from "~/utils/api";
-import AddRemoveToListModal from "../Lists/AddRemoveToListModal";
 
 type Props = {
   menu: React.ReactNode;
@@ -21,10 +19,8 @@ type Props = {
 const Layout = ({ menu, main, sidebar }: Props) => {
   const router = useRouter();
   const { id } = router.query;
-  const {
-    createPostModalIsOpen,
-    setCreatePostModalIsOpen,
-  } = useContext(MainContext);
+  const { createPostModalIsOpen, setCreatePostModalIsOpen } =
+    useContext(MainContext);
 
   const fetchPost = api.post.fetch.useQuery(
     { postId: id as string },
@@ -74,7 +70,6 @@ const Layout = ({ menu, main, sidebar }: Props) => {
             </div>
           </div>
         </Modal>
-        
       </main>
     </div>
   );

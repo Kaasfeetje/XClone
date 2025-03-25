@@ -4,12 +4,11 @@ import CommentIcon from "../icons/CommentIcon";
 import RepostIcon from "../icons/RepostIcon";
 import LikeIcon from "../icons/LikeIcon";
 import StatsIcon from "../icons/StatsIcon";
-import ShareIcon from "../icons/ShareIcon";
 import { api } from "~/utils/api";
-import BookmarkAction from "./BookmarkAction";
 import LikeIconFilled from "../icons/LikeIconFilled";
 import { useRouter } from "next/router";
 import { Post, User } from "@prisma/client";
+import SharePostOption from "./SharePostOption";
 
 type Props = {
   imageView?: boolean;
@@ -87,6 +86,8 @@ const PostActions = ({
   const [isReposted, setIsReposted] = useState(reposted);
   const [_repostCount, setRepostCount] = useState(repostCount);
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const onRepost = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -195,47 +196,13 @@ const PostActions = ({
           }}
         />
       )}
-      {detailed ? (
-        <>
-          <BookmarkAction
-            className="relative"
-            postId={post.id}
-            onBookmark={onBookmark}
-            onDeleteBookmark={onDeleteBookmark}
-            imageView={imageView}
-            active={isBookmarked}
-          />
-          <PostAction
-            icon={<ShareIcon className="h-5 w-5" />}
-            imageView={imageView}
-            color={PostActionColorVariants.blue}
-            onClick={(e) => {
-              e.preventDefault();
-              alert("Not implemented yet.");
-            }}
-          />
-        </>
-      ) : (
-        <div className={`flex`}>
-          <BookmarkAction
-            className={`relative mr-3 hidden md:block`}
-            imageView={imageView}
-            postId={post.id}
-            onBookmark={onBookmark}
-            onDeleteBookmark={onDeleteBookmark}
-            active={isBookmarked}
-          />
-          <PostAction
-            icon={<ShareIcon className="h-5 w-5" />}
-            imageView={imageView}
-            color={PostActionColorVariants.blue}
-            onClick={(e) => {
-              e.preventDefault();
-              alert("Not implemented yet.");
-            }}
-          />
-        </div>
-      )}
+      <SharePostOption
+        imageView={imageView}
+        post={post}
+        isBookmarked={isBookmarked}
+        onBookmark={onBookmark}
+        onDeleteBookmark={onDeleteBookmark}
+      />
     </div>
   );
 };

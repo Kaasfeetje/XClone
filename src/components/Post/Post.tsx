@@ -3,7 +3,7 @@ import {
   Follow,
   HashTag,
   Image,
-  Post,
+  Post as PostType,
   PostHighlight,
   PostLike,
   PostRepost,
@@ -40,7 +40,7 @@ export type PostIncludeType = {
   };
 };
 type Props = {
-  post: Post & PostIncludeType;
+  post: PostType & PostIncludeType;
   replying?: boolean;
   imageView?: boolean;
 };

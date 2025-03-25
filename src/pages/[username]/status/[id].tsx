@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import Menu from "~/components/Menu/Menu";
 import DetailedPost from "~/components/Post/DetailedPost";
-import Post from "~/components/Post/Post";
+import PostType from "~/components/Post/Post";
 import CommentForm from "~/components/common/CommentForm";
 import Layout from "~/components/common/Layout";
 import BackHeader from "~/components/headers/BackHeader";
@@ -64,7 +64,7 @@ const PostPage = (props: Props) => {
               {comments.data?.pages.map((page, idx) => (
                 <div key={page.comments[0]?.id}>
                   {page.comments.map((post) => (
-                    <Post key={post.id} post={post} />
+                    <PostType key={post.id} post={post} />
                   ))}
                 </div>
               ))}
