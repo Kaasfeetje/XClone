@@ -184,7 +184,7 @@ const PostActions = ({
         imageView={imageView}
         onClick={(e) => {
           e.preventDefault();
-          router.push(`/${post.user.username}/status/${post.id}`);
+          void router.push(`/${post.user.username}/status/${post.id}`);
         }}
       />
       <PostAction

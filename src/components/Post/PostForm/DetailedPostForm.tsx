@@ -92,7 +92,7 @@ const DetailedPostForm = ({ onPost, replyTo }: Props) => {
     if (files?.[0] && getUploadPresignedUrlMutation.data) {
       // Upload each pic to s3
       getUploadPresignedUrlMutation.data.forEach((image, idx) => {
-        axios.put(image.presignedUrl, files[idx]?.slice(), {
+        void axios.put(image.presignedUrl, files[idx]?.slice(), {
           headers: { "Content-Type": files[idx]?.type },
         });
       });
