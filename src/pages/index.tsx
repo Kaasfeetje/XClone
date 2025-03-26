@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Menu from "~/components/Menu/Menu";
 import FollowingContainer from "~/components/PostContainers/FollowingContainer";
 import PostContainer from "~/components/PostContainers/PostContainer";
@@ -18,18 +18,26 @@ export default function Home() {
 
   const { mainPageSelectedTab } = useContext(MainContext);
 
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    // Check if the user is still loading or unauthenticated
+    if (status === "loading") {
+      return; // Do nothing while loading
+    }
 
-  if (status === "unauthenticated") {
-    void router.push("/auth/login");
-  }
+    if (status === "unauthenticated") {
+      // Redirect to login if the user is not authenticated
+      void router.push("/auth/login");
+      return;
+    }
 
-  if (!session?.user.username) {
-    //Complete signup
+    if (session?.user?.username) {
+      // User is logged in and has a username, continue
+      return;
+    }
+
+    // User is logged in but does not have a username, complete signup
     void router.push("/auth/complete-signup");
-  }
+  }, [status, session, router]);
 
   return (
     <>

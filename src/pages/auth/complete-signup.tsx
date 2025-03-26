@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import BlackButton from "~/components/common/Buttons/BlackButton";
@@ -7,18 +8,19 @@ import { api } from "~/utils/api";
 type Props = Record<string, string>;
 
 const CompleteSignup = (props: Props) => {
-  const completeSignupMutation = api.user.completeSignup.useMutation();
+  const { update } = useSession();
+
+  const completeSignupMutation = api.user.completeSignup.useMutation({
+    async onSuccess() {
+      await update();
+      void router.push("/");
+    },
+  });
 
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    if (completeSignupMutation.isSuccess) {
-      void router.push("/");
-    }
-  }, [completeSignupMutation.isSuccess]);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
